@@ -1,0 +1,54 @@
+@use "./../../assets/scss/mixin.scss" as *;
+
+* {
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+  font-family: "mulish", sans-serif !important;
+}
+
+@font-face {
+  font-family: "mulish";
+  src: url("./../font/Mulish.ttf") format("truetype");
+}
+
+
+body {
+  font-family: "mulish", sans-serif !important;
+}
+button[type='button']{
+  cursor: pointer;
+}
+
+//common container style
+.container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 12px;
+  height: 100%;
+
+  @include responsive(xl) {
+    max-width: 1140px;
+  }
+
+  @include responsive(lg) {
+    max-width: 960px;
+  }
+
+  @include responsive(md) {
+    max-width: 720px;
+  }
+
+  @include responsive(sm) {
+    max-width: 540px;
+  }
+
+  @include responsive(xs) {
+    max-width: 100%;
+  }
+}
+
+.container-fluid {
+  width: 100%;
+  padding: 0 12px;
+}
