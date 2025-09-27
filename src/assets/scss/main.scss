@@ -4,18 +4,38 @@
   padding: 0px;
   margin: 0px;
   box-sizing: border-box;
-  font-family: "mulish", sans-serif !important;
+  font-family: "Gilroy" !important;
+  font-weight: 500;
 }
-
-@font-face {
-  font-family: "mulish";
-  src: url("./../font/Mulish.ttf") format("truetype");
-}
-
 
 body {
-  font-family: "mulish", sans-serif !important;
+  font-family: "Gilroy" !important;
+  font-weight: 500;
 }
+@font-face {
+  font-family: "Gilroy";
+  src: url("../fonts/gilroy/Gilroy-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Gilroy";
+  src: url("../fonts/gilroy/Gilroy-Medium.ttf") format("truetype");
+  font-weight: 500;
+}
+
+.gradient-title {
+    h2 {
+        font-family: "Gilroy";
+        font-size: 60px;
+        margin: 0;
+        line-height: 55px;
+        background: linear-gradient(270.03deg, #2bcb88 45.39%, #0dac91 58.38%, #26b8b5 72.39%, #007a78 88.38%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+}
+
 button[type='button']{
   cursor: pointer;
 }

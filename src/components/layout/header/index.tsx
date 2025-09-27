@@ -36,14 +36,6 @@ const Header = () => {
               <li><Link to={'#'}>News</Link></li>
               <li><Link to={'#'}>Contact</Link></li>
               <li><Link to={'#'}>About Us</Link></li>
-
-              <li>
-                <div className='search-header'>
-                  <input
-                    placeholder="search"
-                  />
-                </div>
-              </li>
             </ul>
             <div className='right-drawer'>
               <a href='#notification' className='notification'><BellDotIcon /></a>
