@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import './header.scss'
 import { Link } from 'react-router-dom'
-import { BellDotIcon } from 'lucide-react';
 
 
 const Header = () => {
@@ -32,13 +31,13 @@ const Header = () => {
             </Link>
             <ul>
               <li><Link to={'/home'}>Home</Link></li>
-              <li><Link to={'#'}>Courses</Link></li>
+              <li><Link to={'/courses'}>Courses</Link></li>
               <li><Link to={'#'}>News</Link></li>
               <li><Link to={'#'}>Contact</Link></li>
               <li><Link to={'#'}>About Us</Link></li>
             </ul>
             <div className='right-drawer'>
-              <a href='#notification' className='notification'><BellDotIcon /></a>
+              <button type='button' className='gradient-btn'>Login</button>
             </div>
           </div>
         </div>

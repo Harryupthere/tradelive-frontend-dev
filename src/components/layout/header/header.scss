@@ -1,21 +1,20 @@
 @use "./../../../assets/scss/mixin.scss" as *;
 
 .header-wrapper {
-    background: #FFF;
+    background: var(--bg-header-footer);
     box-shadow: 0 11px 11.9px -1px rgba(0, 0, 0, 0.07);
-    padding: 10px 0px;
     transition: all 0.6s ease-in-out;
-
-    &.sticky {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        animation: slideDown 0.6s ease forwards;
-        z-index: 1000;
-    }
-
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    background: var(--bg-header-footer);
+    box-shadow: var(--shadow-header-footer);
+    border-radius: 20px;
+    padding: 10px;
+    width: 90%;
+    margin: auto;
+    position: sticky;
+    top: 10px;
+    z-index: 1000;
     @keyframes slideDown {
         from {
             transform: translateY(-100%);
@@ -62,7 +61,7 @@
                 list-style-type: none;
 
                 a {
-                    color: var(--text);
+                    color: var(--fc-primary);
                     font-size: 16px;
                     font-style: normal;
                     font-weight: 600;
@@ -103,111 +102,13 @@
         }
 
         .right-drawer {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-
-            @include responsive(lg) {
-                gap: 10px;
-            }
-
-
-            .notification {
-                background-color: transparent;
-                border: 0px;
-            }
-
-            .language-wrap {
-                border-radius: 50px;
-                border: 1px solid var(--primary);
-                color: var(--text);
-                font-size: 16px;
-                font-style: normal;
-                font-weight: 500;
-                line-height: normal;
-                text-transform: capitalize;
-                text-decoration: none;
-                padding: 10px 20px;
-                transition: all 0.35s ease;
-
-                @include responsive(lg) {
-                    font-size: 14px;
-                }
-
-
-                &:hover {
-                    background-color: var(--primary);
-                    color: #fff;
-                }
-            }
-
-            .hamburger-drawer {
-                background: transparent;
-                box-shadow: unset;
-                color: transparent;
-                padding: 0px;
-
-                svg {
-                    width: 25px;
-                    height: 25px;
-
-                    path {
-                        fill: #000;
-                    }
-                }
+            .gradient-btn{
+                padding: 10px;
+                border-radius: 30px;
+                min-width: 100px;
             }
         }
     }
 }
 
 
-//drawer menu style
-.drawer-menu {
-    .ant-drawer-header {
-        background-color: var(--primary);
-
-        .anticon-close {
-            color: #fff;
-            font-size: 20px;
-        }
-
-        .ant-drawer-title {
-            color: #fff;
-            font-size: 18px;
-        }
-    }
-
-    .show-phone {
-        display: none;
-
-        @include responsive(md) {
-            display: block;
-        }
-    }
-
-    .ant-drawer-body {
-        ul {
-            padding: 0px;
-            margin: 0px;
-
-            li {
-                list-style-type: none;
-                margin-bottom: 15px;
-                
-                a,.link-btn {
-                    color: var(--text);
-                    font-size: 18px;
-                    font-style: normal;
-                    font-weight: 600;
-                    line-height: 30px;
-                    transition: all 0.35s ease;
-                    background-color: transparent;
-                    border: none;
-                    &:hover {
-                        color: var(--primary);
-                    }
-                }
-            }
-        }
-    }
-}

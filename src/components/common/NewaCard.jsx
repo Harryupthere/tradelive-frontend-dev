@@ -1,20 +1,17 @@
-import { Rating } from "@mui/material";
 import image from "../../utils/helpers";
-import "./Productcard.scss";
 
-export interface Course {
+export interface News {
   id: number;
   title: string;
-  enrollments: string;
-  rating: number;
+  date: string;
   image: string;
 }
 
-interface ProductCardProps {
-  course: Course;
+interface NewsCard {
+  news: News;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ course }) => {
+const ProductCard: React.FC<NewsCard> = ({ course }) => {
   return (
     <div className="course-card">
       <div className="course-card-img">
@@ -27,19 +24,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ course }) => {
         </p>
         <div className="rating-align">
           <div className="rating">
-            <Rating
-              name="size-small"
-              defaultValue={course.rating}
-              precision={0.5}
-              size="small"
-              readOnly
-            />{" "}
-            <span>({Math.floor(Math.random() * 200)})</span>
+            <span>Date</span>
           </div>
-          <div className="total-enroll">{course.enrollments} Enrollments</div>
+          <div className="total-enroll">{course.date}</div>
         </div>
         <button type="button" className="border-btn">
-          View Full Course
+          View Full News
         </button>
       </div>
     </div>

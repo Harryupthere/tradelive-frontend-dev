@@ -10,7 +10,7 @@
    --text-dark: #4D7399;
    
 }
-:root {
+[data-theme=light] {
     --bg-ins-card-img: #f4f4f4;
     --bg-ins-img: #f4f4f4;
     --bg-edit-profile: #f4f4f4;
@@ -82,15 +82,18 @@
     --bord-left-coupon: 8px solid linear-gradient(180.01deg,#007a78 1.26%,#2da499 98.51%);
 }
 
-[data-theme=dark] {
+:root  {
     --bg-primary: #030606;
+    --white-text: #fff;
     --bg-primary-reverse: #fcfcfc;
     --bg-secondary: #181818;
     --bg-chip: #161a18;
     --bg-dropdown: #161a18;
     --bg-green: #00787a;
-    --bg-green-gradient: linear-gradient(90deg,#007a78,#2da499);
-    --bg-green-gradient-reverse: linear-gradient(270deg,#007a78,#2da499);
+    // --bg-green-gradient: linear-gradient(90deg,#007a78,#2da499);
+    --bg-green-gradient: #d5ff2e;
+    // --bg-green-gradient-reverse: linear-gradient(270deg,#007a78,#2da499);
+    --bg-green-gradient-reverse: #afff2e;
     --bg-ins-card-img: #030606;
     --bg-ins-img: #18191d;
     --bg-edit-profile: #161a18;
@@ -149,4 +152,7 @@
     --bord-white-black: 1px solid #f3f3f3;
     --bord-left-coupon: 8px solid linear-gradient(180.01deg,#007a78 1.26%,#2da499 98.51%);
     --bord-gradient: 1px solid linear-gradient(180.01deg,#007a78 1.26%,#2da499 98.51%);
+      --shadow-cards: 0px 4px 8px rgba(0,0,0,.5);
+    --shadow-primary: 0px 1px 8px rgba(0,0,0,.5);
+    --shadow-header-footer: 0px 5px 20px #161818;
 }

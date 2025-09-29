@@ -1,15 +1,15 @@
-import { Grid } from "@mui/material"
-import ProductCard from "../../components/common/ProductCard"
+import { Container } from "@mui/material"
+import Courses from "../../components/home/Courses"
 
 const Home = () => {
   return (
     <>
-      <div>Home</div>
-      <Grid container>
-        <Grid size={{md:4}}>
-          <ProductCard/>
-        </Grid>
-      </Grid>
+    <section>
+      <Container>
+        <Courses/>
+      </Container>
+      <div className="blurs_wrapper"><div className="blurs_object is-fluo"></div></div>
+      </section>
     </>
   )
 }

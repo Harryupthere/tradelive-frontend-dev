@@ -32,7 +32,7 @@ const NewsPage: React.FC = () => {
     const fetchCourses = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`http://localhost:5003/news?status=&page=${currentPage}&limit=${coursesPerPage}`,{ headers: {
+        const res = await axios.get(`http://16.16.127.61/api/v1/news?status=&page=${currentPage}&limit=${coursesPerPage}`,{ headers: {
         Authorization: `Bearer ${token}`, // 👈 add bearer token
       }},);
 

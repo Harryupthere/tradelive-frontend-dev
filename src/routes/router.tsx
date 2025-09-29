@@ -2,10 +2,10 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "../components/layout/layout";
 
-import CoursesPage from "../components/courses/CoursesPage";
-import { Home } from "../pages";
+import { CourseListing, Home } from "../pages";
 import { RoutesArray } from "./routeArray";
 import { PrivateRoute } from "./authRoute";
+import NewsPage from "../components/news/NewsPage";
 
 
 const Router = () => {
@@ -13,8 +13,9 @@ const Router = () => {
     {
       element: <Layout />,
       children: [
-        { path: "/", element: <CoursesPage /> },
         { path: "/", element: <Home /> },
+        { path: "/courses", element: <CourseListing /> },
+        { path: "/news", element: <NewsPage /> },
       ],
     },
     {
