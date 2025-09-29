@@ -35,3 +35,18 @@
         }
     }
 }
+
+@mixin button($size, $color, $bg, $padding, $radius, $bordercolor, $fw) {
+    font-size: $size;
+    color: $color;
+    background: $bg;
+    padding: $padding;
+    border-radius: $radius;
+    border-color: $bordercolor;
+    font-weight: $fw;
+    border: 1px solid;
+    text-decoration: none;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}

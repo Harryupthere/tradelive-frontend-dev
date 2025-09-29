@@ -72,3 +72,10 @@ button[type='button']{
   width: 100%;
   padding: 0 12px;
 }
+.gradient-btn{
+  @include button(16px,#fff,var(--bg-green-gradient),10px,10px,var(--bg-green), 600);
+  transition: color .3s;
+  &:hover{
+    background: var(--bg-green-gradient-reverse);
+  }
+}
