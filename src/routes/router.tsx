@@ -5,7 +5,7 @@ import Layout from "../components/layout/layout";
 import { CourseListing, Home } from "../pages";
 import { RoutesArray } from "./routeArray";
 import { PrivateRoute } from "./authRoute";
-import NewsPage from "../components/news/NewsPage";
+import NewsListing from "../pages/newsListing";
 
 
 const Router = () => {
@@ -15,7 +15,7 @@ const Router = () => {
       children: [
         { path: "/", element: <Home /> },
         { path: "/courses", element: <CourseListing /> },
-        { path: "/news", element: <NewsPage /> },
+        { path: "/news", element: <NewsListing /> },
       ],
     },
     {

@@ -7,18 +7,18 @@ export interface News {
   image: string;
 }
 
-interface NewsCard {
+interface NewsCardProps {
   news: News;
 }
 
-const ProductCard: React.FC<NewsCard> = ({ course }) => {
+const NewsCards: React.FC<NewsCardProps> = ({ news }) => {
   return (
     <div className="course-card">
       <div className="course-card-img">
-        <img src={image[course.image]} alt={course.title} />
+        <img src={image[news.image]} alt={news.title} />
       </div>
       <div className="card-content">
-        <h3 className="title">{course.title}</h3>
+        <h3 className="title">{news.title}</h3>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quam, vel?
         </p>
@@ -26,7 +26,7 @@ const ProductCard: React.FC<NewsCard> = ({ course }) => {
           <div className="rating">
             <span>Date</span>
           </div>
-          <div className="total-enroll">{course.date}</div>
+          <div className="total-enroll">{news.date}</div>
         </div>
         <button type="button" className="border-btn">
           View Full News
@@ -36,4 +36,4 @@ const ProductCard: React.FC<NewsCard> = ({ course }) => {
   );
 };
 
-export default ProductCard;
+export default NewsCards;
