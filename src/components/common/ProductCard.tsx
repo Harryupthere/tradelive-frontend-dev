@@ -1,13 +1,13 @@
 import { Rating } from "@mui/material";
-import image from "../../utils/helpers";
 import "./Productcard.scss";
+import { useNavigate } from "react-router-dom";
 
 export interface Course {
   id: number;
   title: string;
   enrollments: string;
   rating: number;
-  image: string;
+  preview_image: string;
 }
 
 interface ProductCardProps {
@@ -15,10 +15,12 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ course }) => {
+
+  const navigate = useNavigate()
   return (
-    <div className="course-card">
+    <div className="course-card" onClick={() => navigate(`/course-overview/${course.id}`)}>
       <div className="course-card-img">
-        <img src={image[course.image]} alt={course.title} />
+        <img src={course.preview_image} alt={course.title} />
       </div>
       <div className="card-content">
         <h3 className="title">{course.title}</h3>
@@ -29,7 +31,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ course }) => {
           <div className="rating">
             <Rating
               name="size-small"
-              defaultValue={course.rating}
+              defaultValue={5}
               precision={0.5}
               size="small"
               readOnly

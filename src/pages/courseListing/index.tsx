@@ -2,6 +2,9 @@ import { Search } from "lucide-react";
 import './courseListing.scss';
 import { Container, Grid } from "@mui/material";
 import ProductCard, { Course }from "../../components/common/ProductCard";
+import { api } from "../../api/Service";
+import { useEffect, useState } from "react";
+import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
 
 const CourseListing = () => {
     const courses: Course[] = [
@@ -14,6 +17,24 @@ const CourseListing = () => {
         { id: 3, title: "Crypto Fundamentals", enrollments: "2.7K", rating: 4.5, image: "thumb7.jpg" },
         { id: 4, title: "Options Trading Mastery", enrollments: "6.1K", rating: 5, image: "thumb8.jpg" },
       ];
+         const [course, setCourses] = useState<Course[]>([]);
+      
+          const fetchCourses = async () => {
+              try {
+                  const response = await api.get(`${API_ENDPOINTS?.courses}`);
+                  if (response?.status) {
+                      const data = response?.data?.data?.data;
+                      setCourses(data)
+                  }
+              } catch (error) {
+                  console.log("Failed to fetch news",error);
+              }
+          };
+          console.log('course',course)
+          useEffect(() => {
+              fetchCourses()
+          }, []);
+
     return (
         <div className="course-listing-page">
             <Container>
@@ -33,7 +54,7 @@ const CourseListing = () => {
                 </div>
 
                   <Grid container spacing={3}>
-                        {courses.map((course) => (
+                        {course?.map((course) => (
                           <Grid size={{ lg: 3, md: 4, sm: 6 }} key={course.id}>
                             <ProductCard course={course} />
                           </Grid>

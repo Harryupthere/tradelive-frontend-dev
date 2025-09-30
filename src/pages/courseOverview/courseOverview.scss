@@ -1,0 +1,85 @@
+.course-overview {
+    .course-content {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        justify-content: center;
+        height: 100%;
+        .title {
+            font-weight: 700;
+            font-size: 50px;
+            line-height: 60px;
+            display: flex;
+            align-items: center;
+            color: var(--fc-primary);
+            margin-top: 15px;
+        }
+
+        p {
+            font-weight: 400;
+            font-size: 22px;
+            line-height: 40px;
+            color: var(--fc-black2);
+        }
+
+        .rating-align {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            cursor: pointer;
+            margin-left: 0;
+
+            .total-enroll {
+                font-weight: 600;
+            }
+
+            .rating {
+                display: flex;
+                align-items: center;
+
+                span {
+                    font-weight: 600;
+                }
+            }
+        }
+
+        .gradient-btn {
+            width: max-content;
+            min-width: 300px;
+        }
+    }
+
+    .course-image {
+        position: relative;
+        img {
+            border-radius: 10px;
+        }
+
+        .play-btn {
+            z-index: 10;
+            border: none;
+            display: block;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: absolute;
+            background-color: var(--bg-green-gradient);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            top: 50%;
+            left: 50%;
+            svg {
+                z-index: 2;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+    }
+    .description-section{
+        line-height: 25px;
+    }
+}

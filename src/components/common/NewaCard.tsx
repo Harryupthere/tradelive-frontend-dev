@@ -1,10 +1,11 @@
-import image from "../../utils/helpers";
+import { useNavigate } from "react-router-dom";
+import { formatDate } from "../../utils/customFn";
 
 export interface News {
   id: number;
   title: string;
-  date: string;
-  image: string;
+  updated_at: string;
+  cover_image: string;
 }
 
 interface NewsCardProps {
@@ -12,10 +13,12 @@ interface NewsCardProps {
 }
 
 const NewsCards: React.FC<NewsCardProps> = ({ news }) => {
+
+  const navigate = useNavigate()
   return (
-    <div className="course-card">
+    <div className="course-card" onClick={() => navigate(`/news-detail/${news.id}`)}>
       <div className="course-card-img">
-        <img src={image[news.image]} alt={news.title} />
+        <img src={news.cover_image} alt={news.title} />
       </div>
       <div className="card-content">
         <h3 className="title">{news.title}</h3>
@@ -26,7 +29,7 @@ const NewsCards: React.FC<NewsCardProps> = ({ news }) => {
           <div className="rating">
             <span>Date</span>
           </div>
-          <div className="total-enroll">{news.date}</div>
+          <div className="total-enroll">{formatDate(news.updated_at)}</div>
         </div>
         <button type="button" className="border-btn">
           View Full News

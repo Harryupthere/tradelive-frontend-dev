@@ -3,6 +3,52 @@ import { NavigateFunction } from "react-router-dom";
 import { getToken } from "./tokenUtils";
 import { AxiosRequestConfig } from "axios";
 
+export const toastOptions = {
+    style: {
+        padding: "10px 16px",
+        color: "#ffffff",
+        fontSize: "14px",
+        fontWeight: "600",
+        borderRadius: "8px",
+        boxShadow: "0 2px 10px rgba(22, 163, 74, 0.3)",
+    },
+    success: {
+        style: {
+            background: "#22c55e",
+            color: "#fff",
+        },
+    },
+    error: {
+        style: {
+            background: "#ff0101",
+            color: "#fff",
+        },
+    },
+};
+export const formatDate = (
+  dateString: string | Date | null | undefined,
+  format: "DD/MM/YYYY" | "MM/DD/YYYY" | "YYYY-MM-DD" = "DD/MM/YYYY"
+): string => {
+  if (!dateString) return "";
+
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "";
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+
+  switch (format) {
+    case "MM/DD/YYYY":
+      return `${month}/${day}/${year}`;
+    case "YYYY-MM-DD":
+      return `${year}-${month}-${day}`;
+    case "DD/MM/YYYY":
+    default:
+      return `${day}/${month}/${year}`;
+  }
+};
+
 export const errorMsg = (message?: string): string | undefined => {
   const msg = message || "Something went wrong";
   toast.error(msg, { id: "error-toast" });
