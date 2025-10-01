@@ -19,7 +19,7 @@ const mockCourses: Course[] = [
 
 const CoursesPage: React.FC = () => {
 
-  const token=`eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiaGFyc2guY2hvdWhhbjAxMEBnbWFpbC5jb20iLCJzdWJfaWQiOiIxIiwidHlwZSI6ImxvZ2luIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NTkyNDkyMDUsImV4cCI6MTc1OTI1MjgwNX0._DxzvplUZYfNfkW2sanrKWYXbm9X0hNoBk5C8uYIKWw`
+  const token=`eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiaGFyc2guY2hvdWhhbjAxMEBnbWFpbC5jb20iLCJzdWJfaWQiOiIxIiwidHlwZSI6ImxvZ2luIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NTkzMjk3MTYsImV4cCI6MTc1OTMzMzMxNn0.KHGGkorv0EMmgNfUKOshTjMCVcRS_ajuNU-RwrNTrGY`
 
   const navigete=useNavigate()
   const [searchTerm, setSearchTerm] = useState("");

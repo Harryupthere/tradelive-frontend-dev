@@ -1,0 +1,158 @@
+@use "./../../assets/scss/mixin.scss" as *;
+
+* {
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+  font-family: "Gilroy" !important;
+  font-weight: 400;
+}
+
+body {
+  font-family: "Gilroy" !important;
+  font-weight: 500;
+  background-color: #242424;
+  color: var(--fc-primary);
+}
+
+@font-face {
+  font-family: "Gilroy";
+  src: url("../fonts/gilroy/Gilroy-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Gilroy";
+  src: url("../fonts/gilroy/Gilroy-Medium.ttf") format("truetype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Gilroy";
+  src: url("../fonts/gilroy/Gilroy-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+}
+@font-face {
+  font-family: "Gilroy";
+  src: url("../fonts/gilroy/Gilroy-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+@font-face {
+  font-family: "Gilroy";
+  src: url("../fonts/gilroy/Gilroy-ExtraBold.ttf") format("truetype");
+  font-weight: 800;
+}
+
+.section-header {
+  position: relative;
+  display: flex;
+}
+
+.gradient-title {
+  margin-bottom: 30px;
+
+  h2 {
+    font-size: 60px;
+    margin: 0;
+    line-height: 55px;
+    // background: linear-gradient(270.03deg, #2bcb88 45.39%, #0dac91 58.38%, #26b8b5 72.39%, #007a78 88.38%);
+    // -webkit-background-clip: text;
+    // -webkit-text-fill-color: transparent;
+    // background-clip: text;
+    font-weight: 700;
+  }
+
+  p {
+    color: var(--fc-primary);
+    font-size: 28px;
+    margin: 15px 0 0;
+    font-weight: 600;
+  }
+}
+
+button[type='button'] {
+  cursor: pointer;
+}
+
+//common container style
+.container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 12px;
+  height: 100%;
+
+  @include responsive(xl) {
+    max-width: 1140px;
+  }
+
+  @include responsive(lg) {
+    max-width: 960px;
+  }
+
+  @include responsive(md) {
+    max-width: 720px;
+  }
+
+  @include responsive(sm) {
+    max-width: 540px;
+  }
+
+  @include responsive(xs) {
+    max-width: 100%;
+  }
+}
+.content-outlet{
+  padding: 40px 0 ;
+}
+img {
+  width: 100%;
+}
+
+.MuiContainer-root {
+  max-width: 90% !important;
+  margin: auto;
+}
+
+section {
+  padding: 60px 0;
+}
+
+.gradient-btn {
+  @include button(16px, #000, var(--bg-green-gradient), 12px, 10px, var(--bg-green), 500);
+  transition: color .3s;
+  border: none;
+
+  &:hover {
+    background: var(--bg-green-gradient-reverse);
+  }
+}
+.border-btn {
+  @include button(16px, #fff, var(--bg-card3), 12px, 10px, var(--bg-green-gradient), 500);
+  transition: color .3s;
+  border: 1px solid var(--bg-green-gradient);
+  &:hover {
+    background: var(--bg-green-gradient-reverse);
+    color: #000;
+  }
+}
+
+.blurs_wrapper {
+  z-index: -1;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  position: absolute;
+  inset: 0%;
+  overflow: visible;
+
+  .blurs_object {
+    aspect-ratio: 1;
+    border-radius:50%;
+    filter: blur(80px);
+    height: 100%;
+    background-color: #d5ff2e;
+    height: 150px;
+    width: 150px;
+  }
+
+}
