@@ -4,6 +4,8 @@ import "./NewsDetailPage.scss";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+const apiUrl = import.meta.env.VITE_API_URL;
+const base = import.meta.env.VITE_BASE;
 
 interface NewsDetails {
   id: number;
@@ -56,7 +58,7 @@ const mockCourseDetail: NewsDetails = {
 };
 
 const NewsDetailPage: React.FC = () => {
-  const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiaGFyc2guY2hvdWhhbjAxMEBnbWFpbC5jb20iLCJzdWJfaWQiOiIxIiwidHlwZSI6ImxvZ2luIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NTg2NDA1MjQsImV4cCI6MTc1ODY0NDEyNH0.Nt51DcHGJ6N_Ufn00VMx7SovQfZIDtYMSKhoMrnoxTQ`;
+  const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiaGFyc2guY2hvdWhhbjAxMEBnbWFpbC5jb20iLCJzdWJfaWQiOiIxIiwidHlwZSI6ImxvZ2luIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NTkyNDkyMDUsImV4cCI6MTc1OTI1MjgwNX0._DxzvplUZYfNfkW2sanrKWYXbm9X0hNoBk5C8uYIKWw`;
 
   const navigate=useNavigate()
 
@@ -70,7 +72,7 @@ const NewsDetailPage: React.FC = () => {
     const fetchCourses = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`http://localhost:5003/news/${id}`, {
+        const res = await axios.get(`${apiUrl}news/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`, // 👈 add bearer token
           },
@@ -101,7 +103,7 @@ const NewsDetailPage: React.FC = () => {
       {news && (
         <div className="news-detail__container">
           {/* Back Button */}
-          <button onClick={()=>navigate(`/news`)} className="news-detail__back-btn">
+          <button onClick={()=>navigate(`${base}news`)} className="news-detail__back-btn">
             <ArrowLeft size={20} />
             Back to News
           </button>

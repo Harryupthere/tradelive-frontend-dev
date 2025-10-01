@@ -4,6 +4,9 @@ import "./CourseDetailPage.scss";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+const base = import.meta.env.VITE_BASE;
+const apiUrl = import.meta.env.VITE_API_URL;
+
 
 interface CourseDetail {
   id: number;
@@ -60,7 +63,7 @@ const mockCourseDetail: CourseDetail = {
 };
 
 const CourseDetailPage: React.FC = () => {
-  const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiaGFyc2guY2hvdWhhbjAxMEBnbWFpbC5jb20iLCJzdWJfaWQiOiIxIiwidHlwZSI6ImxvZ2luIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NTg2NDA1MjQsImV4cCI6MTc1ODY0NDEyNH0.Nt51DcHGJ6N_Ufn00VMx7SovQfZIDtYMSKhoMrnoxTQ`;
+  const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiaGFyc2guY2hvdWhhbjAxMEBnbWFpbC5jb20iLCJzdWJfaWQiOiIxIiwidHlwZSI6ImxvZ2luIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NTkyNDkyMDUsImV4cCI6MTc1OTI1MjgwNX0._DxzvplUZYfNfkW2sanrKWYXbm9X0hNoBk5C8uYIKWw`;
 
   const navigate=useNavigate()
 
@@ -73,7 +76,7 @@ const CourseDetailPage: React.FC = () => {
     const fetchCourses = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`http://localhost:5003/products/${id}`, {
+        const res = await axios.get(`${apiUrl}products/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`, // 👈 add bearer token
           },
@@ -93,11 +96,11 @@ const CourseDetailPage: React.FC = () => {
      e.preventDefault();
 
   if (enrollerd) {
-    navigate(`/course/${id}`);
+    navigate(`${base}course/${id}`);
   } else {
     try {
       const res= await axios.post(
-        "http://localhost:5003/enrollments",
+        "${apiUrl}enrollments",
         {
           product_id: parseInt(id, 10), // ✅ send product_id in body
         },
@@ -128,7 +131,7 @@ const CourseDetailPage: React.FC = () => {
       {course && (
         <div className="course-detail__container">
           {/* Back Button */}
-          <button onClick={()=>navigate(`/`)} className="course-detail__back-btn">
+          <button onClick={()=>navigate(`${base}`)} className="course-detail__back-btn">
             <ArrowLeft size={20} />
             Back to Courses
           </button>

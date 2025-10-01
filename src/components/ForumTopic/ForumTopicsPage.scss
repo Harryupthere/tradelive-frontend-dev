@@ -1,0 +1,568 @@
+// Import variables from ForumPage (you might want to create a shared variables file)
+$color-black: #000;
+$color-white: #fff;
+$color-accent: #d5ff2e;
+$color-gray-light: #333;
+$color-gray-medium: #666;
+$color-gray-dark: #999;
+
+// Breakpoints
+$breakpoint-mobile: 768px;
+$breakpoint-tablet: 1024px;
+
+// Mixins
+@mixin transition($property: all, $duration: 0.3s, $timing: ease) {
+  transition: $property $duration $timing;
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin card-shadow {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+@mixin hover-lift {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+// Base styles
+.forum-topics-page {
+  min-height: 100vh;
+  background: $color-black;
+  color: $color-white;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  line-height: 1.6;
+
+  &__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+
+    @media (max-width: $breakpoint-mobile) {
+      padding: 1rem;
+    }
+  }
+
+  &__loading {
+    @include flex-center;
+    flex-direction: column;
+    padding: 4rem 2rem;
+    text-align: center;
+
+    p {
+      margin-top: 1rem;
+      color: $color-gray-dark;
+      font-size: 1.125rem;
+    }
+  }
+
+  &__loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid $color-gray-light;
+    border-top: 3px solid $color-accent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  &__empty {
+    @include flex-center;
+    flex-direction: column;
+    padding: 4rem 2rem;
+    text-align: center;
+
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: $color-gray-dark;
+    }
+
+    p {
+      color: $color-gray-medium;
+      font-size: 1rem;
+    }
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Header Section
+.forum-topics-page__header {
+  margin-bottom: 2rem;
+  
+  @media (max-width: $breakpoint-mobile) {
+    margin-bottom: 1.5rem;
+  }
+}
+
+.forum-topics-page__breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+
+  &-item {
+    color: $color-accent;
+    background: none;
+    border: none;
+    cursor: pointer;
+    @include transition;
+
+    &:hover {
+      color: darken($color-accent, 10%);
+    }
+  }
+
+  &-separator {
+    color: $color-gray-medium;
+  }
+
+  &-current {
+    color: $color-gray-dark;
+  }
+}
+
+.forum-topics-page__title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: $color-white;
+  letter-spacing: -0.02em;
+
+  @media (max-width: $breakpoint-mobile) {
+    font-size: 2rem;
+  }
+}
+
+// Search Section
+.forum-topics-page__search {
+  @include flex-center;
+  margin-bottom: 2rem;
+
+  &-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    max-width: 600px;
+    width: 100%;
+    background: $color-gray-light;
+    border-radius: 50px;
+    overflow: hidden;
+    @include card-shadow;
+
+    @media (max-width: $breakpoint-mobile) {
+      max-width: 100%;
+    }
+  }
+
+  &-icon {
+    position: absolute;
+    left: 1rem;
+    color: $color-gray-dark;
+    z-index: 1;
+  }
+
+  &-input {
+    flex: 1;
+    padding: 1rem 1rem 1rem 2.75rem;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: $color-white;
+    font-size: 1rem;
+
+    &::placeholder {
+      color: $color-gray-dark;
+    }
+  }
+
+  &-btn {
+    padding: 1rem 1.5rem;
+    background: $color-accent;
+    color: $color-black;
+    border: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    @include transition;
+
+    &:hover {
+      background: darken($color-accent, 10%);
+      transform: scale(1.02);
+    }
+
+    @media (max-width: $breakpoint-mobile) {
+      padding: 1rem;
+      font-size: 0.8rem;
+    }
+  }
+}
+
+// Main Content
+.forum-topics-page__main {
+  margin-bottom: 2rem;
+}
+
+// Categories Layout
+.forum-topics-page__categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+
+  @media (max-width: $breakpoint-mobile) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+.forum-category-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: $color-gray-light;
+  border-radius: 12px;
+  cursor: pointer;
+  @include card-shadow;
+  @include transition;
+
+  &:hover {
+    @include hover-lift;
+    background: lighten($color-gray-light, 3%);
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  &__icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: rgba($color-white, 0.1);
+    @include flex-center;
+
+    img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+
+    @media (max-width: $breakpoint-mobile) {
+      width: 48px;
+      height: 48px;
+
+      img {
+        width: 32px;
+        height: 32px;
+      }
+    }
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    color: $color-white;
+
+    @media (max-width: $breakpoint-mobile) {
+      font-size: 1.125rem;
+    }
+  }
+
+  &__description {
+    font-size: 0.875rem;
+    color: $color-gray-dark;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.4;
+  }
+
+  &__meta {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  &__id {
+    font-size: 0.75rem;
+    color: $color-gray-medium;
+    background: rgba($color-white, 0.05);
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+  }
+
+  &__actions {
+    color: $color-accent;
+    @include transition;
+
+    .forum-category-card:hover & {
+      transform: scale(1.1);
+    }
+  }
+}
+
+// Threads Layout
+.forum-topics-page__threads {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  @media (max-width: $breakpoint-mobile) {
+    gap: 1rem;
+  }
+}
+
+.thread-card {
+  background: $color-gray-light;
+  border-radius: 12px;
+  overflow: hidden;
+  @include card-shadow;
+  @include transition;
+
+  &:hover {
+    @include hover-lift;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 1.5rem 0 1.5rem;
+
+    @media (max-width: $breakpoint-mobile) {
+      padding: 1rem 1rem 0 1rem;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+  }
+
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba($color-white, 0.1);
+    @include flex-center;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    svg {
+      color: $color-gray-medium;
+    }
+
+    @media (max-width: $breakpoint-mobile) {
+      width: 32px;
+      height: 32px;
+    }
+  }
+
+  &__user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  &__username {
+    font-weight: 600;
+    color: $color-white;
+    font-size: 0.875rem;
+  }
+
+  &__timestamp {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    color: $color-gray-medium;
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.5rem;
+
+    @media (max-width: $breakpoint-mobile) {
+      align-self: flex-end;
+    }
+  }
+
+  &__action {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba($color-accent, 0.1);
+    color: $color-accent;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    @include transition;
+
+    &:hover {
+      background: rgba($color-accent, 0.2);
+      transform: scale(1.02);
+    }
+  }
+
+  &__quote {
+    margin: 1rem 1.5rem 0 1.5rem;
+    padding: 0.75rem;
+    background: rgba($color-white, 0.03);
+    border-left: 3px solid $color-accent;
+    border-radius: 6px;
+
+    @media (max-width: $breakpoint-mobile) {
+      margin: 1rem 1rem 0 1rem;
+    }
+
+    &-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      color: $color-gray-medium;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    &-message {
+      font-size: 0.875rem;
+      color: $color-gray-dark;
+      margin: 0;
+      line-height: 1.4;
+    }
+  }
+
+  &__content {
+    padding: 1rem 1.5rem;
+
+    @media (max-width: $breakpoint-mobile) {
+      padding: 1rem;
+    }
+  }
+
+  &__message {
+    font-size: 1rem;
+    color: $color-white;
+    margin: 0 0 1rem 0;
+    line-height: 1.6;
+  }
+
+  &__images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  &__image {
+    width: 80px;
+    height: 80px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: rgba($color-white, 0.05);
+    @include flex-center;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem 1.5rem 1.5rem;
+    border-top: 1px solid rgba($color-white, 0.1);
+    margin-top: 1rem;
+
+    @media (max-width: $breakpoint-mobile) {
+      padding: 0 1rem 1rem 1rem;
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+  }
+
+  &__like-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: none;
+    color: $color-gray-medium;
+    cursor: pointer;
+    font-size: 0.875rem;
+    @include transition;
+
+    &:hover {
+      color: $color-accent;
+    }
+
+    svg {
+      @include transition;
+    }
+
+    &:hover svg {
+      transform: scale(1.1);
+    }
+  }
+
+  &__thread-type {
+    font-size: 0.75rem;
+    color: $color-gray-dark;
+    background: rgba($color-white, 0.05);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: $breakpoint-mobile) {
+  .forum-topics-page {
+    &__container {
+      padding: 1rem 0.5rem;
+    }
+  }
+
+  .thread-card {
+    &__header {
+      align-items: flex-start;
+    }
+  }
+}

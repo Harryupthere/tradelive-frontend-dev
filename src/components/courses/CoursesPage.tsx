@@ -3,6 +3,8 @@ import { Search } from "lucide-react";
 import "./CoursesPage.scss";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+const base = import.meta.env.VITE_BASE;
+const apiUrl = import.meta.env.VITE_API_URL;
 
 interface Course {
   id: number;
@@ -17,7 +19,7 @@ const mockCourses: Course[] = [
 
 const CoursesPage: React.FC = () => {
 
-  const token=`eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiaGFyc2guY2hvdWhhbjAxMEBnbWFpbC5jb20iLCJzdWJfaWQiOiIxIiwidHlwZSI6ImxvZ2luIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NTg2NDA1MjQsImV4cCI6MTc1ODY0NDEyNH0.Nt51DcHGJ6N_Ufn00VMx7SovQfZIDtYMSKhoMrnoxTQ`
+  const token=`eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiaGFyc2guY2hvdWhhbjAxMEBnbWFpbC5jb20iLCJzdWJfaWQiOiIxIiwidHlwZSI6ImxvZ2luIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NTkyNDkyMDUsImV4cCI6MTc1OTI1MjgwNX0._DxzvplUZYfNfkW2sanrKWYXbm9X0hNoBk5C8uYIKWw`
 
   const navigete=useNavigate()
   const [searchTerm, setSearchTerm] = useState("");
@@ -31,7 +33,7 @@ const CoursesPage: React.FC = () => {
     const fetchCourses = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`http://localhost:5003/products?status=&page=${currentPage}&limit=${coursesPerPage}`,{ headers: {
+        const res = await axios.get(`${apiUrl}products?status=&page=${currentPage}&limit=${coursesPerPage}`,{ headers: {
         Authorization: `Bearer ${token}`, // 👈 add bearer token
       }},);
 
@@ -182,7 +184,7 @@ const CoursesPage: React.FC = () => {
           {courses.length > 0 ? (
             <div className="courses-grid">
               {courses.map((course) => (
-                <div key={course.id} className="course-card" onClick={()=>navigete(`course-detail/${course.id}`)}>
+                <div key={course.id} className="course-card" onClick={()=>navigete(`${base}course-detail/${course.id}`)}>
                   <div className="course-card__image-wrapper">
                     <img
                       src={course.image}

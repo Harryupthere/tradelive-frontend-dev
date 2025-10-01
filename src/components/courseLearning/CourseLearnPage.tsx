@@ -4,6 +4,9 @@ import "./CourseLearnPage.scss";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+const base = import.meta.env.VITE_BASE;
+const apiUrl = import.meta.env.VITE_API_URL;
+
 interface VideoContent {
   heading: string;
   subheading: string;
@@ -81,7 +84,7 @@ const mockCourseData: CourseData = {
 };
 
 const CourseLearnPage: React.FC = () => {
-  const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiaGFyc2guY2hvdWhhbjAxMEBnbWFpbC5jb20iLCJzdWJfaWQiOiIxIiwidHlwZSI6ImxvZ2luIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NTg2NDA1MjQsImV4cCI6MTc1ODY0NDEyNH0.Nt51DcHGJ6N_Ufn00VMx7SovQfZIDtYMSKhoMrnoxTQ`;
+  const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiaGFyc2guY2hvdWhhbjAxMEBnbWFpbC5jb20iLCJzdWJfaWQiOiIxIiwidHlwZSI6ImxvZ2luIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NTkyNDkyMDUsImV4cCI6MTc1OTI1MjgwNX0._DxzvplUZYfNfkW2sanrKWYXbm9X0hNoBk5C8uYIKWw`;
   const { id } = useParams<{ id: string }>(); // 👈 get id from URL
 
   const navigate = useNavigate();
@@ -101,7 +104,7 @@ const CourseLearnPage: React.FC = () => {
 
   const callApi = async () => {
     try {
-      let res = await axios.get(`http://localhost:5003/courses/${id}`, {
+      let res = await axios.get(`${apiUrl}courses/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`, // 👈 add bearer token
         },
