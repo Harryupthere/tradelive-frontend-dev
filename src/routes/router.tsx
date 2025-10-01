@@ -27,7 +27,7 @@ const Router = () => {
         { path: `${base}news-detail/:id`, element: <NewsDetailPage /> },
         { path: `${base}course-overview/:id`, element: <CourseOverview /> },
         { path: `${base}course/detail/:id`, element: <CourseDetail /> },
-        { path: `${base}coursesss`, element: <CoursesPage /> },
+        // { path: `${base}coursesss`, element: <CoursesPage /> },
         { path: `${base}forum`, element: <ForumPage /> },
 
 
