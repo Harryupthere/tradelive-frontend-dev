@@ -1,0 +1,565 @@
+.course-detail-page {
+  min-height: 100vh;
+  padding: 2rem;
+  position: relative;
+.blurs_wrapper {
+  .blurs_object {
+    height: 300;
+    width: 300px;
+  }
+
+}
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+}
+
+.course-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 2rem;
+  height: calc(100vh - 4rem);
+
+  @media (max-width: 1200px) {
+    grid-template-columns: 1fr 350px;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 968px) {
+    grid-template-columns: 1fr;
+    height: auto;
+    gap: 1rem;
+  }
+}
+
+// Video Section
+.video-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: var(--bg-card3);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: var(--bord-secondary);
+}
+
+.video-player {
+  position: relative;
+  aspect-ratio: 16/9;
+  background: var(--bg-primary);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-primary);
+}
+
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  .main-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+
+  .video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    .play-button {
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 50%;
+      width: 4rem;
+      height: 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: all;
+
+      &:hover {
+        background: var(--white-text);
+        transform: scale(1.1);
+      }
+
+      svg {
+        color: var(--fc-primary-reverse);
+        margin-left: 2px;
+      }
+    }
+  }
+}
+
+.video-placeholder {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+
+  .placeholder-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+    color: var(--white-text);
+    text-align: center;
+    border-radius: 12px;
+
+    svg {
+      margin-bottom: 1rem;
+      opacity: 0.8;
+    }
+
+    p {
+      font-size: 1.125rem;
+      font-weight: 500;
+      margin: 0;
+    }
+  }
+}
+
+.current-lecture-info {
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--fc-primary);
+    margin: 0 0 0.5rem 0;
+    line-height: 1.3;
+  }
+
+  p {
+    color: var(--fc-black2);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0 0 1rem 0;
+  }
+
+  .lecture-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .duration {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--fc-black2);
+      font-size: 0.875rem;
+      font-weight: 500;
+
+      svg {
+        color: var(--fc-input-info);
+      }
+    }
+  }
+}
+
+// Course Sidebar
+.course-sidebar {
+  background: var(--bg-card3);
+  border-radius: 16px;
+  box-shadow: var(--shadow-cards);
+  border: var(--bord-secondary);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 4rem);
+
+  @media (max-width: 968px) {
+    max-height: none;
+  }
+}
+
+.course-header {
+  padding: 1.5rem;
+  border-bottom: var(--bord-secondary);
+
+  h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--fc-primary);
+    margin: 0 0 1rem 0;
+    line-height: 1.4;
+  }
+
+  .course-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+
+    > div {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--fc-black2);
+      font-size: 0.875rem;
+
+      svg {
+        color: var(--fc-input-info);
+        flex-shrink: 0;
+      }
+    }
+
+    .rating {
+      svg {
+        color: var(--primary);
+        fill: currentColor;
+      }
+    }
+  }
+
+  .course-description {
+    color: var(--fc-black2);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+}
+
+.progress-section {
+  padding: 1rem 1.5rem;
+  border-bottom: var(--bord-secondary);
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--fc-primary);
+  }
+
+  .progress-bar {
+    height: 6px;
+    background: var(--bg-chip);
+    border-radius: 3px;
+    overflow: hidden;
+
+    .progress-fill {
+      height: 100%;
+      background: var(--bg-green-gradient);
+      border-radius: 3px;
+      transition: width 0.5s ease;
+    }
+  }
+}
+
+.lectures-section {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--fc-primary);
+    margin: 0;
+    padding: 1rem 1.5rem 0.5rem;
+  }
+
+  .lectures-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 0.5rem 1rem;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: var(--bg-chip);
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--fc-input-info);
+      border-radius: 3px;
+
+      &:hover {
+        background: var(--fc-black2);
+      }
+    }
+  }
+}
+
+.lecture-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  margin: 0.25rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  position: relative;
+
+  &:hover {
+    background: var(--bg-hover-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  &.active {
+    background: var(--bg-tab-sec);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(213, 255, 46, 0.1);
+
+    .lecture-content h4 {
+      color: var(--primary);
+    }
+  }
+
+  &.completed {
+    .lecture-number {
+      background: var(--bg-green);
+      color: var(--white-text);
+    }
+
+    .lecture-content h4 {
+      color: var(--bg-green);
+    }
+  }
+
+  &.locked {
+    opacity: 0.6;
+    cursor: not-allowed;
+
+    &:hover {
+      background: transparent;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .lecture-number {
+      background: var(--bg-chip);
+      color: var(--fc-disabletext);
+    }
+  }
+
+  .lecture-number {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: var(--bg-chip);
+    color: var(--fc-black2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+  }
+
+  .lecture-content {
+    flex: 1;
+    min-width: 0;
+
+    h4 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--fc-primary);
+      margin: 0 0 0.25rem 0;
+      line-height: 1.4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .lecture-duration {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      color: var(--fc-black2);
+      font-size: 0.75rem;
+
+      svg {
+        width: 0.875rem;
+        height: 0.875rem;
+      }
+    }
+  }
+
+  .lecture-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .now-playing {
+      .playing-indicator {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+
+        span {
+          width: 3px;
+          height: 12px;
+          background: var(--primary);
+          border-radius: 1px;
+          animation: playing 1.2s ease-in-out infinite;
+
+          &:nth-child(1) { animation-delay: 0s; }
+          &:nth-child(2) { animation-delay: 0.2s; }
+          &:nth-child(3) { animation-delay: 0.4s; }
+        }
+      }
+    }
+
+    .play-btn {
+      background: none;
+      border: none;
+      color: var(--fc-input-info);
+      cursor: pointer;
+      padding: 0.25rem;
+      border-radius: 0.25rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      &:hover {
+        color: var(--primary);
+        background: rgba(213, 255, 46, 0.1);
+      }
+
+      svg {
+        width: 1rem;
+        height: 1rem;
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes playing {
+  0%, 40%, 100% {
+    transform: scaleY(0.4);
+  }
+  20% {
+    transform: scaleY(1);
+  }
+}
+
+// Responsive Design
+@media (max-width: 968px) {
+  .course-container {
+    grid-template-columns: 1fr;
+  }
+
+  .video-section {
+    order: 1;
+  }
+
+  .course-sidebar {
+    order: 2;
+    max-height: 600px;
+  }
+}
+
+@media (max-width: 640px) {
+  .course-detail-page {
+    padding: 1rem 0.5rem;
+  }
+
+  .video-section {
+    padding: 1rem;
+  }
+
+  .course-header {
+    padding: 1rem;
+
+    h1 {
+      font-size: 1.125rem;
+    }
+  }
+
+  .lecture-item {
+    padding: 0.75rem;
+    gap: 0.75rem;
+
+    .lecture-number {
+      width: 2rem;
+      height: 2rem;
+      font-size: 0.75rem;
+    }
+
+    .lecture-content h4 {
+      font-size: 0.8125rem;
+    }
+  }
+}
+
+// Enhanced hover effects
+.lecture-item {
+  &:not(.locked):not(.active):hover {
+    .lecture-number {
+      background: var(--primary);
+      color: var(--bg-primary);
+      transform: scale(1.05);
+    }
+
+    .play-btn {
+      color: var(--primary);
+      background: rgba(213, 255, 46, 0.1);
+    }
+  }
+}
+
+// Loading states
+.video-loading {
+  .video-player {
+    background: linear-gradient(90deg, var(--bg-chip) 25%, var(--bg-hover-primary) 50%, var(--bg-chip) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}

@@ -8,10 +8,13 @@ import { PrivateRoute } from "./authRoute";
 import NewsListing from "../pages/newsListing";
 import CourseOverview from "../pages/courseOverview";
 import NewsDetailPage from "../components/newsDetail/NewsDetailPage";
+import Login from "../pages/login";
+import CourseDetail from "../pages/courseDetail";
 
 
 const Router = () => {
   const router = createBrowserRouter([
+    { path: "/login", element: <Login /> },
     {
       element: <Layout />,
       children: [
@@ -20,6 +23,8 @@ const Router = () => {
         { path: "/news", element: <NewsListing /> },
         { path: "/news-detail/:id", element: <NewsDetailPage /> },
         { path: "/course-overview/:id", element: <CourseOverview /> },
+        { path: "/course/detail", element: <CourseDetail /> },
+
       ],
     },
     {
