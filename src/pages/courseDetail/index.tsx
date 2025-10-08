@@ -492,10 +492,10 @@ const CourseDetail: React.FC = () => {
           {/* Progress Bar */}
           <div className="progress-section">
             <div className="progress-header">
-              {/* <span>Course Progress</span>
+              <span>Course Progress</span>
               <span>
                 {completedLectures}/{courseData.lectures.length} completed
-              </span> */}
+              </span>
             </div>
             <div className="progress-bar">
               <div

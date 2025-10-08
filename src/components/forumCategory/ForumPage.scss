@@ -3,7 +3,7 @@ $color-black: #000;
 $color-white: #fff;
 $color-accent: #d5ff2e;
 $color-gray-light: #333;
-$color-gray-medium: #666;
+$color-gray-medium: var(--btn-grey);
 $color-gray-dark: #999;
 
 // Breakpoints
@@ -32,8 +32,8 @@ $breakpoint-tablet: 1024px;
 
 // Base styles
 .forum-page {
+  position: relative;
   min-height: 100vh;
-  background: $color-black;
   color: $color-white;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   line-height: 1.6;
@@ -96,9 +96,9 @@ $breakpoint-tablet: 1024px;
 
 // Banner Section
 .forum-page__banner {
+  position: relative;
   text-align: center;
   padding: 3rem 2rem;
-  background: linear-gradient(135deg, $color-gray-light 0%, darken($color-gray-light, 10%) 100%);
   border-radius: 12px;
   margin-bottom: 2rem;
   @include card-shadow;
@@ -111,9 +111,10 @@ $breakpoint-tablet: 1024px;
   &-title {
     font-size: 2.5rem;
     font-weight: 700;
-    margin-bottom: 1rem;
+    margin-bottom: 0;
     letter-spacing: -0.02em;
     color: $color-white;
+    text-align: center;
 
     @media (max-width: $breakpoint-mobile) {
       font-size: 2rem;
@@ -135,7 +136,9 @@ $breakpoint-tablet: 1024px;
 // Search Section
 .forum-page__search {
   @include flex-center;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
+  padding: 30px 0 ;
+  position: relative;
 
   &-wrapper {
     position: relative;
@@ -209,7 +212,7 @@ $breakpoint-tablet: 1024px;
 
 // Forum Category
 .forum-category {
-  background: $color-gray-light;
+  background: var(--bg-card3);
   border-radius: 12px;
   overflow: hidden;
   @include card-shadow;

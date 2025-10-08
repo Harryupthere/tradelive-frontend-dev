@@ -31,7 +31,7 @@ interface ForumCategory {
 }
 
 const ForumPage: React.FC = () => {
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const [forumData, setForumData] = useState<ForumCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -41,24 +41,24 @@ const navigate = useNavigate();
     // Simulate API call
     const fetchForumData = async () => {
       setLoading(true);
-    //   // Simulate network delay
-    //   await new Promise(resolve => setTimeout(resolve, 1000));
+      //   // Simulate network delay
+      //   await new Promise(resolve => setTimeout(resolve, 1000));
 
       try {
-      let res = await axios.get(`${apiUrl}forum-category-types`, {
-        // headers: {
-        //   Authorization: `Bearer ${token}`, // 👈 add bearer token
-        // },
-      });
-    console.log(res.data.data.data.data)
+        let res = await axios.get(`${apiUrl}forum-category-types`, {
+          // headers: {
+          //   Authorization: `Bearer ${token}`, // 👈 add bearer token
+          // },
+        });
+        console.log(res.data.data.data.data)
 
-    //   setForumData(mockForumData);
-      setForumData(res.data.data.data.data);
+        //   setForumData(mockForumData);
+        setForumData(res.data.data.data.data);
 
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
 
 
     };
@@ -130,16 +130,9 @@ const navigate = useNavigate();
   return (
     <div className="forum-page">
       <div className="forum-page__container">
-        {/* Banner Section */}
-        <section className="forum-page__banner">
-          <h1 className="forum-page__banner-title">Community Forum</h1>
-          <p className="forum-page__banner-description">
-            Join our vibrant community to discuss, share knowledge, and get help from fellow members
-          </p>
-        </section>
-
+        <h1 className="forum-page__banner-title">Community Forum</h1>
         {/* Search Bar */}
-        <section className="forum-page__search">
+        <div className="forum-page__search">
           <div className="forum-page__search-wrapper">
             <Search className="forum-page__search-icon" size={20} />
             <input
@@ -151,7 +144,9 @@ const navigate = useNavigate();
             />
             <button className="forum-page__search-btn">Search</button>
           </div>
-        </section>
+            <div className="blurs_wrapper"><div className="blurs_object is-fluo"></div></div>
+
+        </div>
 
         {/* Forum Categories */}
         <main className="forum-page__main">
@@ -176,11 +171,11 @@ const navigate = useNavigate();
                         </div>
                         <p className="forum-category__description">{category.description}</p>
                         <div className="forum-category__meta">
-                            {/* {console.log(category.createdBy)} */}
+                          {/* {console.log(category.createdBy)} */}
                           {/* {category.createdBy && ( */}
-                            <span className="forum-category__created-by">
-                              Created by: <strong>{category.createdBy?category.createdBy.name:"Unknown"}</strong>
-                            </span>
+                          <span className="forum-category__created-by">
+                            Created by: <strong>{category.createdBy ? category.createdBy.name : "Unknown"}</strong>
+                          </span>
                           {/* )} */}
                           {category.createdAt && (
                             <span className="forum-category__created-at">
@@ -205,9 +200,8 @@ const navigate = useNavigate();
                   </div>
 
                   <div
-                    className={`forum-category__content ${
-                      expandedCategories.has(category.id) ? 'forum-category__content--expanded' : ''
-                    }`}
+                    className={`forum-category__content ${expandedCategories.has(category.id) ? 'forum-category__content--expanded' : ''
+                      }`}
                   >
                     <div className="forum-category__subcategories">
                       {category.forumCategories.map(subCategory => (
@@ -246,9 +240,9 @@ const navigate = useNavigate();
                             )}
                             <div className="forum-subcategory__meta">
                               {/* {subCategory.createdBy && ( */}
-                                <span className="forum-subcategory__created-by">
-                                  By: <strong>{subCategory.createdBy?subCategory.createdBy.name:"Unknown"}</strong>
-                                </span>
+                              <span className="forum-subcategory__created-by">
+                                By: <strong>{subCategory.createdBy ? subCategory.createdBy.name : "Unknown"}</strong>
+                              </span>
                               {/* )} */}
                               {subCategory.createdAt && (
                                 <span className="forum-subcategory__created-at">
@@ -284,6 +278,7 @@ const navigate = useNavigate();
           )}
         </main>
       </div>
+      <div className="blurs_wrapper"><div className="blurs_object is-fluo"></div></div>
     </div>
   );
 };

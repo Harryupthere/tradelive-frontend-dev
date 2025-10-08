@@ -1,22 +1,26 @@
-import React, { useState, useEffect } from "react";
-import {
-  Search,
-  ChevronRight,
-  MessageSquare,
-  Heart,
-  Reply,
-  User,
-  Calendar,
-  Image as ImageIcon,
-  Quote,
-} from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import {Search,ChevronRight,MessageSquare,Heart,Reply,User,Calendar,Quote,UploadCloud,X, MessageCircle,} from "lucide-react";
 import "./ForumTopicsPage.scss";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import Modal from "react-modal";
+import { Box, IconButton, Modal, Typography } from "@mui/material";
+import image from "../../utils/helpers";
 const base = import.meta.env.VITE_BASE;
 const apiUrl = import.meta.env.VITE_API_URL;
 
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 500,
+  bgcolor: 'background.paper',
+  border: 'none',
+  boxShadow: 24,
+  p: 2,
+  backgroundColor: 'var(--bg-modal)',
+  borderRadius: '8px'
+};
 interface CategoryType {
   id: string;
   name: string;
@@ -60,6 +64,7 @@ interface ForumTopicsData {
 const ForumTopicsPage: React.FC = () => {
   const { forumId } = useParams<{ forumId: string }>();
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [topicsData, setTopicsData] = useState<ForumTopicsData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -67,10 +72,22 @@ const ForumTopicsPage: React.FC = () => {
   const [forumName, setForumName] = useState("");
   // ...existing code...
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [uploading, setUploading] = useState(false);
-  // ...existing code...
+  const [preview, setPreview] = useState<string>('');
 
-  // ...existing code...
+
+  const removeFile = () => {
+    if (preview) {
+      URL.revokeObjectURL(preview);
+    }
+    setSelectedFiles(null);
+    setPreview('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState<
     "reply" | "quote" | "message" | null
@@ -113,9 +130,12 @@ const ForumTopicsPage: React.FC = () => {
 
   // ...existing code...
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setSelectedFiles(Array.from(e.target.files));
-    }
+
+    const selectedFile = e.target.files?.[0];
+    if (!selectedFile) return;
+
+    setSelectedFiles(selectedFile ? [selectedFile] : []);
+    setPreview(URL.createObjectURL(selectedFile));
   };
   // ...existing code...
 
@@ -307,7 +327,8 @@ const ForumTopicsPage: React.FC = () => {
         </header>
 
         {/* Search Bar */}
-        <section className="forum-topics-page__search">
+        <div className="forum-topics-page__search">
+            <div className="blurs_wrapper"><div className="blurs_object is-fluo"></div></div>
           <div className="forum-topics-page__search-wrapper">
             <Search className="forum-topics-page__search-icon" size={20} />
             <input
@@ -323,11 +344,11 @@ const ForumTopicsPage: React.FC = () => {
             />
             <button className="forum-topics-page__search-btn">Search</button>
           </div>
-        </section>
+        </div>
         {topicsData.kind === "threads" && (
           <div className="thread-top__actions">
-            <button className="thread-top__action" onClick={openMessageModal}>
-              <MessageSquare size={18} /> New Message
+            <button className="message-box" onClick={openMessageModal}>
+              <img src={image['chat.png']} alt="message"/>
             </button>
           </div>
         )}
@@ -465,92 +486,110 @@ const ForumTopicsPage: React.FC = () => {
             </div>
           )}
         </main>
+            <div className="blurs_wrapper"><div className="blurs_object is-fluo"></div></div>
       </div>
       <Modal
-        isOpen={modalOpen}
-        onRequestClose={closeModal}
-        ariaHideApp={false}
-        className="forum-modal"
-        overlayClassName="forum-modal-overlay"
-      >
-        <h2>
-          {modalType === "reply" && "Reply to Message"}
-          {modalType === "quote" && "Quote Message"}
-          {modalType === "message" && "New Message"}
-        </h2>
-        {replyToThread && (
-          <div className="forum-modal-quoted">
-            <p>
-              <b>Original:</b> {replyToThread.message}
-            </p>
-          </div>
-        )}
-        <textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Type your message..."
-          rows={5}
-          style={{ width: "100%", marginBottom: 12 }}
-        />
-        {/* File upload input */}
-        <input
-          type="file"
-          multiple
-          accept="image/*,video/*"
-          onChange={handleFileChange}
-          disabled={uploading || sending}
-          style={{ marginBottom: 12 }}
-        />
-        {selectedFiles.length > 0 && (
-          <div style={{ marginBottom: 12 }}>
-            <b>Selected files:</b>
-            <ul>
-              {selectedFiles.map((file, idx) => (
-                <li key={idx}>{file.name}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-        <div style={{ display: "flex", gap: 8 }}>
-          <button onClick={closeModal} disabled={sending}>
-            Cancel
-          </button>
-          <button
-            onClick={async () => {
-              setSending(true);
-              setUploading(true);
-              try {
-                // 1. Upload all files to S3 and collect URLs
-                const imageUrls: string[] = [];
-                for (const file of selectedFiles) {
-                  const url = await uploadFileToS3(file);
-                  if (url) imageUrls.push(url);
-                }
-                setUploading(false);
+        open={modalOpen}
+        onClose={closeModal}
+        className="forum-modal">
+        <Box sx={style}>
+          <h2>
+            {modalType === "reply" && "Reply to Message"}
+            {modalType === "quote" && "Quote Message"}
+            {modalType === "message" && "New Message"}
+          </h2>
+          {replyToThread && (
+            <div className="forum-modal-quoted">
+              <p>
+                <b>Original:</b> {replyToThread.message}
+              </p>
+            </div>
+          )}
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Type your message..."
+            rows={5}
+            style={{ width: "100%", marginBottom: 12 }}
+          />
+          {/* File upload input */}
+          {/* <input
+            type="file"
+            multiple
+            accept="image/*,video/*"
+            onChange={handleFileChange}
+            disabled={uploading || sending}
+            style={{ marginBottom: 12 }}
+          />
 
-                // 2. Send thread/message with image URLs
-                await axios.post(`${apiUrl}threads`, {
-                  forumCategoryId: forumId,
-                  parentThreadId:
-                    modalType === "message" ? null : replyToThread?.id,
-                  images: imageUrls,
-                  threadType: modalType === "message" ? "fresh" : modalType,
-                  message,
-                });
-                closeModal();
-                setSelectedFiles([]);
-                // Optionally, refresh the thread list here
-              } catch (err) {
-                alert("Failed to send message");
-                setUploading(false);
-              }
-              setSending(false);
-            }}
-            disabled={!message.trim() || sending}
-          >
-            Send
-          </button>
-        </div>
+          {selectedFiles.length > 0 && (
+            <div style={{ marginBottom: 12 }}>
+              <b>Selected files:</b>
+              <ul>
+                {selectedFiles.map((file, idx) => (
+                  <li key={idx}>{file.name}</li>
+                ))}
+              </ul>
+            </div>
+          )} */}
+          <Box className="upload-container">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="file-input"
+            />
+
+            {!preview ? (
+              <Box className="upload-box" onClick={handleUploadClick}>
+                <UploadCloud className="upload-icon" />
+                <Typography>Click to upload image</Typography>
+              </Box>
+            ) : (
+              <Box className="preview-container">
+                <img src={preview} alt="Preview" className="preview-image" />
+                <IconButton className="delete-btn" onClick={removeFile}>
+                  <X />
+                </IconButton>
+              </Box>
+            )}
+          </Box>
+          <div style={{ display: "flex", gap: 8, justifyContent: 'flex-end', alignItems: 'center' }}>
+            <button onClick={closeModal} disabled={sending} className="cancel-btn">
+              Cancel
+            </button>
+            <button
+              className="gradient-btn"
+              onClick={async () => {
+                setSending(true);
+                try {
+                  const imageUrls: string[] = [];
+                  for (const file of selectedFiles) {
+                    const url = await uploadFileToS3(file);
+                    if (url) imageUrls.push(url);
+                  }
+                  await axios.post(`${apiUrl}threads`, {
+                    forumCategoryId: forumId,
+                    parentThreadId:
+                      modalType === "message" ? null : replyToThread?.id,
+                    images: imageUrls,
+                    threadType: modalType === "message" ? "fresh" : modalType,
+                    message,
+                  });
+                  closeModal();
+                  setSelectedFiles([]);
+                } catch (err) {
+                  alert("Failed to send message");
+                }
+                setSending(false);
+              }}
+              disabled={!message.trim() || sending}
+            >
+              Send
+            </button>
+          </div>
+        </Box>
       </Modal>
     </div>
   );

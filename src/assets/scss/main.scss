@@ -32,11 +32,13 @@ body {
   src: url("../fonts/gilroy/Gilroy-SemiBold.ttf") format("truetype");
   font-weight: 600;
 }
+
 @font-face {
   font-family: "Gilroy";
   src: url("../fonts/gilroy/Gilroy-Bold.ttf") format("truetype");
   font-weight: 700;
 }
+
 @font-face {
   font-family: "Gilroy";
   src: url("../fonts/gilroy/Gilroy-ExtraBold.ttf") format("truetype");
@@ -101,9 +103,11 @@ button[type='button'] {
     max-width: 100%;
   }
 }
-.content-outlet{
-  padding: 40px 0 ;
+
+.content-outlet {
+  padding: 40px 0;
 }
+
 img {
   width: 100%;
 }
@@ -126,13 +130,26 @@ section {
     background: var(--bg-green-gradient-reverse);
   }
 }
+
 .border-btn {
   @include button(16px, #fff, var(--bg-card3), 12px, 10px, var(--bg-green-gradient), 500);
   transition: color .3s;
   border: 1px solid var(--bg-green-gradient);
+
   &:hover {
     background: var(--bg-green-gradient-reverse);
     color: #000;
+  }
+}
+
+.cancel-btn {
+  @include button(16px, #fff, var(--btn-grey), 12px, 10px, var(--btn-grey), 500);
+  transition: color .3s;
+  border: 1px solid var(--btn-grey);
+
+  &:hover {
+    background: #000;
+    color: #fff;
   }
 }
 
@@ -147,7 +164,7 @@ section {
 
   .blurs_object {
     aspect-ratio: 1;
-    border-radius:50%;
+    border-radius: 50%;
     filter: blur(80px);
     height: 100%;
     background-color: #d5ff2e;
