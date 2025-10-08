@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
 import './header.scss'
 import { Link } from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
+
 const base = import.meta.env.VITE_BASE;
 
 
 const Header = () => {
 
+  const navigate = useNavigate();
   const [isSticky, setIsSticky] = useState(false);
   useEffect(() => {
     const handleScroll = () => {
@@ -27,8 +30,8 @@ const Header = () => {
       <header className={`header-wrapper ${isSticky ? "sticky" : ""}`}>
         <div className='container'>
           <div className='flex-container'>
-            <Link to={'/'} className='brand'>
-              TradeLive
+            <Link to={`${base}`} className='brand'>
+              <img src={`${base}logo1.png`} alt="TradeLive Logo" />
             </Link>
             <ul>
               <li><Link to={`${base}`}>Home</Link></li>
@@ -38,7 +41,7 @@ const Header = () => {
               <li><Link to={'#'}>About Us</Link></li>
             </ul>
             <div className='right-drawer'>
-              <button type='button' className='gradient-btn'>Login</button>
+              <button type='button' className='gradient-btn' onClick={() => navigate(`${base}login`)}>Login</button>
             </div>
           </div>
         </div>

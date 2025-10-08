@@ -29,6 +29,16 @@ $breakpoint-tablet: 1024px;
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 }
+ .thread-top{
+   &__actions {
+    display: flex;
+    gap: 0.5rem;
+
+    @media (max-width: $breakpoint-mobile) {
+      align-self: flex-end;
+    }
+  }
+}
 
 // Base styles
 .forum-topics-page {

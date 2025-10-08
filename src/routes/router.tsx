@@ -12,6 +12,7 @@ import Login from "../pages/login";
 import CourseDetail from "../pages/courseDetail";
 import CoursesPage from "../components/courses/CoursesPage";
 import ForumPage from "../components/forumCategory/ForumPage";
+import ForumTopicsPage from "../components/ForumTopic/ForumTopicsPage";
 const base = import.meta.env.VITE_BASE;
 
 
@@ -29,10 +30,7 @@ const Router = () => {
         { path: `${base}course/detail/:id`, element: <CourseDetail /> },
         // { path: `${base}coursesss`, element: <CoursesPage /> },
         { path: `${base}forum`, element: <ForumPage /> },
-
-
-        
-
+        { path: `${base}forum/:forumId`, element: <ForumTopicsPage /> },
       ],
     },
     {

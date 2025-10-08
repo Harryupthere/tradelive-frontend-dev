@@ -30,119 +30,8 @@ interface ForumCategory {
   forumCategories: ForumSubCategory[];
 }
 
-// Mock data matching your API response
-const mockForumData: ForumCategory[] = [
-  {
-    "id": "1",
-    "name": "Electronics",
-    "description": "This forum category is dedicated to electronic items and their uses",
-    "icon": "https://cdn-icons-png.flaticon.com/512/997/997500.png",
-    "createdBy": "Admin",
-    "createdAt": "2024-01-15T10:30:00Z",
-    "staffCreated": 1,
-    "forumCategories": [
-      {
-        "id": "4",
-        "uniqueId": "nc4tb9nma1",
-        "name": "iPhone",
-        "description": "This forum category is dedicated to iPhone discussions and support",
-        "icon": "https://cdn4.iconfinder.com/data/icons/smart-phones-technologies/512/iphone.png",
-        "keywords": ["iPhone", "iOS", "Apple", "mobile", "smartphone"],
-        "viewCount": 15420,
-        "createdBy": "TechModerator",
-        "createdAt": "2024-01-20T14:15:00Z",
-        "staffCreated": 1
-      },
-      {
-        "id": "3",
-        "uniqueId": "xh6osi616a",
-        "name": "Mac Services",
-        "description": "This forum category is dedicated to Mac device services and troubleshooting",
-        "icon": "https://cdn.imgbin.com/15/11/21/imgbin-remote-backup-service-computer-icons-apple-icon-format-mac-disk-icons-e24pMnwwFC1ip1HhXw6VH5fjy.jpg",
-        "keywords": ["Mac", "macOS", "repair", "service", "troubleshooting"],
-        "viewCount": 8930,
-        "createdBy": "ServiceExpert",
-        "createdAt": "2024-02-01T09:45:00Z",
-        "staffCreated": 0
-      }
-    ]
-  },
-  {
-    "id": "2",
-    "name": "Software",
-    "description": "Forum for software-related discussions and support",
-    "icon": "https://cdn-icons-png.flaticon.com/512/2702/2702602.png",
-    "createdBy": "SoftwareGuru",
-    "createdAt": "2024-01-18T16:20:00Z",
-    "staffCreated": 0,
-    "forumCategories": [
-      {
-        "id": "5",
-        "uniqueId": "sft123",
-        "name": "Windows",
-        "description": "Discussion about Windows OS, troubleshooting, and tips",
-        "icon": "https://cdn-icons-png.flaticon.com/512/732/732225.png",
-        "keywords": ["Windows", "Microsoft", "OS", "troubleshooting", "tips"],
-        "viewCount": 22150,
-        "createdBy": "WindowsExpert",
-        "createdAt": "2024-01-25T11:30:00Z",
-        "staffCreated": 1
-      },
-      {
-        "id": "6",
-        "uniqueId": "sft124",
-        "name": "Linux",
-        "description": "Linux distributions, commands, and system administration",
-        "icon": "https://cdn-icons-png.flaticon.com/512/226/226772.png",
-        "keywords": ["Linux", "Ubuntu", "terminal", "commands", "open-source"],
-        "viewCount": 18760,
-        "createdBy": "LinuxMaster",
-        "createdAt": "2024-02-05T13:20:00Z",
-        "staffCreated": 0
-      }
-    ]
-  },
-  {
-    "id": "3",
-    "name": "Gaming",
-    "description": "Gaming discussions, reviews, and community",
-    "icon": "https://cdn-icons-png.flaticon.com/512/686/686589.png",
-    "createdBy": "GameModerator",
-    "createdAt": "2024-01-22T12:00:00Z",
-    "staffCreated": 1,
-    "forumCategories": [
-      {
-        "id": "7",
-        "uniqueId": "gm001",
-        "name": "PC Gaming",
-        "description": "PC games, hardware requirements, and performance optimization",
-        "icon": "https://cdn-icons-png.flaticon.com/512/2991/2991148.png",
-        "keywords": ["PC", "gaming", "hardware", "performance", "graphics"],
-        "viewCount": 31240,
-        "createdBy": "PCGamer",
-        "createdAt": "2024-01-28T15:45:00Z",
-        "staffCreated": 0
-      },
-      {
-        "id": "8",
-        "uniqueId": "gm002",
-        "name": "Console Gaming",
-        "description": "PlayStation, Xbox, Nintendo discussions and game reviews",
-        "icon": "https://cdn-icons-png.flaticon.com/512/686/686681.png",
-        "keywords": ["PlayStation", "Xbox", "Nintendo", "console", "games"],
-        "viewCount": 27890,
-        "createdBy": "ConsoleGuru",
-        "createdAt": "2024-02-03T10:15:00Z",
-        "staffCreated": 1
-      }
-    ]
-  }
-];
-
 const ForumPage: React.FC = () => {
-  const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiaGFyc2guY2hvdWhhbjAxMEBnbWFpbC5jb20iLCJzdWJfaWQiOiIxIiwidHlwZSI6ImxvZ2luIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NTkyNDkyMDUsImV4cCI6MTc1OTI1MjgwNX0._DxzvplUZYfNfkW2sanrKWYXbm9X0hNoBk5C8uYIKWw`;
-
-
+const navigate = useNavigate();
   const [forumData, setForumData] = useState<ForumCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -193,8 +82,9 @@ const ForumPage: React.FC = () => {
 
   const handleSubCategoryClick = (subCategory: ForumSubCategory) => {
     // Placeholder for navigation to category topics
-    console.log('Navigate to category:', subCategory.name);
+    console.log('Navigate to category:', subCategory);
     alert(`Navigate to ${subCategory.name} topics`);
+    navigate(`${base}forum/${subCategory.uniqueId}`);
   };
 
   const formatDate = (dateString: string) => {
