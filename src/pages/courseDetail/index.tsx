@@ -464,8 +464,8 @@ const CourseDetail: React.FC = () => {
 
             <p>{courseData.subtitle}</p>
 
-            <div className="course-meta">
-              {/* <div className="instructor">
+            {/* <div className="course-meta">
+              <div className="instructor">
                 <User size={16} />
                 <span>{courseData.instructor}</span>
               </div>
@@ -474,8 +474,8 @@ const CourseDetail: React.FC = () => {
                 <span>
                   {courseData.totalStudents?.toLocaleString()} students
                 </span>
-              </div> */}
-            </div>
+              </div>
+            </div> */}
             {/* <p
               className="course-description"
               dangerouslySetInnerHTML={{ __html: courseData.description }}

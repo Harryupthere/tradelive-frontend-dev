@@ -8,7 +8,7 @@ import {
   User,
   Calendar,
   Image as ImageIcon,
-  Quote
+  Quote,
 } from "lucide-react";
 import "./ForumTopicsPage.scss";
 import axios from "axios";
@@ -65,6 +65,10 @@ const ForumTopicsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [forumName, setForumName] = useState("");
+  // ...existing code...
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [uploading, setUploading] = useState(false);
+  // ...existing code...
 
   // ...existing code...
   const [modalOpen, setModalOpen] = useState(false);
@@ -103,6 +107,15 @@ const ForumTopicsPage: React.FC = () => {
     setModalType(null);
     setReplyToThread(null);
     setMessage("");
+    setSelectedFiles([]);
+  };
+  // ...existing code...
+
+  // ...existing code...
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setSelectedFiles(Array.from(e.target.files));
+    }
   };
   // ...existing code...
 
@@ -244,6 +257,32 @@ const ForumTopicsPage: React.FC = () => {
 
   const filteredData = getFilteredData();
 
+  const uploadFileToS3 = async (file: File) => {
+    try {
+      // 1. Get presigned URL from backend
+      const res = await axios.post(`${apiUrl}upload-request`, {
+        filename: file.name,
+        fileType: file.type,
+      });
+      const { uploadUrl, fileUrl } = res.data;
+
+      // 2. Upload file directly to S3
+      await fetch(uploadUrl, {
+        method: "PUT",
+        body: file,
+        headers: {
+          "Content-Type": file.type,
+        },
+      });
+
+      // 3. Return the CloudFront URL to save in DB
+      return fileUrl;
+    } catch (err) {
+      console.error("File upload failed", err);
+      return null;
+    }
+  };
+  // ...existing code...
   return (
     <div className="forum-topics-page">
       <div className="forum-topics-page__container">
@@ -287,10 +326,7 @@ const ForumTopicsPage: React.FC = () => {
         </section>
         {topicsData.kind === "threads" && (
           <div className="thread-top__actions">
-            <button
-              className="thread-top__action"
-              onClick={openMessageModal}
-            >
+            <button className="thread-top__action" onClick={openMessageModal}>
               <MessageSquare size={18} /> New Message
             </button>
           </div>
@@ -367,7 +403,6 @@ const ForumTopicsPage: React.FC = () => {
                             Quote
                           </button>
                         </div>
-                        
                       </div>
 
                       {thread.quotedThread && (
@@ -457,6 +492,25 @@ const ForumTopicsPage: React.FC = () => {
           rows={5}
           style={{ width: "100%", marginBottom: 12 }}
         />
+        {/* File upload input */}
+        <input
+          type="file"
+          multiple
+          accept="image/*,video/*"
+          onChange={handleFileChange}
+          disabled={uploading || sending}
+          style={{ marginBottom: 12 }}
+        />
+        {selectedFiles.length > 0 && (
+          <div style={{ marginBottom: 12 }}>
+            <b>Selected files:</b>
+            <ul>
+              {selectedFiles.map((file, idx) => (
+                <li key={idx}>{file.name}</li>
+              ))}
+            </ul>
+          </div>
+        )}
         <div style={{ display: "flex", gap: 8 }}>
           <button onClick={closeModal} disabled={sending}>
             Cancel
@@ -464,19 +518,31 @@ const ForumTopicsPage: React.FC = () => {
           <button
             onClick={async () => {
               setSending(true);
+              setUploading(true);
               try {
+                // 1. Upload all files to S3 and collect URLs
+                const imageUrls: string[] = [];
+                for (const file of selectedFiles) {
+                  const url = await uploadFileToS3(file);
+                  if (url) imageUrls.push(url);
+                }
+                setUploading(false);
+
+                // 2. Send thread/message with image URLs
                 await axios.post(`${apiUrl}threads`, {
                   forumCategoryId: forumId,
                   parentThreadId:
                     modalType === "message" ? null : replyToThread?.id,
-                  images: [], // Add image upload logic if needed
+                  images: imageUrls,
                   threadType: modalType === "message" ? "fresh" : modalType,
                   message,
                 });
                 closeModal();
+                setSelectedFiles([]);
                 // Optionally, refresh the thread list here
               } catch (err) {
                 alert("Failed to send message");
+                setUploading(false);
               }
               setSending(false);
             }}
