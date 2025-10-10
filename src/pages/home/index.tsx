@@ -1,14 +1,16 @@
 import { Container } from "@mui/material"
 import Courses from "../../components/home/Courses"
+import Banner from "../../components/home/Banner"
+
 
 const Home = () => {
   return (
     <>
+    <Banner/>
     <section>
       <Container>
         <Courses/>
       </Container>
-      <div className="blurs_wrapper"><div className="blurs_object is-fluo"></div></div>
       </section>
     </>
   )
