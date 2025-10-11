@@ -1,13 +1,15 @@
 import { Link } from "react-router-dom"
 import './footer.scss'
 import { Container } from "@mui/material"
-import image from "../../utils/helpers"
+import image from "../../utils/helpers";
+const base = import.meta.env.VITE_BASE;
+
 const Footer = () => {
     return (
         <footer>
             <Container maxWidth={false}>
                 <div className="logo">
-                    <img src={image['logo1.png']} alt="logo" />
+                    <img src={`${base}logo4.png`} alt="logo" />
                 </div>
                 <div className="footer-flex">
                     <div className="left-side">

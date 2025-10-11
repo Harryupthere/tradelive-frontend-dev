@@ -21,6 +21,7 @@
   grid-template-columns: 1fr 400px;
   gap: 2rem;
   height: calc(100vh - 4rem);
+  overflow: auto;
 
   @media (max-width: 1200px) {
     grid-template-columns: 1fr 350px;
@@ -43,6 +44,7 @@
   border-radius: 16px;
   padding: 1.5rem;
   border: var(--bord-secondary);
+
 }
 
 .video-player {

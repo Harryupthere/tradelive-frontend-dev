@@ -368,6 +368,7 @@ $breakpoint-tablet: 1024px;
   background: $color-gray-light;
   border-radius: 12px;
   padding: 2rem;
+
   @include card-shadow;
 
   @media (max-width: $breakpoint-mobile) {
