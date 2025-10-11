@@ -3,10 +3,10 @@ import ProductCard, { Course } from "../common/ProductCard";
 
 const Courses = () => {
   const courses: Course[] = [
-    { id: 1, title: "Trade Live Class", enrollments: "4.9K", rating: 5, image: "thumb1.jpg" },
-    { id: 2, title: "Stock Market Basics", enrollments: "3.2K", rating: 4, image: "thumb2.jpg" },
-    { id: 3, title: "Crypto Fundamentals", enrollments: "2.7K", rating: 4.5, image: "thumb3.jpg" },
-    { id: 4, title: "Options Trading Mastery", enrollments: "6.1K", rating: 5, image: "thumb4.jpg" },
+    { id: 1, title: "Trade Live Class", enrollments: "4.9K", rating: 5, },
+    { id: 2, title: "Stock Market Basics", enrollments: "3.2K", rating: 4, },
+    { id: 3, title: "Crypto Fundamentals", enrollments: "2.7K", rating: 4.5,  },
+    { id: 4, title: "Options Trading Mastery", enrollments: "6.1K", rating: 5 },
   ];
 
   return (

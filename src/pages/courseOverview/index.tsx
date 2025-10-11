@@ -1,13 +1,12 @@
 import { Container, Grid, Rating } from "@mui/material";
-import image from "../../utils/helpers";
 import "./courseOverview.scss";
 import { Play } from "../../icon/icons";
 import { useEffect, useState } from "react";
 import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
 import { api } from "../../api/Service";
-import { Navigate, useParams } from "react-router-dom";
+import {  useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { errorMsg, successMsg } from "../../utils/customFn";
+import {  successMsg } from "../../utils/customFn";
 
 const base = import.meta.env.VITE_BASE;
 

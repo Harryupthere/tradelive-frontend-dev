@@ -1,3 +1,5 @@
+// filepath: /Users/user/Desktop/Harry/tardelive-frontend/src/components/ForumTopic/ForumTopicsPage.scss
+// @import "../forumCategory/ForumPage.scss";
 // Import variables from ForumPage (you might want to create a shared variables file)
 $color-black: #000;
 $color-white: #fff;
@@ -779,3 +781,24 @@ $breakpoint-tablet: 1024px;
     }
   }
 }
+
+  .forum-subcategory {
+    flex-direction: row;
+    align-items: flex-start;
+
+    &__content {
+      width: 100%;
+    }
+
+    &__header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    &__stats {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+  }

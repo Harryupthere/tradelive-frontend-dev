@@ -172,9 +172,11 @@ const ForumTopicsPage: React.FC = () => {
         // Replace with your actual API endpoint
         const response = await axios.get(`${apiUrl}threads?forumId=${forumId}`);
         const data = response.data.data;
-        //console.log(data)
+      
         setTopicsData(data);
-        setForumCategoryIdNumber(data.data[0]?.forumCategory.id || null);
+        if (data.kind === "threads") {
+          setForumCategoryIdNumber(data.data[0]?.forumCategory.id || null);
+        }
 
         // Set forum name from first item's categoryType if available
         if (data.kind === "categories" && data.data.length > 0) {
@@ -423,27 +425,77 @@ const ForumTopicsPage: React.FC = () => {
                   {(filteredData as SubCategory[]).map((category) => (
                     <div
                       key={category.id}
-                      className="forum-category-card"
+                      className="forum-subcategory"
                       onClick={() => handleSubCategoryClick(category)}
                     >
-                      <div className="forum-category-card__icon">
+                      <div className="forum-subcategory__icon">
                         <img src={category.icon} alt={category.name} />
                       </div>
-                      <div className="forum-category-card__content">
-                        <h3 className="forum-category-card__name">
-                          {category.name}
-                        </h3>
-                        <p className="forum-category-card__description">
-                          {category.description}
-                        </p>
-                        <div className="forum-category-card__meta">
-                          <span className="forum-category-card__id">
+                      <div className="forum-subcategory__content">
+                        <div className="forum-subcategory__header">
+                          <div className="forum-subcategory__name-wrapper">
+                            <h3 className="forum-subcategory__name">
+                              {category.name}
+                            </h3>
+                            {category.staffCreated === 1 && (
+                              <span className="forum-subcategory__staff-badge">
+                                Staff
+                              </span>
+                            )}
+                          </div>
+                          <span className="forum-subcategory__unique-id">
                             #{category.uniqueId}
                           </span>
                         </div>
+                        <p className="forum-subcategory__description">
+                          {category.description}
+                        </p>
+                        {category.keywords && category.keywords.length > 0 && (
+                          <div className="forum-subcategory__keywords">
+                            {category.keywords
+                              .slice(0, 3)
+                              .map((keyword, index) => (
+                                <span
+                                  key={index}
+                                  className="forum-subcategory__keyword"
+                                >
+                                  {keyword}
+                                </span>
+                              ))}
+                            {category.keywords.length > 3 && (
+                              <span className="forum-subcategory__keyword-more">
+                                +{category.keywords.length - 3} more
+                              </span>
+                            )}
+                          </div>
+                        )}
+                        <div className="forum-subcategory__meta">
+                          <span className="forum-subcategory__created-by">
+                            By:{" "}
+                            <strong>
+                              {category.createdBy
+                                ? category.createdBy.name
+                                : "Unknown"}
+                            </strong>
+                          </span>
+                          {category.createdAt && (
+                            <span className="forum-subcategory__created-at">
+                              {formatDate(category.createdAt)}
+                            </span>
+                          )}
+                        </div>
                       </div>
-                      <div className="forum-category-card__actions">
-                        <MessageSquare size={20} />
+                      <div className="forum-subcategory__stats">
+                        {category.viewCount !== undefined && (
+                          <div className="forum-subcategory__stat">
+                            <Users size={16} />
+                            <span>{category.viewCount} views</span>
+                          </div>
+                        )}
+                        <div className="forum-subcategory__stat">
+                          <MessageSquare size={16} />
+                          <span>Topics</span>
+                        </div>
                       </div>
                     </div>
                   ))}
