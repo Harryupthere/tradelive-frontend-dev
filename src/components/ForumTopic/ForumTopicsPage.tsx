@@ -93,8 +93,9 @@ const ForumTopicsPage: React.FC = () => {
     number | null
   >(null);
 
-  const [openReplies, setOpenReplies] = useState<{ [threadId: string]: boolean }>({});
-
+  const [openReplies, setOpenReplies] = useState<{
+    [threadId: string]: boolean;
+  }>({});
 
   const removeFile = () => {
     if (preview) {
@@ -160,71 +161,67 @@ const ForumTopicsPage: React.FC = () => {
   // ...existing code...
 
   useEffect(() => {
-
     fetchTopicsData();
   }, [forumId]);
 
-      const fetchTopicsData = async () => {
-      if (!forumId) return;
+  const fetchTopicsData = async () => {
+    if (!forumId) return;
 
-      setLoading(true);
-      try {
-        // Replace with your actual API endpoint
-        const response = await axios.get(`${apiUrl}threads?forumId=${forumId}`);
-        const data = response.data.data;
-      
-        setTopicsData(data);
-        if (data.kind === "threads") {
-          setForumCategoryIdNumber(data.data[0]?.forumCategory.id || null);
-        }
+    setLoading(true);
+    try {
+      // Replace with your actual API endpoint
+      const response = await axios.get(`${apiUrl}threads?forumId=${forumId}`);
+      const data = response.data.data;
 
-        // Set forum name from first item's categoryType if available
-        if (data.kind === "categories" && data.data.length > 0) {
-          setForumName(data.data[0].categoryType.name);
-        } else if (data.kind === "threads") {
-          // You might want to pass forum name differently for threads
-          setForumName("Forum Discussion");
-        }
-      } catch (error) {
-        console.error("Error fetching topics:", error);
-        // Use mock data for development
-        setTopicsData({
-          kind: "threads",
-          data: [
-            {
-              id: "5",
-              threadType: "quote",
-              message: "I am also here to help you too",
-              images: [
-                "https://upload.wikimedia.org/wikipedia/commons/c/c9/Finder_Icon_macOS_Big_Sur.png",
-              ],
-              likedCount: "0",
-              createdAt: "2025-09-26T07:39:47.000Z",
-              quotedThread: {
-                id: "1",
-                message:
-                  "We are here to help people to service their mac laptops by themselves",
-              },
-            },
-            {
+      setTopicsData(data);
+      if (data.kind === "threads") {
+        setForumCategoryIdNumber(data.data[0]?.forumCategory.id || null);
+      }
+
+      // Set forum name from first item's categoryType if available
+      if (data.kind === "categories" && data.data.length > 0) {
+        setForumName(data.data[0].categoryType.name);
+      } else if (data.kind === "threads") {
+        // You might want to pass forum name differently for threads
+        setForumName("Forum Discussion");
+      }
+    } catch (error) {
+      console.error("Error fetching topics:", error);
+      // Use mock data for development
+      setTopicsData({
+        kind: "threads",
+        data: [
+          {
+            id: "5",
+            threadType: "quote",
+            message: "I am also here to help you too",
+            images: [
+              "https://upload.wikimedia.org/wikipedia/commons/c/c9/Finder_Icon_macOS_Big_Sur.png",
+            ],
+            likedCount: "0",
+            createdAt: "2025-09-26T07:39:47.000Z",
+            quotedThread: {
               id: "1",
-              threadType: "fresh",
               message:
                 "We are here to help people to service their mac laptops by themselves",
-              images: [
-                "https://cdn-icons-png.flaticon.com/512/2749/2749777.png",
-              ],
-              likedCount: "0",
-              createdAt: "2025-09-24T17:24:37.000Z",
             },
-          ],
-        });
-        setForumName("Mac Services Forum");
-      } finally {
-        setLoading(false);
-      }
-    };
-
+          },
+          {
+            id: "1",
+            threadType: "fresh",
+            message:
+              "We are here to help people to service their mac laptops by themselves",
+            images: ["https://cdn-icons-png.flaticon.com/512/2749/2749777.png"],
+            likedCount: "0",
+            createdAt: "2025-09-24T17:24:37.000Z",
+          },
+        ],
+      });
+      setForumName("Mac Services Forum");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -348,7 +345,7 @@ const ForumTopicsPage: React.FC = () => {
       closeModal();
       setSelectedFiles([]);
       successMsg("Message sent successfully");
-      fetchTopicsData()
+      fetchTopicsData();
     } catch (err) {
       errorMsg("Failed to send message");
     }
@@ -356,14 +353,14 @@ const ForumTopicsPage: React.FC = () => {
   };
 
   const scrollToThread = (threadId: string) => {
-  const el = document.getElementById(`thread-${threadId}`);
-  if (el) {
-    el.scrollIntoView({ behavior: "smooth", block: "center" });
-    // Optionally, highlight the thread briefly
-    el.classList.add("highlight-thread");
-    setTimeout(() => el.classList.remove("highlight-thread"), 1200);
-  }
-};
+    const el = document.getElementById(`thread-${threadId}`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      // Optionally, highlight the thread briefly
+      el.classList.add("highlight-thread");
+      setTimeout(() => el.classList.remove("highlight-thread"), 1200);
+    }
+  };
   return (
     <div className="forum-topics-page">
       <div className="forum-topics-page__container">

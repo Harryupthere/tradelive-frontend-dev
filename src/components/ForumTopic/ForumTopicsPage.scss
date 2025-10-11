@@ -783,6 +783,9 @@ $breakpoint-tablet: 1024px;
 }
 
   .forum-subcategory {
+    // background-color: #333;
+  background: var(--bg-card3);
+
     flex-direction: row;
     align-items: flex-start;
 
