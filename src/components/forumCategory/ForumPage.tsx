@@ -83,7 +83,6 @@ const ForumPage: React.FC = () => {
   const handleSubCategoryClick = (subCategory: ForumSubCategory) => {
     // Placeholder for navigation to category topics
     console.log('Navigate to category:', subCategory);
-    alert(`Navigate to ${subCategory.name} topics`);
     navigate(`${base}forum/${subCategory.uniqueId}`);
   };
 

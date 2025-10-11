@@ -1,25 +1,40 @@
 import React, { useState, useEffect, useRef } from "react";
-import {Search,ChevronRight,MessageSquare,Heart,Reply,User,Calendar,Quote,UploadCloud,X, MessageCircle,} from "lucide-react";
+import {
+  Search,
+  ChevronRight,
+  MessageSquare,
+  Heart,
+  Reply,
+  User,
+  Calendar,
+  Quote,
+  UploadCloud,
+  X,
+  MessageCircle,
+} from "lucide-react";
 import "./ForumTopicsPage.scss";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { Box, IconButton, Modal, Typography } from "@mui/material";
 import image from "../../utils/helpers";
+
+import { errorMsg, successMsg } from "../../utils/customFn";
+
 const base = import.meta.env.VITE_BASE;
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 500,
-  bgcolor: 'background.paper',
-  border: 'none',
+  bgcolor: "background.paper",
+  border: "none",
   boxShadow: 24,
   p: 2,
-  backgroundColor: 'var(--bg-modal)',
-  borderRadius: '8px'
+  backgroundColor: "var(--bg-modal)",
+  borderRadius: "8px",
 };
 interface CategoryType {
   id: string;
@@ -72,7 +87,13 @@ const ForumTopicsPage: React.FC = () => {
   const [forumName, setForumName] = useState("");
   // ...existing code...
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [preview, setPreview] = useState<string>('');
+  const [preview, setPreview] = useState<string>("");
+
+  const [forumCategoryIdNumber, setForumCategoryIdNumber] = useState<
+    number | null
+  >(null);
+
+  const [openReplies, setOpenReplies] = useState<{ [threadId: string]: boolean }>({});
 
 
   const removeFile = () => {
@@ -80,9 +101,9 @@ const ForumTopicsPage: React.FC = () => {
       URL.revokeObjectURL(preview);
     }
     setSelectedFiles(null);
-    setPreview('');
+    setPreview("");
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = "";
     }
   };
   const handleUploadClick = () => {
@@ -130,7 +151,6 @@ const ForumTopicsPage: React.FC = () => {
 
   // ...existing code...
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
 
@@ -140,7 +160,11 @@ const ForumTopicsPage: React.FC = () => {
   // ...existing code...
 
   useEffect(() => {
-    const fetchTopicsData = async () => {
+
+    fetchTopicsData();
+  }, [forumId]);
+
+      const fetchTopicsData = async () => {
       if (!forumId) return;
 
       setLoading(true);
@@ -150,6 +174,7 @@ const ForumTopicsPage: React.FC = () => {
         const data = response.data.data;
         //console.log(data)
         setTopicsData(data);
+        setForumCategoryIdNumber(data.data[0]?.forumCategory.id || null);
 
         // Set forum name from first item's categoryType if available
         if (data.kind === "categories" && data.data.length > 0) {
@@ -198,8 +223,6 @@ const ForumTopicsPage: React.FC = () => {
       }
     };
 
-    fetchTopicsData();
-  }, [forumId]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -280,11 +303,11 @@ const ForumTopicsPage: React.FC = () => {
   const uploadFileToS3 = async (file: File) => {
     try {
       // 1. Get presigned URL from backend
-      const res = await axios.post(`${apiUrl}upload-request`, {
+      const res = await axios.post(`${apiUrl}upload/request`, {
         filename: file.name,
         fileType: file.type,
       });
-      const { uploadUrl, fileUrl } = res.data;
+      const { uploadUrl, fileUrl } = res.data.data;
 
       // 2. Upload file directly to S3
       await fetch(uploadUrl, {
@@ -302,7 +325,43 @@ const ForumTopicsPage: React.FC = () => {
       return null;
     }
   };
-  // ...existing code...
+
+  const callMessgaesend = async () => {
+    setSending(true);
+    try {
+      const imageUrls: string[] = [];
+      for (const file of selectedFiles) {
+        const url = await uploadFileToS3(file);
+        if (url) imageUrls.push(url);
+      }
+      // console.log(replyToThread)
+      await axios.post(`${apiUrl}threads`, {
+        forumCategoryId: parseInt(forumCategoryIdNumber),
+        parentThreadId:
+          modalType === "message" ? null : parseInt(replyToThread?.id),
+        images: imageUrls,
+        threadType: modalType === "message" ? "fresh" : modalType,
+        message,
+      });
+      closeModal();
+      setSelectedFiles([]);
+      successMsg("Message sent successfully");
+      fetchTopicsData()
+    } catch (err) {
+      errorMsg("Failed to send message");
+    }
+    setSending(false);
+  };
+
+  const scrollToThread = (threadId: string) => {
+  const el = document.getElementById(`thread-${threadId}`);
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    // Optionally, highlight the thread briefly
+    el.classList.add("highlight-thread");
+    setTimeout(() => el.classList.remove("highlight-thread"), 1200);
+  }
+};
   return (
     <div className="forum-topics-page">
       <div className="forum-topics-page__container">
@@ -328,7 +387,9 @@ const ForumTopicsPage: React.FC = () => {
 
         {/* Search Bar */}
         <div className="forum-topics-page__search">
-            <div className="blurs_wrapper"><div className="blurs_object is-fluo"></div></div>
+          <div className="blurs_wrapper">
+            <div className="blurs_object is-fluo"></div>
+          </div>
           <div className="forum-topics-page__search-wrapper">
             <Search className="forum-topics-page__search-icon" size={20} />
             <input
@@ -348,7 +409,7 @@ const ForumTopicsPage: React.FC = () => {
         {topicsData.kind === "threads" && (
           <div className="thread-top__actions">
             <button className="message-box" onClick={openMessageModal}>
-              <img src={image['chat.png']} alt="message"/>
+              <img src={image["chat.png"]} alt="message" />
             </button>
           </div>
         )}
@@ -390,7 +451,11 @@ const ForumTopicsPage: React.FC = () => {
               ) : (
                 <div className="forum-topics-page__threads">
                   {(filteredData as Thread[]).map((thread) => (
-                    <article key={thread.id} className="thread-card">
+                    <article
+                      key={thread.id}
+                      className="thread-card"
+                      id={`thread-${thread.id}`}
+                    >
                       <div className="thread-card__header">
                         <div className="thread-card__user">
                           <div className="thread-card__avatar">
@@ -414,23 +479,33 @@ const ForumTopicsPage: React.FC = () => {
                           </div>
                         </div>
                         <div className="thread-card__actions">
-                          <button className="thread-card__action">
+                          <button
+                            className="thread-card__action"
+                            onClick={() => openReplyModal(thread)}
+                          >
                             <Reply size={16} />
                             Reply
                           </button>
 
-                          <button className="thread-card__action">
+                          <button
+                            className="thread-card__action"
+                            onClick={() => openQuoteModal(thread)}
+                          >
                             <Quote size={16} />
                             Quote
                           </button>
                         </div>
                       </div>
-
                       {thread.quotedThread && (
-                        <div className="thread-card__quote">
+                        <div
+                          className="thread-card__quote"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => scrollToThread(thread.quotedThread.id)}
+                          title="Go to quoted message"
+                        >
                           <div className="thread-card__quote-header">
                             <MessageSquare size={14} />
-                            <span>Replying to:</span>
+                            <span>Quote to:</span>
                           </div>
                           <p className="thread-card__quote-message">
                             {thread.quotedThread.message}
@@ -439,8 +514,6 @@ const ForumTopicsPage: React.FC = () => {
                       )}
 
                       <div className="thread-card__content">
-                        <p className="thread-card__message">{thread.message}</p>
-
                         {thread.images && thread.images.length > 0 && (
                           <div className="thread-card__images">
                             {thread.images.map((image, index) => (
@@ -453,7 +526,81 @@ const ForumTopicsPage: React.FC = () => {
                             ))}
                           </div>
                         )}
+                        <p className="thread-card__message">{thread.message}</p>
                       </div>
+
+                      {thread.replies && thread.replies.length > 0 && (
+                        <div className="thread-card__replies-toggle">
+                          <button
+                            onClick={() =>
+                              setOpenReplies((prev) => ({
+                                ...prev,
+                                [thread.id]: !prev[thread.id],
+                              }))
+                            }
+                            className="thread-card__action"
+                          >
+                            {openReplies[thread.id]
+                              ? `Hide Replies (${thread.replies.length})`
+                              : `Show Replies (${thread.replies.length})`}
+                          </button>
+                        </div>
+                      )}
+
+                      {/* Replies list */}
+                      {openReplies[thread.id] &&
+                        thread.replies &&
+                        thread.replies.length > 0 && (
+                          <div className="thread-card__replies-list">
+                            {thread.replies.map((reply, idx) => (
+                              <div
+                                key={reply.id || idx}
+                                className="thread-reply"
+                              >
+                                <div className="thread-reply__header">
+                                  <div className="thread-reply__avatar">
+                                    {reply.user?.avatar ? (
+                                      <img
+                                        src={reply.user.avatar}
+                                        alt={reply.user.name}
+                                      />
+                                    ) : (
+                                      <User size={20} />
+                                    )}
+                                  </div>
+                                  <div className="thread-reply__user-info">
+                                    <span className="thread-reply__user">
+                                      {reply.user?.name || "Anonymous"}
+                                    </span>
+                                    <span className="thread-reply__timestamp">
+                                      <Calendar size={12} />
+                                      {formatTimeAgo(reply.createdAt)}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                {reply.images && reply.images.length > 0 && (
+                                  <div className="thread-reply__images">
+                                    {reply.images.map((img, i) => (
+                                      <div
+                                        key={i}
+                                        className="thread-reply__image"
+                                      >
+                                        <img
+                                          src={img}
+                                          alt={`Reply Attachment ${i + 1}`}
+                                        />
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                                <div className="thread-reply__message">
+                                  {reply.message}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
 
                       <div className="thread-card__footer">
                         <button className="thread-card__like-btn">
@@ -486,12 +633,11 @@ const ForumTopicsPage: React.FC = () => {
             </div>
           )}
         </main>
-            <div className="blurs_wrapper"><div className="blurs_object is-fluo"></div></div>
+        <div className="blurs_wrapper">
+          <div className="blurs_object is-fluo"></div>
+        </div>
       </div>
-      <Modal
-        open={modalOpen}
-        onClose={closeModal}
-        className="forum-modal">
+      <Modal open={modalOpen} onClose={closeModal} className="forum-modal">
         <Box sx={style}>
           <h2>
             {modalType === "reply" && "Reply to Message"}
@@ -555,34 +701,25 @@ const ForumTopicsPage: React.FC = () => {
               </Box>
             )}
           </Box>
-          <div style={{ display: "flex", gap: 8, justifyContent: 'flex-end', alignItems: 'center' }}>
-            <button onClick={closeModal} disabled={sending} className="cancel-btn">
+          <div
+            style={{
+              display: "flex",
+              gap: 8,
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}
+          >
+            <button
+              onClick={closeModal}
+              disabled={sending}
+              className="cancel-btn"
+            >
               Cancel
             </button>
             <button
               className="gradient-btn"
-              onClick={async () => {
-                setSending(true);
-                try {
-                  const imageUrls: string[] = [];
-                  for (const file of selectedFiles) {
-                    const url = await uploadFileToS3(file);
-                    if (url) imageUrls.push(url);
-                  }
-                  await axios.post(`${apiUrl}threads`, {
-                    forumCategoryId: forumId,
-                    parentThreadId:
-                      modalType === "message" ? null : replyToThread?.id,
-                    images: imageUrls,
-                    threadType: modalType === "message" ? "fresh" : modalType,
-                    message,
-                  });
-                  closeModal();
-                  setSelectedFiles([]);
-                } catch (err) {
-                  alert("Failed to send message");
-                }
-                setSending(false);
+              onClick={() => {
+                callMessgaesend();
               }}
               disabled={!message.trim() || sending}
             >

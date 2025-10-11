@@ -37,6 +37,8 @@ const Header = () => {
               <li><Link to={`${base}`}>Home</Link></li>
               <li><Link to={`${base}courses`}>Courses</Link></li>
               <li><Link to={`${base}news`}>News</Link></li>
+              <li><Link to={`${base}forum`}>Forum</Link></li>
+
               <li><Link to={'#'}>Contact</Link></li>
               <li><Link to={'#'}>About Us</Link></li>
             </ul>
