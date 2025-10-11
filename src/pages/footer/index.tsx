@@ -9,7 +9,7 @@ const Footer = () => {
         <footer>
             <Container maxWidth={false}>
                 <div className="logo">
-                    <img src={`${base}logo4.png`} alt="logo" />
+                    <img src={`${base}TRADELIVE24-logo.png`} alt="logo" />
                 </div>
                 <div className="footer-flex">
                     <div className="left-side">

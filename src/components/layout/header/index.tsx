@@ -31,7 +31,7 @@ const Header = () => {
         <div className='container'>
           <div className='flex-container'>
             <Link to={`${base}`} className='brand'>
-              <img src={`${base}logo4.png`} alt="TradeLive Logo" />
+              <img src={`${base}TRADELIVE24-logo.png`} alt="TradeLive Logo" />
             </Link>
             <ul>
               <li><Link to={`${base}`}>Home</Link></li>
