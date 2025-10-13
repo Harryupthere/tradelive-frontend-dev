@@ -97,7 +97,11 @@ const coursesColumn3 = [
 const Banner = () => {
   return (
     <div className="landing-container">
+      <div className="blurs_wrapper">
+          <div className="blurs_object is-fluo"></div>
+        </div>
       <div className="content-section">
+        
         <h1 className="main-heading">
           <div className="white-text">Learn To Trade</div>
           <div className="gradient-text">The Right Way</div>
