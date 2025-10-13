@@ -24,6 +24,8 @@ import RiskOfRuinCalculator from "../pages/cal-riskOfRuinCalculator/RiskOfRuinCa
 import CompoundingCalculator from "../pages/cal-compoundingCalculator/CompoundingCalculator";
 import DrawdownCalculator from "../pages/cal-drawdownCalculator/DrawdownCalculator";
 import LeverageCalculator from "../pages/cal-leverageCalculator/LeverageCalculator";
+import ProfitCalculator from "../pages/cal-profitCalculator/ProfitCalculator";
+import RebateCalculator from "../pages/cal-rebateCalculator/RebateCalculator";
 const base = import.meta.env.VITE_BASE;
 
 
@@ -52,7 +54,9 @@ const Router = () => {
         { path: `${base}risk-of-ruin-calculator`, element: <RiskOfRuinCalculator /> },
         { path: `${base}compounding-calculator`, element: <CompoundingCalculator /> },
         { path: `${base}drawdown-calculator`, element: <DrawdownCalculator /> },
-        { path: `${base}leverage-calculator`, element: <LeverageCalculator /> }
+        { path: `${base}leverage-calculator`, element: <LeverageCalculator /> },
+        { path: `${base}profit-calculator`, element: <ProfitCalculator /> },
+        { path: `${base}rebate-calculator`, element: <RebateCalculator /> },
       ],
     },
     {
