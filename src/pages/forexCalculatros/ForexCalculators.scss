@@ -1,0 +1,234 @@
+.forex-calculators {
+//   min-height: 100vh;
+//   background: linear-gradient(180deg, #1a1a1a 0%, #2a2a2a 100%);
+//   color: #ffffff;
+//   padding: 80px 0;
+
+  &__container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  &__header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  &__title {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 32px;
+    background: linear-gradient(135deg, #ffffff 0%, #d5ff2e 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+  }
+
+  &__intro {
+    max-width: 900px;
+    margin: 0 auto;
+
+    p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #b0b0b0;
+      margin-bottom: 20px;
+      text-align: left;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 32px;
+    margin-top: 48px;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 1200px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}
+
+.calculator-card {
+  background: rgba(30, 30, 30, 0.8);
+  border: 1px solid rgba(196, 255, 0, 0.1);
+  border-radius: 24px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+      circle at top left,
+      rgba(196, 255, 0, 0.03) 0%,
+      transparent 50%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: rgba(196, 255, 0, 0.4);
+    box-shadow: 0 20px 60px rgba(196, 255, 0, 0.15),
+                0 0 40px rgba(196, 255, 0, 0.1);
+
+    &::before {
+      opacity: 1;
+    }
+
+    .calculator-card__icon {
+      background: linear-gradient(135deg, #d5ff2e 0%, #a8e000 100%);
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 0 8px 24px rgba(196, 255, 0, 0.3);
+
+      svg {
+        color: #1a1a1a;
+      }
+    }
+
+    .calculator-card__button {
+      background: linear-gradient(135deg, #d5ff2e 0%, #a8e000 100%);
+      color: #1a1a1a;
+      transform: scale(1.05);
+      box-shadow: 0 8px 24px rgba(196, 255, 0, 0.4);
+    }
+  }
+
+  &__icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    background: rgba(196, 255, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(196, 255, 0, 0.2);
+
+    svg {
+      color: #d5ff2e;
+      transition: all 0.3s ease;
+    }
+  }
+
+  &__name {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+  }
+
+  &__description {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #909090;
+    margin-bottom: 24px;
+    flex-grow: 1;
+    min-height: 70px;
+  }
+
+  &__button {
+    width: 100%;
+    padding: 14px 28px;
+    background: transparent;
+    border: 2px solid #d5ff2e;
+    border-radius: 12px;
+    color: #d5ff2e;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &:hover {
+      background: linear-gradient(135deg, #d5ff2e 0%, #a8e000 100%);
+      color: #1a1a1a;
+      border-color: transparent;
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .forex-calculators {
+    padding: 48px 0;
+
+    &__title {
+      font-size: 36px;
+      margin-bottom: 24px;
+    }
+
+    &__intro {
+      p {
+        font-size: 15px;
+        text-align: center;
+      }
+    }
+
+    &__grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+  }
+
+  .calculator-card {
+    padding: 24px;
+
+    &__icon {
+      width: 64px;
+      height: 64px;
+
+      svg {
+        width: 28px;
+        height: 28px;
+      }
+    }
+
+    &__name {
+      font-size: 20px;
+    }
+
+    &__description {
+      font-size: 13px;
+      min-height: auto;
+    }
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1199px) {
+  .forex-calculators {
+    &__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}

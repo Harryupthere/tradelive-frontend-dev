@@ -11,8 +11,21 @@ import NewsDetailPage from "../components/newsDetail/NewsDetailPage";
 import Login from "../pages/login";
 import CourseDetail from "../pages/courseDetail";
 import CoursesPage from "../components/courses/CoursesPage";
-import ForumPage from "../components/forumCategory/ForumPage";
-import ForumTopicsPage from "../components/ForumTopic/ForumTopicsPage";
+import ForumPage from "../pages/forumCategory/ForumPage";
+import ForumTopicsPage from "../pages/ForumTopic/ForumTopicsPage";
+import ForexCalculators from "../pages/forexCalculatros/ForexCalculators";
+import CurrencyConverter from "../pages/cal-currencyConverter/CurrencyConverter";
+import PositionSizeCalculator from "../pages/cal-positionSizeCalculator/PositionSizeCalculator";
+import PipCalculator from "../pages/cal-pipCalculator/PipCalculator";
+import MarginCalculator from "../pages/cal-marginCalculator/MarginCalculator";
+import FibonacciCalculator from "../pages/cal-fibonacciCalculator/FibonacciCalculator";
+import PivotPointCalculator from "../pages/cal-pivotPointCalculator/PivotPointCalculator";
+import RiskOfRuinCalculator from "../pages/cal-riskOfRuinCalculator/RiskOfRuinCalculator";
+import CompoundingCalculator from "../pages/cal-compoundingCalculator/CompoundingCalculator";
+import DrawdownCalculator from "../pages/cal-drawdownCalculator/DrawdownCalculator";
+import LeverageCalculator from "../pages/cal-leverageCalculator/LeverageCalculator";
+import ProfitCalculator from "../pages/cal-profitCalculator/ProfitCalculator";
+import RebateCalculator from "../pages/cal-rebateCalculator/RebateCalculator";
 const base = import.meta.env.VITE_BASE;
 
 
@@ -31,6 +44,19 @@ const Router = () => {
         // { path: `${base}coursesss`, element: <CoursesPage /> },
         { path: `${base}forum`, element: <ForumPage /> },
         { path: `${base}forum/:forumId`, element: <ForumTopicsPage /> },
+        { path: `${base}forum-calculators`, element: <ForexCalculators /> },
+        { path: `${base}currency-converter`, element: <CurrencyConverter /> },
+        { path: `${base}position-size-calculator`, element: <PositionSizeCalculator /> },
+        { path: `${base}pip-calculator`, element: <PipCalculator /> },
+        { path: `${base}margin-calculator`, element: <MarginCalculator /> },
+        { path: `${base}fibonacci-calculator`, element: <FibonacciCalculator /> },
+        { path: `${base}pivot-point-calculator`, element: <PivotPointCalculator /> },
+        { path: `${base}risk-of-ruin-calculator`, element: <RiskOfRuinCalculator /> },
+        { path: `${base}compounding-calculator`, element: <CompoundingCalculator /> },
+        { path: `${base}drawdown-calculator`, element: <DrawdownCalculator /> },
+        { path: `${base}leverage-calculator`, element: <LeverageCalculator /> },
+        { path: `${base}profit-calculator`, element: <ProfitCalculator /> },
+        { path: `${base}rebate-calculator`, element: <RebateCalculator /> },
       ],
     },
     {
