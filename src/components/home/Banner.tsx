@@ -104,7 +104,9 @@ const  Banner = () => {
         </h1>
 
         <p className="description">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium nulla assumenda beatae? Est, culpa dolore.
+         Master real market structure, price action, and mindset — not just theory.
+Join a community built by traders, for traders.
+
         </p>
 
         <div className="input-section">
