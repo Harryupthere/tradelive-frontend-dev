@@ -6,8 +6,11 @@ import image from "../../assets/images/bar-graph.png";
 import glob from "../../assets/images/glob.png";
 import Slider from "react-slick";
 import { useRef } from "react";
-import ProductCard,{ Course } from "../../components/common/ProductCard";
-import { ArrowRight } from "lucide-react";
+import ProductCard, { Course } from "../../components/common/ProductCard";
+import { ArrowRight, Play } from "lucide-react";
+import CTA from "../../components/home/CTA";
+import CommunitySection from "../../components/home/Community";
+import WatchLearnSection from "../../components/home/WatchLearn";
 
 
 
@@ -65,6 +68,7 @@ const Home = () => {
     <div className="home-wrapped">
       <Banner />
       <Container>
+        <section data-aos="fade-up">
         <div className="center-content">
           <div className="overlay-img">
             <img src={image} alt="img" />
@@ -78,13 +82,13 @@ const Home = () => {
             paywalls. Learn the craft, understand the markets, and grow with a
             community that values knowledge over hype.
           </p>
-        </div>
-
+        </div>  
+        </section >
         <section className="whatis-trade">
           <div className="blurs_wrapper">
             <div className="blurs_object is-fluo"></div>
           </div>
-          <div className="left-content">
+          <div className="left-content" data-aos="fade-right">
             <div className="globe-wrapper">
               <img src={glob} alt="glob" className="glob" />
             </div>
@@ -92,7 +96,7 @@ const Home = () => {
               What <img src={`${base}TRADELIVE24-logo.png`} alt="logo" /> Is
             </h2>
           </div>
-          <div className="right-content">
+          <div className="right-content" data-aos="fade-left">
             <h2 className="gradient-text">
               The Modern Hub for Traders Who Want More.
             </h2>
@@ -104,11 +108,11 @@ const Home = () => {
           </div>
         </section>
 
-        <section className="watch">
-          <div className="left-content">
+        <section className="watch" >
+          <div className="left-content" data-aos="fade-right">
             <h2 className="title">Watch & Learn</h2>
             <h2 className="gradient-text">
-              Learn My Trading Style —<br/> Real Market Education.
+              Learn My Trading Style —<br /> Real Market Education.
             </h2>
             <p>
               Each video breaks down live price action, structure, and strategy
@@ -116,12 +120,12 @@ const Home = () => {
             </p>
             <p>Practical, actionable, and completely transparent.</p>
 
-              <button className="gradient-btn">
-                        Start Learning
-                        <ArrowRight size={20} />
-                      </button>
+            <button className="gradient-btn">
+              Watch Lessons
+              <Play size={20} />
+            </button>
 
-                          <div className="slider-arrows">
+            <div className="slider-arrows">
               <button
                 className="nav-arrow"
                 onClick={() => sliderRef.current?.slickPrev()}
@@ -137,7 +141,7 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="right-content">
+          <div className="right-content" data-aos="fade-left">
             <div className="slider-container">
               <Slider ref={sliderRef} {...responsiveSlider}>
                 {courses.map((course) => (
@@ -147,11 +151,16 @@ const Home = () => {
                 ))}
               </Slider>
             </div>
-
-        
           </div>
         </section>
-{/* 
+        {/* <WatchLearnSection/> */}
+        <section data-aos="fade-up">
+        <CommunitySection />
+        </section>
+        <section>
+        <CTA />
+        </section>
+        {/* 
         <section>
           <Courses />
         </section> */}

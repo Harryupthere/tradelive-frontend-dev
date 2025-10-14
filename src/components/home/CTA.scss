@@ -1,0 +1,248 @@
+.learning-section {
+    position: relative;
+  &__container {
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: center;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  }
+
+  &__left {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__hero-card {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+  }
+
+  &__hero-image {
+    width: 100%;
+    height: auto;
+    border-radius: 40px 40px 40px 0;
+    display: block;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  }
+
+  &__cta-card {
+    position: absolute;
+    bottom: -30px;
+    left: -30px;
+    background: var(--primary);
+    border-radius: 32px;
+    padding: 40px;
+    max-width: 400px;
+    box-shadow: 0 20px 40px rgba(255, 107, 53, 0.3);
+
+    @media (max-width: 768px) {
+      position: relative;
+      bottom: 0;
+      left: 0;
+      margin-top: 20px;
+      max-width: 100%;
+    }
+  }
+
+  &__cta-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: #000;
+    margin: 0 0 16px 0;
+    line-height: 1.2;
+
+    @media (max-width: 768px) {
+      font-size: 28px;
+    }
+  }
+
+  &__cta-text {
+    font-size: 16px;
+    color: #000;
+    margin: 0 0 24px 0;
+    line-height: 1.5;
+  }
+
+  &__cta-button {
+    background-color: #ffffff;
+    color: #000;
+    border: none;
+    border-radius: 50px;
+    padding: 16px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  &__cta-arrow {
+    font-size: 18px;
+    transition: transform 0.3s ease;
+  }
+
+  &__cta-button:hover &__cta-arrow {
+    transform: translateX(4px);
+  }
+
+  &__right {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__accordions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+        .MuiPaper-root{
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    .MuiPaper-elevation{
+        box-shadow: none;
+    }
+    button{
+        span{
+        color: #fff!important;
+        }
+    }
+ }
+  }
+}
+
+.learning-accordion {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+
+  &:before {
+    display: none;
+  }
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  &.Mui-expanded {
+    margin: 0;
+    border-color: #d1d5db;
+  }
+
+  .accordion-summary {
+    padding: 10px 24px;
+
+    .MuiAccordionSummary-content {
+      margin: 0;
+
+      &.Mui-expanded {
+        margin: 0;
+      }
+    }
+
+    .MuiAccordionSummary-expandIconWrapper {
+      color: #1f2937;
+      transition: transform 0.3s ease;
+
+      &.Mui-expanded {
+        transform: none;
+      }
+    }
+  }
+
+  .accordion-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    &:before {
+      content: '+';
+      font-size: 24px;
+      font-weight: 400;
+      color: var(--fc-black2);
+      display: none;
+    }
+  }
+
+  .accordion-icon {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2.5;
+  }
+
+  .accordion-details {
+    padding: 0 24px 0 24px;
+  }
+
+  .accordion-content {
+    font-size: 15px;
+    color: var(--fc-black2);
+    line-height: 1.6;
+    margin: 16px 0 0 0;
+  }
+
+  .accordion-content-with-image {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: center;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .accordion-image-wrapper {
+    width: 100%;
+    height: 200px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  .accordion-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .accordion-button {
+    background-color: var(--primary);
+    color: #000;
+    border: none;
+    border-radius: 24px;
+    padding: 12px 32px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: #059669;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+  }
+}

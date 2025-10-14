@@ -157,7 +157,7 @@ const coursesColumn3 = [
 
 const Banner = () => {
   return (
-    <div className="landing-container">
+    <div className="landing-container"data-aos="fade-bottom">
       <div className="blurs_wrapper">
           <div className="blurs_object is-fluo"></div>
         </div>
