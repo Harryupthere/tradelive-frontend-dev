@@ -125,21 +125,31 @@
     }
  }
   }
-}
 
-.learning-accordion {
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  transition: all 0.3s ease;
+  &__accordions-scroll {
+    max-height: 480px; // Adjust based on your accordion height (5 accordions tall)
+    min-height: 320px;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    padding-right: 4px; // For custom scrollbar
 
-  &:before {
-    display: none;
-  }
+    // Smooth and styled scrollbar for Webkit browsers
+    &::-webkit-scrollbar {
+      width: 8px;
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #e5e7eb;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: #d1d5db;
+    }
 
-  &:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    // For Firefox
+    scrollbar-width: thin;
+    scrollbar-color: #e5e7eb transparent;
   }
 
   &.Mui-expanded {
