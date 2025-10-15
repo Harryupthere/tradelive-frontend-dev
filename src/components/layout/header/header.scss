@@ -68,7 +68,9 @@
                     line-height: normal;
                     text-decoration: none;
                     transition: all 0.35s ease;
-
+                    &.active{
+                        color: var(--primary);
+                    }
                     @include responsive(xl) {
                         font-size: 14px;
                     }
@@ -79,6 +81,13 @@
 
                     &:hover {
                         color: var(--primary);
+                    }
+                }
+
+                &.active {
+                    a {
+                        color: var(--primary);
+                        text-decoration: underline;
                     }
                 }
 

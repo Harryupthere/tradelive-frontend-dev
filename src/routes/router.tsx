@@ -26,6 +26,7 @@ import DrawdownCalculator from "../pages/cal-drawdownCalculator/DrawdownCalculat
 import LeverageCalculator from "../pages/cal-leverageCalculator/LeverageCalculator";
 import ProfitCalculator from "../pages/cal-profitCalculator/ProfitCalculator";
 import RebateCalculator from "../pages/cal-rebateCalculator/RebateCalculator";
+import AboutUs from "../pages/aboutus";
 const base = import.meta.env.VITE_BASE;
 
 
@@ -57,6 +58,8 @@ const Router = () => {
         { path: `${base}leverage-calculator`, element: <LeverageCalculator /> },
         { path: `${base}profit-calculator`, element: <ProfitCalculator /> },
         { path: `${base}rebate-calculator`, element: <RebateCalculator /> },
+
+        { path: `${base}about-us`, element: <AboutUs /> },
       ],
     },
     {
