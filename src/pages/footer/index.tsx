@@ -36,7 +36,7 @@ const Footer = () => {
                     <div className="copy">©Copyright 2025</div>
                     <div className="links">
                         <Link to="">Privacy Policy</Link>
-                        <Link to="">Terms & Condition</Link>
+                        <Link to={`${base}terms-and-condition`}>Terms & Condition</Link>
                     </div>
                 </div>
             </Container>

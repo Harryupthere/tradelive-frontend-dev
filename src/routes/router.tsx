@@ -27,12 +27,24 @@ import LeverageCalculator from "../pages/cal-leverageCalculator/LeverageCalculat
 import ProfitCalculator from "../pages/cal-profitCalculator/ProfitCalculator";
 import RebateCalculator from "../pages/cal-rebateCalculator/RebateCalculator";
 import AboutUs from "../pages/aboutus";
+import LoginPage from "../pages/login/Login-new";
+import TermsConditions from "../pages/term-and-condition";
+import SignupPage from "../pages/login/Signup";
+import ResetPasswordPage from "../pages/login/ResetPassword";
+import ForgetPasswordPage from "../pages/login/ForgetPassword";
+import ProfilePage from "../pages/profile";
 const base = import.meta.env.VITE_BASE;
 
 
 const Router = () => {
   const router = createBrowserRouter([
-    { path: `${base}login`, element: <Login /> },
+    // { path: `${base}login`, element: <Login /> },
+    { path: `${base}login`, element: <LoginPage /> },
+    { path: `${base}signup`, element: <SignupPage /> },
+    { path: `${base}reset-password`, element: <ResetPasswordPage /> },
+    { path: `${base}forgot-password`, element: <ForgetPasswordPage /> },
+
+
     {
       element: <Layout />,
       children: [
@@ -58,8 +70,11 @@ const Router = () => {
         { path: `${base}leverage-calculator`, element: <LeverageCalculator /> },
         { path: `${base}profit-calculator`, element: <ProfitCalculator /> },
         { path: `${base}rebate-calculator`, element: <RebateCalculator /> },
+        { path: `${base}terms-and-condition`, element: <TermsConditions /> },
+
 
         { path: `${base}about-us`, element: <AboutUs /> },
+        { path: `${base}profile`, element: <ProfilePage /> }
       ],
     },
     {

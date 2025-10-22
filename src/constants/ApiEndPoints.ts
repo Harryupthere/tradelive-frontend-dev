@@ -1,6 +1,10 @@
 
 export const API_ENDPOINTS = {
   login:'/auth/login',
+  signup:'/auth/register',
+  resetPassword:'/auth/reset-password',
+  forgetPassword:'/auth/forgot-password',
+
   getNews:'/news',
   news_detail:'/news',
 
@@ -10,7 +14,13 @@ export const API_ENDPOINTS = {
   courseDetails:'/courses',
 
 
-  enrollment:'/enrollments'
+  enrollment:'/enrollments',
+
+  usersProfile:'/users/profile',
+  updateProfile:'/users/profile',
+  updatePassword:'/users/password',
+  uploadRequest:'/upload/request',
+
 };
 
 
