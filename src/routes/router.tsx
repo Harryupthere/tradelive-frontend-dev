@@ -2,7 +2,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "../components/layout/layout";
 
-import { CourseListing, Home } from "../pages";
+import { ContactUs, CourseListing, Home } from "../pages";
 import { RoutesArray } from "./routeArray";
 import { PrivateRoute } from "./authRoute";
 import NewsListing from "../pages/newsListing";
@@ -71,7 +71,7 @@ const Router = () => {
         { path: `${base}profit-calculator`, element: <ProfitCalculator /> },
         { path: `${base}rebate-calculator`, element: <RebateCalculator /> },
         { path: `${base}terms-and-condition`, element: <TermsConditions /> },
-
+        { path: `${base}contactus`, element: <ContactUs /> },
 
         { path: `${base}about-us`, element: <AboutUs /> },
         { path: `${base}profile`, element: <ProfilePage /> }

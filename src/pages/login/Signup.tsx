@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Mail } from "lucide-react";
+import { Mail, Eye, EyeOff } from "lucide-react";
 import "./Login-new.scss";
 import { useAuth } from "../../context/authContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 // import { useGoogleSignup } from "@react-oauth/google";
 import axios from "axios";
@@ -30,6 +30,9 @@ const SignupPage: React.FC = () => {
 
   const [acceptMarketing, setAcceptMarketing] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [urlReferral, setUrlReferral] = useState("");
 
@@ -154,19 +157,6 @@ const SignupPage: React.FC = () => {
 
   return (
     <div className="login-page">
-      <div className="login-page__promo">
-        <div className="login-page__video-container">
-          <video
-            className="login-page__video"
-            autoPlay
-            muted
-            loop
-            poster="/test/signup-image.jpg"
-          >
-            <source src="/test/signup-video.mp4" type="video/mp4" />
-          </video>
-        </div>
-      </div>
 
       <div className="login-page__form-section">
         <div className="login-page__form-container">
@@ -191,8 +181,8 @@ const SignupPage: React.FC = () => {
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
             {/* First Name */}
             <div className="login-page__input-group">
+              <label className="login-page__label">First Name</label>
               <div className="login-page__phone-input">
-                <span className="login-page__country-code">First Name</span>
                 <input
                   {...register("first_name", {
                     required: "First name is required",
@@ -209,8 +199,8 @@ const SignupPage: React.FC = () => {
 
             {/* Last Name */}
             <div className="login-page__input-group">
+              <label className="login-page__label">Last Name</label>
               <div className="login-page__phone-input">
-                <span className="login-page__country-code">Last Name</span>
                 <input
                   {...register("last_name")}
                   type="text"
@@ -222,8 +212,8 @@ const SignupPage: React.FC = () => {
 
             {/* Email */}
             <div className="login-page__input-group">
+              <label className="login-page__label">Email</label>
               <div className="login-page__phone-input">
-                <span className="login-page__country-code">Email</span>
                 <input
                   {...register("email", {
                     required: "Email is required",
@@ -244,8 +234,8 @@ const SignupPage: React.FC = () => {
 
             {/* Password */}
             <div className="login-page__input-group">
+              <label className="login-page__label">Password</label>
               <div className="login-page__phone-input">
-                <span className="login-page__country-code">Password</span>
                 <input
                   {...register("password", {
                     required: "Password is required",
@@ -254,10 +244,18 @@ const SignupPage: React.FC = () => {
                       message: "Password must be at least 6 characters",
                     },
                   })}
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="Enter password"
                   className="login-page__phone-field"
                 />
+                <button
+                  type="button"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  className="login-page__toggle-btn"
+                  onClick={() => setShowPassword((s) => !s)}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
               </div>
               {errors.password && (
                 <p className="login-page__error">{errors.password.message}</p>
@@ -266,18 +264,26 @@ const SignupPage: React.FC = () => {
 
             {/* Confirm Password */}
             <div className="login-page__input-group">
+              <label className="login-page__label">Confirm Password</label>
               <div className="login-page__phone-input">
-                <span className="login-page__country-code">Confirm</span>
                 <input
                   {...register("confirmPassword", {
                     required: "Please confirm your password",
                     validate: (val: string) =>
                       val === passwordValue || "Passwords do not match",
                   })}
-                  type="password"
+                  type={showConfirmPassword ? "text" : "password"}
                   placeholder="Confirm password"
                   className="login-page__phone-field"
                 />
+                <button
+                  type="button"
+                  aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                  className="login-page__toggle-btn"
+                  onClick={() => setShowConfirmPassword((s) => !s)}
+                >
+                  {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
               </div>
               {errors.confirmPassword && (
                 <p className="login-page__error">
@@ -309,7 +315,7 @@ const SignupPage: React.FC = () => {
               {loading || isSubmitting ? "Signing Up..." : "Sign Up"}
             </button>
           </form>
-
+              
           <div className="login-page__divider">
             <span>Or</span>
           </div>
@@ -360,6 +366,18 @@ const SignupPage: React.FC = () => {
               </a>
             </p>
           </div>
+        </div>
+      </div>
+
+      <div className="login-page__promo">
+        <div className="login-page__video-container">
+          <h2 className="login-page__heading">Learn.</h2>
+          <h2 className="login-page__heading">Adapt.</h2>
+          <h2 className="login-page__heading">React.</h2>
+          <div className="login-page__tagline"> Built by traders, for traders</div>
+           <Link to={`${base}`}>
+          <img src="/test/graph-logo.png" alt="logo" />
+          </Link>
         </div>
       </div>
     </div>
