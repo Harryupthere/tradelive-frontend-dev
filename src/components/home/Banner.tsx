@@ -174,10 +174,10 @@ const Banner = () => {
         </p>
 
         <div className="input-section">
-          <div className="phone-input">
+          {/* <div className="phone-input">
             <span className="country-code">+91</span>
             <input type="tel" placeholder="Enter Mobile Number" />
-          </div>
+          </div> */}
           <button className="get-started-btn">
             Start Learning
             <ArrowRight size={20} />

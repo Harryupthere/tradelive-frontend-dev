@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "./header.scss";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getToken, getUser, removeToken, removeUser } from "../../../utils/tokenUtils";
+import Translator from "./Translator";
 
 const base = import.meta.env.VITE_BASE;
 
@@ -139,6 +140,9 @@ const Header = () => {
               </Link>
             </li>
           </ul>
+          <div className="me-3 ">
+                      <Translator className="" />
+                    </div>
 
           {renderUserArea()}
         </div>

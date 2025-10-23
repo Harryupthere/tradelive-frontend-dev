@@ -126,14 +126,15 @@ const LoginPage: React.FC = () => {
         <div className="login-page__form-container">
           <div className="login-page__header">
             {
+              
               <div className="login-page__header-left">
                 <h2 className="login-page__title">Login</h2>
                 <p className="login-page__subtitle">Welcome Back!</p>
               </div>
             }
+              
             <div className="login-page__header-right">
               <span className="login-page__new-user">New User? </span>
-
               <a
                 onClick={() => navigate(`${base}signup`)}
                 className="login-page__signup-link"
@@ -266,7 +267,9 @@ const LoginPage: React.FC = () => {
               </a>
             </p>
           </div>
+          
         </div>
+        
       </div>
     </div>
   );
