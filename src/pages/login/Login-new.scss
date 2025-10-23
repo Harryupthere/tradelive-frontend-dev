@@ -7,11 +7,9 @@
   // Promotional section (left side)
   &__promo {
     flex: 1;
-    position: relative;
-    overflow: hidden;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
 
     @media (max-width: 768px) {
       display: none;
@@ -19,12 +17,24 @@
   }
 
   &__video-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 20px 50px;
+    overflow: hidden;
+    border: 3px solid rgba(196, 255, 0, 0.4);
+    box-shadow: 0 20px 60px rgba(196, 255, 0, 0.15),
+      0 0 40px rgba(196, 255, 0, 0.1);
+    max-width: 400px;
+    border-radius: 20px;
+  }
+  &__heading{
+    font-size: 40px;
+    font-weight: 700;
+  }
+  &__tagline{
+    margin-bottom: 80px;
+    margin-top: 10px;
+    font-size: 1rem;
+    color: var(--primary);
+    font-style: italic;
   }
 
   &__video {
@@ -39,11 +49,10 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, 
-      rgba(213, 255, 46, 0.8) 0%, 
-      rgba(213, 255, 46, 0.6) 50%, 
-      rgba(0, 0, 0, 0.8) 100%
-    );
+    background: linear-gradient(135deg,
+        rgba(213, 255, 46, 0.8) 0%,
+        rgba(213, 255, 46, 0.6) 50%,
+        rgba(0, 0, 0, 0.8) 100%);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -120,8 +129,8 @@
 
   &__form-container {
     width: 100%;
-    max-width: 400px;
-    
+    max-width: 500px;
+
     @media (max-width: 768px) {
       max-width: none;
       padding: 0 1rem;
@@ -160,29 +169,33 @@
     }
   }
 
-  &__title, &__mobile-title {
+  &__title,
+  &__mobile-title {
     font-size: 2.5rem;
     font-weight: 700;
     color: white;
     margin: 0 0 0.5rem 0;
   }
 
-  &__subtitle, &__mobile-subtitle {
+  &__subtitle,
+  &__mobile-subtitle {
     font-size: 1rem;
     color: rgba(255, 255, 255, 0.7);
     margin: 0;
   }
 
-  &__new-user, &__existing-user {
+  &__new-user,
+  &__existing-user {
     font-size: 0.9rem;
     color: rgba(255, 255, 255, 0.7);
   }
 
-  &__signup-link, &__login-link {
+  &__signup-link,
+  &__login-link {
     color: #d5ff2e;
     text-decoration: none;
-    font-weight: 500;
-
+    font-weight: 400;
+    cursor: pointer;
     &:hover {
       text-decoration: underline;
     }
@@ -198,6 +211,13 @@
     margin-bottom: 1.5rem;
   }
 
+  &__header-right{
+    text-align: center;
+  }
+  &__otp-info{
+    text-align: right;
+    margin-top: 10px;
+  }
   &__phone-input {
     display: flex;
     align-items: center;
@@ -210,13 +230,30 @@
     &:focus-within {
       border-color: #d5ff2e;
     }
-  }
 
+    .login-page__toggle-btn {
+      background: transparent;
+      border: none;
+      color: rgba(213, 255, 46, 0.9);
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      outline: none;
+    }
+  }
+&__label{
+  margin-bottom: 10px;
+  display: block;
+  margin-left: 5px;
+}
   &__country-code {
     padding: 1rem 1.5rem;
     color: rgba(255, 255, 255, 0.7);
     font-size: 1rem;
     border-right: 1px solid rgba(255, 255, 255, 0.1);
+    width: 105px;
   }
 
   &__phone-field {
@@ -235,12 +272,13 @@
 
   // error text for inputs
   &__error {
-    color: #ff4d4f; /* red */
+    color: #ff4d4f;
+    /* red */
     margin-top: 0.5rem;
     font-size: 0.9rem;
     line-height: 1.2;
   }
-  
+
   // Verification
   &__verification {
     display: flex;
@@ -441,7 +479,7 @@
     }
   }
 
-  &__checkbox-container input:checked + &__checkmark {
+  &__checkbox-container input:checked+&__checkmark {
     background: #d5ff2e;
     border-color: #d5ff2e;
 

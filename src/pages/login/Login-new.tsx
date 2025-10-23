@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Mail } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import "./Login-new.scss";
 import { useAuth } from "../../context/authContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
@@ -27,6 +27,7 @@ const LoginPage: React.FC = () => {
 
   const [acceptMarketing, setAcceptMarketing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -108,40 +109,14 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="login-page">
-      <div className="login-page__promo">
-        <div className="login-page__video-container">
-          <video
-            className="login-page__video"
-            autoPlay
-            muted
-            loop
-            poster="/test/signup-image.jpg"
-          >
-            <source src="/test/signup-video.mp4" type="video/mp4" />
-          </video>
-        </div>
-      </div>
-
       <div className="login-page__form-section">
         <div className="login-page__form-container">
           <div className="login-page__header">
-            {
-              
-              <div className="login-page__header-left">
-                <h2 className="login-page__title">Login</h2>
-                <p className="login-page__subtitle">Welcome Back!</p>
-              </div>
-            }
-              
-            <div className="login-page__header-right">
-              <span className="login-page__new-user">New User? </span>
-              <a
-                onClick={() => navigate(`${base}signup`)}
-                className="login-page__signup-link"
-              >
-                Sign Up
-              </a>
+            {<div className="login-page__header-left">
+              <h2 className="login-page__title">Login</h2>
+              <p className="login-page__subtitle">Welcome Back!</p>
             </div>
+            }
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -175,10 +150,18 @@ const LoginPage: React.FC = () => {
                   {...register("password", {
                     required: "Password is required",
                   })}
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="Enter password"
                   className="login-page__phone-field"
                 />
+                <button
+                  type="button"
+                  className="login-page__toggle-btn"
+                  onClick={() => setShowPassword((s) => !s)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
               {errors.password && (
                 <p className="login-page__error">{errors.password.message}</p>
@@ -219,6 +202,14 @@ const LoginPage: React.FC = () => {
               <div className="login-page__google-icon">G</div>
               Continue With Google
             </button>
+            <div className="login-page__header-right">
+              <span className="login-page__new-user">New User? </span>
+              <a
+                onClick={() => navigate(`${base}signup`)}
+                className="login-page__signup-link">
+                Sign Up
+              </a>
+            </div>
             {/* <TelegramLogin
               redirectUrl={"https://tradelive.com/test/telegram-auth"}
             >
@@ -267,9 +258,21 @@ const LoginPage: React.FC = () => {
               </a>
             </p>
           </div>
-          
+
         </div>
-        
+
+      </div>
+
+      <div className="login-page__promo">
+        <div className="login-page__video-container">
+          <h2 className="login-page__heading">Learn.</h2>
+          <h2 className="login-page__heading">Adapt.</h2>
+          <h2 className="login-page__heading">React.</h2>
+          <div className="login-page__tagline"> Built by traders, for traders</div>
+          <Link to={`${base}`}>
+          <img src="/test/graph-logo.png" alt="logo" />
+          </Link>
+        </div>
       </div>
     </div>
   );

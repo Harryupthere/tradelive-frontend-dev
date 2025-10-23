@@ -66,8 +66,8 @@ const Home = () => {
 
   return (
     <div className="home-wrapped">
+      <div className="container">
       <Banner />
-      <Container>
         <section data-aos="fade-up">
         <div className="center-content">
           <div className="overlay-img">
@@ -107,7 +107,6 @@ const Home = () => {
             </p>
           </div>
         </section>
-
         <section className="watch" >
           <div className="left-content" data-aos="fade-right">
             <h2 className="title">Watch & Learn</h2>
@@ -164,7 +163,7 @@ const Home = () => {
         <section>
           <Courses />
         </section> */}
-      </Container>
+      </div>
     </div>
   );
 };
