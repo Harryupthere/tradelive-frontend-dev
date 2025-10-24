@@ -22,6 +22,9 @@ const ResetPasswordPage: React.FC = () => {
     try {
       const params = new URLSearchParams(window.location.search);
       const t = params.get("token");
+      if(!t){
+        navigate(`${base}`)
+      }
       setToken(t);
     } catch (e) {
       console.warn("Failed to parse token from URL", e);

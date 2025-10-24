@@ -7,14 +7,19 @@ import {
   EyeOff,
   Save,
   CreditCard as Edit3,
+  ArrowUpCircle
 } from "lucide-react";
 import "./Profile.scss";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, get } from "react-hook-form";
 import { allCountries } from "country-telephone-data";
 import { api } from "../../api/Service";
 import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
 import { successMsg, errorMsg } from "../../utils/customFn";
 import { getUser } from "../../utils/tokenUtils";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../utils/redux/typedHook";
+import { setUserProfile } from "../../utils/redux/slice";
+import { setUser as persistUser } from "../../utils/tokenUtils";
 
 type ProfileDto = {
   first_name: string;
@@ -46,6 +51,8 @@ const iso2ToFlag = (iso2: string) => {
 };
 
 const ProfilePage: React.FC = () => {
+  const navigate=useNavigate()
+  const dispatch = useAppDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -155,6 +162,20 @@ const ProfilePage: React.FC = () => {
       try {
         const res = await api.get(API_ENDPOINTS.usersProfile);
         const data: ProfileDto = res?.data?.data || res?.data || {};
+
+        // update user object in redux (merge existing stored user with any returned user/userType)
+        try {
+          const storedUser = getUser() || {};
+          // API might return a full user object (data.user) or just profile fields (data)
+          const apiUser = (res?.data?.data?.user) ? res.data.data.user : data;
+          const mergedUser = { ...storedUser,  userType: (data as any).userType || apiUser.userType || storedUser.userType };
+          // persist to local storage and update redux
+          persistUser(mergedUser as any);
+          dispatch(setUserProfile(mergedUser as any));
+        } catch (e) {
+          // non-fatal: continue without crashing if redux update fails
+          console.warn("Could not update user in redux/localStorage", e);
+        }
 
         // build local countries map from allCountries
         const countriesLocal = allCountries.map((c: any) => ({
@@ -350,6 +371,15 @@ const ProfilePage: React.FC = () => {
           <p className="profile-page__subtitle">
             Manage your account information and preferences
           </p>
+
+          {getUser().userType.id==1 && 
+          <button
+              className="profile-page__save-btn"
+              onClick={()=>navigate(`${base}checkout`)}
+            >
+              <ArrowUpCircle size={16} />{" "}
+              Upgrade
+            </button>}
         </div>
 
         <div className="profile-page__section">
