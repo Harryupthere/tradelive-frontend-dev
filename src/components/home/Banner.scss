@@ -3,7 +3,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 30px 80px;
   gap: 50px;
   overflow: hidden;
   padding-bottom: 40px;
@@ -312,7 +311,6 @@
 
 @media (max-width: 1200px) {
   .landing-container {
-    padding: 40px 40px;
     gap: 40px;
   }
 
@@ -328,7 +326,6 @@
 @media (max-width: 768px) {
   .landing-container {
     flex-direction: column;
-    padding: 40px 20px;
   }
 
   .content-section {
