@@ -33,6 +33,9 @@ import SignupPage from "../pages/login/Signup";
 import ResetPasswordPage from "../pages/login/ResetPassword";
 import ForgetPasswordPage from "../pages/login/ForgetPassword";
 import ProfilePage from "../pages/profile";
+import Checkout from "../pages/checkout";
+import PaymentSuccess from "../pages/checkout/PaymentSuccess";
+import PaymentFailure from "../pages/checkout/PaymentFailure";
 const base = import.meta.env.VITE_BASE;
 
 
@@ -43,6 +46,9 @@ const Router = () => {
     { path: `${base}signup`, element: <SignupPage /> },
     { path: `${base}reset-password`, element: <ResetPasswordPage /> },
     { path: `${base}forgot-password`, element: <ForgetPasswordPage /> },
+    { path: `${base}payment-success`, element: <PaymentSuccess /> },
+    { path: `${base}payment-failure`, element: <PaymentFailure /> },
+
 
 
     {
@@ -74,7 +80,9 @@ const Router = () => {
 
 
         { path: `${base}about-us`, element: <AboutUs /> },
-        { path: `${base}profile`, element: <ProfilePage /> }
+        { path: `${base}profile`, element: <ProfilePage /> },
+        { path: `${base}checkout`, element: <Checkout/> }
+
       ],
     },
     {

@@ -1,0 +1,620 @@
+.payment-result {
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  position: relative;
+  overflow: hidden;
+
+  &.success {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f2a0f 100%);
+  }
+
+  &.failure {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2a0f0f 100%);
+  }
+
+  &__container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+    position: relative;
+    z-index: 2;
+  }
+
+  &__content {
+    background: rgba(40, 40, 40, 0.9);
+    border-radius: 24px;
+    padding: 60px 50px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+    position: relative;
+    animation: slideInUp 0.8s ease-out;
+
+    @media (max-width: 768px) {
+      padding: 40px 30px;
+      margin: 20px;
+    }
+  }
+
+  &__icon-container {
+    position: relative;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.success-animation {
+      animation: successPulse 2s ease-in-out infinite;
+    }
+
+    &.failure-animation {
+      animation: failureShake 0.8s ease-in-out;
+    }
+  }
+
+  &__message {
+    margin-bottom: 40px;
+  }
+
+  &__title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+
+    &.success-title {
+      color: #d4ff00;
+      animation: titleGlow 2s ease-in-out infinite alternate;
+    }
+
+    &.failure-title {
+      color: #ff4444;
+      animation: titleFlicker 1.5s ease-in-out infinite;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
+  }
+
+  &__subtitle {
+    font-size: 1.1rem;
+    color: #b0b0b0;
+    line-height: 1.6;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  &__details {
+    background: rgba(30, 30, 30, 0.8);
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .detail-label {
+        font-size: 1rem;
+        color: #888;
+        font-weight: 500;
+      }
+
+      .detail-value {
+        font-size: 1rem;
+        color: #ffffff;
+        font-weight: 600;
+
+        &.success-status {
+          color: #d4ff00;
+        }
+
+        &.failure-status {
+          color: #ff4444;
+        }
+      }
+    }
+  }
+
+  &__action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+  }
+
+  &__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 16px 32px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 180px;
+
+    &.success-button {
+      background: linear-gradient(135deg, #d4ff00 0%, #b8e600 100%);
+      color: #1a1a1a;
+      box-shadow: 0 8px 24px rgba(212, 255, 0, 0.3);
+
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 32px rgba(212, 255, 0, 0.4);
+      }
+    }
+
+    &.failure-button {
+      background: rgba(60, 60, 60, 0.8);
+      color: #ffffff;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+
+      &:hover {
+        background: rgba(80, 80, 80, 0.9);
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+      }
+    }
+
+    &.retry-button {
+      background: linear-gradient(135deg, #ff6b35 0%, #ff4444 100%);
+      color: #ffffff;
+      box-shadow: 0 8px 24px rgba(255, 68, 68, 0.3);
+
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 32px rgba(255, 68, 68, 0.4);
+      }
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  .button-group {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    @media (max-width: 480px) {
+      flex-direction: column;
+      width: 100%;
+    }
+  }
+
+  .countdown-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .countdown-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #d4ff00 0%, #b8e600 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: countdownPulse 1s ease-in-out infinite;
+
+    &.failure-countdown {
+      background: linear-gradient(135deg, #ff6b35 0%, #ff4444 100%);
+    }
+
+    .countdown-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      right: -4px;
+      bottom: -4px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #d4ff00 0%, #b8e600 100%);
+      opacity: 0.3;
+      animation: ripple 2s ease-out infinite;
+    }
+
+    &.failure-countdown::before {
+      background: linear-gradient(135deg, #ff6b35 0%, #ff4444 100%);
+    }
+  }
+
+  .countdown-text {
+    font-size: 1rem;
+    color: #b0b0b0;
+    margin: 0;
+  }
+
+  // Success Animations
+  .success-circle {
+    position: relative;
+    animation: bounceIn 0.8s ease-out;
+
+    .success-icon {
+      color: #d4ff00;
+      filter: drop-shadow(0 0 20px rgba(212, 255, 0, 0.5));
+    }
+  }
+
+  .sparkle {
+    position: absolute;
+    color: #d4ff00;
+    animation: sparkleFloat 3s ease-in-out infinite;
+
+    &.sparkle-1 {
+      top: -20px;
+      left: -30px;
+      animation-delay: 0s;
+    }
+
+    &.sparkle-2 {
+      top: -10px;
+      right: -25px;
+      animation-delay: 0.5s;
+    }
+
+    &.sparkle-3 {
+      bottom: -15px;
+      left: -20px;
+      animation-delay: 1s;
+    }
+
+    &.sparkle-4 {
+      bottom: -10px;
+      right: -30px;
+      animation-delay: 1.5s;
+    }
+  }
+
+  // Failure Animations
+  .failure-circle {
+    position: relative;
+    animation: shakeIn 0.8s ease-out;
+
+    .failure-icon {
+      color: #ff4444;
+      filter: drop-shadow(0 0 20px rgba(255, 68, 68, 0.5));
+    }
+  }
+
+  .warning {
+    position: absolute;
+    color: #ff6b35;
+    animation: warningBlink 2s ease-in-out infinite;
+
+    &.warning-1 {
+      top: -15px;
+      left: -25px;
+      animation-delay: 0s;
+    }
+
+    &.warning-2 {
+      top: -10px;
+      right: -20px;
+      animation-delay: 0.7s;
+    }
+
+    &.warning-3 {
+      bottom: -15px;
+      right: -25px;
+      animation-delay: 1.4s;
+    }
+  }
+
+  // Background Animation
+  .background-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+
+    .floating-element {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.1;
+      animation: float 6s ease-in-out infinite;
+
+      &.element-1 {
+        width: 100px;
+        height: 100px;
+        background: #d4ff00;
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s;
+      }
+
+      &.element-2 {
+        width: 60px;
+        height: 60px;
+        background: #d4ff00;
+        top: 60%;
+        right: 15%;
+        animation-delay: 2s;
+      }
+
+      &.element-3 {
+        width: 80px;
+        height: 80px;
+        background: #d4ff00;
+        bottom: 30%;
+        left: 20%;
+        animation-delay: 4s;
+      }
+
+      &.element-4 {
+        width: 40px;
+        height: 40px;
+        background: #d4ff00;
+        top: 40%;
+        right: 30%;
+        animation-delay: 1s;
+      }
+
+      &.element-5 {
+        width: 120px;
+        height: 120px;
+        background: #d4ff00;
+        bottom: 20%;
+        right: 10%;
+        animation-delay: 3s;
+      }
+    }
+
+    &.failure-bg .floating-element {
+      background: #ff4444;
+    }
+  }
+}
+
+// Keyframe Animations
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shakeIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  25% {
+    opacity: 0.5;
+    transform: translateX(10px);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateX(-5px);
+  }
+  75% {
+    opacity: 0.9;
+    transform: translateX(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes successPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes failureShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes titleGlow {
+  from {
+    text-shadow: 0 0 20px rgba(212, 255, 0, 0.5);
+  }
+  to {
+    text-shadow: 0 0 30px rgba(212, 255, 0, 0.8), 0 0 40px rgba(212, 255, 0, 0.3);
+  }
+}
+
+@keyframes titleFlicker {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes sparkleFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(-10px) rotate(180deg);
+    opacity: 1;
+  }
+}
+
+@keyframes warningBlink {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes countdownPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-20px) rotate(120deg);
+  }
+  66% {
+    transform: translateY(10px) rotate(240deg);
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .payment-result {
+    &__content {
+      padding: 40px 25px;
+    }
+
+    &__title {
+      font-size: 2rem;
+    }
+
+    &__subtitle {
+      font-size: 1rem;
+    }
+
+    &__details {
+      padding: 20px;
+
+      .detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        padding: 8px 0;
+      }
+    }
+
+    .countdown-circle {
+      width: 60px;
+      height: 60px;
+
+      .countdown-number {
+        font-size: 1.5rem;
+      }
+    }
+
+    &__button {
+      min-width: 150px;
+      padding: 14px 24px;
+      font-size: 1rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .payment-result {
+    &__content {
+      padding: 30px 20px;
+    }
+
+    &__icon-container {
+      margin-bottom: 30px;
+
+      .success-icon,
+      .failure-icon {
+        width: 60px;
+        height: 60px;
+      }
+    }
+
+    &__title {
+      font-size: 1.8rem;
+    }
+
+    &__action {
+      gap: 20px;
+    }
+
+    .button-group {
+      gap: 15px;
+    }
+
+    &__button {
+      min-width: 140px;
+      padding: 12px 20px;
+    }
+  }
+}

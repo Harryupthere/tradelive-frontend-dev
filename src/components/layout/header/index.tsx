@@ -109,7 +109,7 @@ const Header = () => {
                 Home
               </Link>
             </li>
-            {(!getToken() || !user) && (
+            { (
               <li>
                 <Link to={`${base}courses`} className={isActive(`${base}courses`)}>
                   Courses
