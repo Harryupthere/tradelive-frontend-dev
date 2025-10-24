@@ -132,7 +132,7 @@ const Header = () => {
               </Link>
             </li>
             <li>
-              <Link to={"#"}>Contact</Link>
+              <Link to={`${base}contactus`} className={isActive(`${base}contactus`)}>Contact</Link>
             </li>
             <li>
               <Link to={`${base}about-us`} className={isActive(`${base}about-us`)}>
