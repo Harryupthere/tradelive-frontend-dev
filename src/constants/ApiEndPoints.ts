@@ -21,6 +21,10 @@ export const API_ENDPOINTS = {
   updatePassword:'/users/password',
   uploadRequest:'/upload/request',
 
+  paymentgateways:'/payment-gateways',
+  stripeCreateSession:'/billing/stripe-session',
+  checkPaymentStatus:'/billing/status',
+
 };
 
 
