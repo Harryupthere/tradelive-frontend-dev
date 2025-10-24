@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import "./Login-new.scss";
 import { useAuth } from "../../context/authContext";
@@ -16,6 +16,7 @@ import { setCredentials } from "../../utils/redux/slice";
 import {
   setToken as persistToken,
   setUser as persistUser,
+  getUser
 } from "../../utils/tokenUtils";
 
 const base = import.meta.env.VITE_BASE;
@@ -29,6 +30,11 @@ const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  useEffect(()=>{
+    if(getUser()?.email){
+      navigate(`${base}`)
+    } 
+  },[])
   const {
     register,
     handleSubmit,
@@ -91,13 +97,26 @@ const LoginPage: React.FC = () => {
           login_type: 2,
         } as any;
         const ress = await loginService(payload);
-        if (ress?.status) {
-          login(ress?.data?.data?.access_token);
-          successMsg(ress.message);
-          navigate(`${base}`);
-        } else {
-          errorMsg(ress?.message || "Google login failed");
+        const token = ress?.data?.data?.access_token;
+        // if backend also returns user object, adapt the path accordingly.
+        const user = ress?.data?.data?.user || ress?.data?.data?.profile || null;
+
+        // maintain existing context login if you still use it
+        login(token);
+
+        // persist token + user and set in redux
+        if (token) {
+          persistToken(token);
         }
+        if (user) {
+          persistUser(user);
+        }
+
+        // dispatch to redux
+        dispatch(setCredentials({ token, user }));
+
+        successMsg(ress.message);
+        navigate(`${base}`);
       } catch (err: any) {
         errorMsg(err?.response?.data?.message || "Google login failed");
       } finally {

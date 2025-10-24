@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Mail } from "lucide-react";
 import "./Login-new.scss";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { errorMsg, successMsg } from "../../utils/customFn";
 import { api } from "../../api/Service";
 import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
+ import { getUser
+} from "../../utils/tokenUtils";
 const base = import.meta.env.VITE_BASE;
 
 type FormValues = {
@@ -15,6 +17,11 @@ type FormValues = {
 const ForgetPasswordPage: React.FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+    useEffect(()=>{
+      if(getUser()?.email){
+        navigate(`${base}`)
+      } 
+    },[])
 
   const {
     register,

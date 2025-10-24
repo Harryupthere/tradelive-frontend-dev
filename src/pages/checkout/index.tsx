@@ -4,6 +4,8 @@ import { ArrowLeft, CreditCard, Gift, Info } from "lucide-react";
 import { allCountries } from "country-telephone-data";
 import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
 import { api } from "../../api/Service";
+import { getUser } from "../../utils/tokenUtils";
+
 const base = import.meta.env.VITE_BASE;
 const planPrice = import.meta.env.VITE_PLAN_PRICE;
 
@@ -55,7 +57,7 @@ const Checkout: React.FC = () => {
     email: "",
     mobileNo: "",
     country: "",
-    subscriptionType: "Yearly Subscription",
+    subscriptionType: getUser().userType.id==1?"Yearly Subscription":"Activation Coupon",
     paymentGateway: "1",
     couponQuantity: 1,
   });
@@ -212,7 +214,6 @@ console.log(formData,"???")
       amount: pricing.total,
       metadata,
     };
-    console.log("Payload for payment processing:", payload);
     if (formData.paymentGateway == 1) {
       const res = await api.post(API_ENDPOINTS.stripeCreateSession, payload);
 
@@ -356,6 +357,7 @@ console.log(formData,"???")
               <h2 className="section-title">Subscription Options</h2>
 
               <div className="subscription-options">
+                {getUser().userType.id==1 &&
                 <div className="subscription-option">
                   <input
                     type="radio"
@@ -384,7 +386,7 @@ console.log(formData,"???")
                       months
                     </div>
                   </label>
-                </div>
+                </div>}
 
                 <div className="subscription-option">
                   <input

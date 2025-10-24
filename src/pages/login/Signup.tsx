@@ -12,7 +12,8 @@ import { SignupPayload, signupService } from "../../api/authServices";
 import { errorMsg, successMsg } from "../../utils/customFn";
 import TelegramSignup from "./telegram";
 import { useGoogleLogin } from "@react-oauth/google";
-
+ import { getUser
+} from "../../utils/tokenUtils";
 const base = import.meta.env.VITE_BASE;
 
 type FormValues = {
@@ -27,7 +28,11 @@ type FormValues = {
 const SignupPage: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
-
+  useEffect(()=>{
+    if(getUser()?.email){
+      navigate(`${base}`)
+    } 
+  },[])
   const [acceptMarketing, setAcceptMarketing] = useState(false);
   const [loading, setLoading] = useState(false);
 
