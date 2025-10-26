@@ -112,6 +112,9 @@
 
 
         .right-drawer {
+            display: flex;
+            gap: 10px;
+            align-items: center;
             .gradient-btn{
                 padding: 10px;
                 border-radius: 30px;
