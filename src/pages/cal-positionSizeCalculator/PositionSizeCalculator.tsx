@@ -1,7 +1,9 @@
-import { useState } from 'react';
-import './PositionSizeCalculator.scss';
-import { useNavigate } from 'react-router-dom'; 
-import {  Info, ArrowLeft, ChevronDown, Search } from 'lucide-react';
+import { useEffect, useState } from "react";
+import "./PositionSizeCalculator.scss";
+import { useNavigate } from "react-router-dom";
+import { Info, ArrowLeft, ChevronDown, Search } from "lucide-react";
+import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
+import { api } from "../../api/Service";
 
 const base = import.meta.env.VITE_BASE;
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -12,94 +14,102 @@ interface CalculationResults {
   lotSize: number;
 }
 
-const PositionSizeCalculator : React.FC = ()  => {
-        const navigate = useNavigate();
-    
-  const [currencyPair, setCurrencyPair] = useState('EURUSD');
-  const [accountCurrency, setAccountCurrency] = useState('USD');
-  const [accountSize, setAccountSize] = useState(10000);
-  const [riskRatio, setRiskRatio] = useState(1);
-  const [stopLossPips, setStopLossPips] = useState(50);
-  const [tradeSize, setTradeSize] = useState(1);
+const PositionSizeCalculator: React.FC = () => {
+  const navigate = useNavigate();
+
+  const [currencyPair, setCurrencyPair] = useState();
+  const [accountCurrency, setAccountCurrency] = useState();
+  const [accountSize, setAccountSize] = useState();
+  const [riskRatio, setRiskRatio] = useState();
+  const [stopLossPips, setStopLossPips] = useState();
+  const [tradeSize, setTradeSize] = useState();
+  const [riskAmount, setRiskAmount] = useState();
   const [results, setResults] = useState<CalculationResults | null>(null);
 
-  const currencyPairs = [
-    'EURUSD', 'GBPUSD', 'USDJPY', 'USDCHF', 'AUDUSD', 'USDCAD',
-    'NZDUSD', 'EURGBP', 'EURJPY', 'GBPJPY', 'AUDJPY', 'EURAUD'
-  ];
+  const [riskPercentageBool,setRiskPercentageBool]=useState(true);
 
-  const currencies = ['USD', 'EUR', 'GBP', 'JPY', 'CHF', 'AUD', 'CAD', 'NZD'];
 
-  const getPipValue = (pair: string, accountCurr: string): number => {
-    const standardPipValue: { [key: string]: number } = {
-      'EURUSD': 10,
-      'GBPUSD': 10,
-      'AUDUSD': 10,
-      'NZDUSD': 10,
-      'USDJPY': 9.09,
-      'USDCHF': 10,
-      'USDCAD': 7.69,
-      'EURGBP': 12.86,
-      'EURJPY': 9.17,
-      'GBPJPY': 9.17,
-      'AUDJPY': 9.17,
-      'EURAUD': 6.67,
-    };
+  const [currencyPairs, setCurrencyPairs] = useState([
+    
+  ]);
 
-    return standardPipValue[pair] || 10;
-  };
+  const [currencies, setCurrencies] = useState([]);
 
-  const calculatePositionSize = () => {
+  useEffect(() => {
+    fetchList()
+  }, []);
+
+  const fetchList = async () => {
+    try {
+      const response = await api.get(API_ENDPOINTS.positionList);
+      setCurrencyPairs(response.data.data.currencyPairs)
+      setCurrencies(response.data.data.currencies)
+
+              // Set default currencies if available
+       
+         setCurrencyPair( "EUR/USD");
+    setAccountCurrency("USD");
+    } catch (error) {
+      console.error("Error fetching position list:", error);
+    }
+  }
+
+
+  const calculatePositionSize = async() => {
     if (accountSize <= 0 || riskRatio <= 0 || stopLossPips <= 0) {
       return;
     }
 
-    const moneyAtRisk = (accountSize * riskRatio) / 100;
-    const pipValue = getPipValue(currencyPair, accountCurrency);
-    const units = moneyAtRisk / (stopLossPips * (pipValue / 100000));
-    const lotSize = units / 100000;
+   const payload={currencyPair,accountCurrency,accountSize,risk:riskPercentageBool?riskRatio:riskAmount,riskType:riskPercentageBool?"percent":"money",stopLossPips,"tradeSizeLots":tradeSize};
+
+   const response= await api.post(`${API_ENDPOINTS.positionSizeCalculator}`,payload);
+   const result = response.data.data;
 
     setResults({
-      moneyAtRisk: parseFloat(moneyAtRisk.toFixed(2)),
-      units: parseFloat(units.toFixed(0)),
-      lotSize: parseFloat(lotSize.toFixed(2)),
+      moneyAtRisk: parseFloat(result.riskAmount.toFixed(2)),
+      units: parseFloat(result.units.toFixed(0)),
+      lotSize: parseFloat(result.lots.toFixed(2)),
     });
   };
 
   const handleReset = () => {
-    setCurrencyPair('EURUSD');
-    setAccountCurrency('USD');
-    setAccountSize(10000);
-    setRiskRatio(1);
-    setStopLossPips(50);
-    setTradeSize(1);
-    setResults(null);
+    setCurrencyPair("EURUSD");
+    setAccountCurrency("USD");
+    setAccountSize();
+    setRiskRatio();
+    setStopLossPips();
+    setTradeSize();
+    setResults();
   };
+
 
   const handleSwap = () => {
-    const baseCurrency = currencyPair.substring(0, 3);
-    const quoteCurrency = currencyPair.substring(3, 6);
+    setRiskPercentageBool(!riskPercentageBool);
+    // const baseCurrency = currencyPair.substring(0, 3);
+    // const quoteCurrency = currencyPair.substring(3, 6);
 
-    const reversedPair = quoteCurrency + baseCurrency;
+    // const reversedPair = quoteCurrency + baseCurrency;
 
-    if (currencyPairs.includes(reversedPair)) {
-      setCurrencyPair(reversedPair);
-    }
+    // if (currencyPairs.includes(reversedPair)) {
+    //   setCurrencyPair(reversedPair);
+    // }
   };
 
-    const handleBackToCalculators = () => {
+  const handleBackToCalculators = () => {
     navigate(`${base}forum-calculators`);
   };
 
   return (
     <div className="position-size-calculator">
       <div className="calculator-container">
-                <div className="currency-converter__header">
+        <div className="currency-converter__header">
           <button className="back-button" onClick={handleBackToCalculators}>
             <ArrowLeft size={20} />
             Back to Calculators
           </button>
-          <h1 className="currency-converter__title">Position Size Calculator</h1>
+          <h1 className="currency-converter__title">
+            Position Size Calculator
+          </h1>
         </div>
         {/* <h1 className="calculator-title">Position Size Calculator</h1> */}
 
@@ -147,16 +157,18 @@ const PositionSizeCalculator : React.FC = ()  => {
                 type="number"
                 className="form-input"
                 value={accountSize}
-                onChange={(e) => setAccountSize(parseFloat(e.target.value) || 0)}
+                onChange={(e) =>
+                  setAccountSize(parseFloat(e.target.value) || 0)
+                }
                 placeholder="Enter account size"
               />
             </div>
           </div>
 
           <div className="form-group">
-            <label className="form-label">Risk Ratio, %:</label>
+            <label className="form-label">{`Risk Ratio, ${riskPercentageBool ? "%" : "Amount"}`}</label>
             <div className="input-wrapper">
-              <input
+             { riskPercentageBool?<input
                 type="number"
                 className="form-input"
                 value={riskRatio}
@@ -164,11 +176,22 @@ const PositionSizeCalculator : React.FC = ()  => {
                 placeholder="Enter risk percentage"
                 step="0.1"
               />
+              :
+              <input
+                type="number"
+                className="form-input"
+                value={riskAmount}
+                onChange={(e) => setRiskAmount(parseFloat(e.target.value) || 0)}
+                placeholder="Enter risk amount"
+                step="0.1"
+              />}
               <button className="swap-button" onClick={handleSwap}>
-                Swap with Money
+                {`Swap with ${riskPercentageBool ? "Amount" : "Percentage"}`}
               </button>
             </div>
           </div>
+
+          
 
           <div className="form-group">
             <label className="form-label">Stop-Loss, Pips:</label>
@@ -177,7 +200,9 @@ const PositionSizeCalculator : React.FC = ()  => {
                 type="number"
                 className="form-input"
                 value={stopLossPips}
-                onChange={(e) => setStopLossPips(parseFloat(e.target.value) || 0)}
+                onChange={(e) =>
+                  setStopLossPips(parseFloat(e.target.value) || 0)
+                }
                 placeholder="Enter stop loss in pips"
               />
             </div>
@@ -201,7 +226,10 @@ const PositionSizeCalculator : React.FC = ()  => {
             <button className="btn btn-reset" onClick={handleReset}>
               Reset
             </button>
-            <button className="btn btn-calculate" onClick={calculatePositionSize}>
+            <button
+              className="btn btn-calculate"
+              onClick={calculatePositionSize}
+            >
               Calculate
             </button>
           </div>
@@ -213,15 +241,21 @@ const PositionSizeCalculator : React.FC = ()  => {
             <div className="results-grid">
               <div className="result-item">
                 <span className="result-label">Money, {accountCurrency}</span>
-                <span className="result-value">${results.moneyAtRisk.toFixed(2)}</span>
+                <span className="result-value">
+                  ${results.moneyAtRisk.toFixed(2)}
+                </span>
               </div>
               <div className="result-item">
                 <span className="result-label">Units</span>
-                <span className="result-value">{results.units.toLocaleString()}</span>
+                <span className="result-value">
+                  {results.units.toLocaleString()}
+                </span>
               </div>
               <div className="result-item">
                 <span className="result-label">Sizing</span>
-                <span className="result-value">{results.lotSize.toFixed(2)} lots</span>
+                <span className="result-value">
+                  {results.lotSize.toFixed(2)} lots
+                </span>
               </div>
             </div>
           </div>

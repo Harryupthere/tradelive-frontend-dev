@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import './PaymentResult.scss';
 import { XCircle, ArrowRight, AlertTriangle } from 'lucide-react';
-
+const base = import.meta.env.VITE_BASE;
 const PaymentFailure: React.FC = () => {
   const [countdown, setCountdown] = useState(10);
 
@@ -11,7 +11,7 @@ const PaymentFailure: React.FC = () => {
         if (prev <= 1) {
           clearInterval(timer);
           // Redirect to profile
-          window.location.href = '/profile';
+          window.location.href = `${base}profile`;
           return 0;
         }
         return prev - 1;
@@ -22,7 +22,7 @@ const PaymentFailure: React.FC = () => {
   }, []);
 
   const handleGoToProfile = () => {
-    window.location.href = '/profile';
+    window.location.href = `${base}profile`;
   };
 
   const handleTryAgain = () => {
