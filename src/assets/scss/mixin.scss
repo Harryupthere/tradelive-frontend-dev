@@ -34,6 +34,11 @@
             @content;
         }
     }
+     @else if $breakpoint == 1920 {
+        @media (max-width: 1920px) {
+            @content;
+        }
+    }
 }
 
 @mixin button($size, $color, $bg, $padding, $radius, $bordercolor, $fw) {
