@@ -1,183 +1,275 @@
-import React, { useState, useEffect } from 'react';
-import { ArrowLeftRight, TrendingUp, Info, ArrowLeft, ChevronDown, Search } from 'lucide-react';
-import './CurrencyConverter.scss';
-import { useNavigate } from 'react-router-dom'; 
+import React, { useState, useEffect } from "react";
+import {
+  ArrowLeftRight,
+  TrendingUp,
+  Info,
+  ArrowLeft,
+  ChevronDown,
+  Search,
+} from "lucide-react";
+import "./CurrencyConverter.scss";
+import { useNavigate } from "react-router-dom";
+import { api } from "../../api/Service";
+import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
+
 const base = import.meta.env.VITE_BASE;
 const apiUrl = import.meta.env.VITE_API_URL;
+
 interface Currency {
   code: string;
   name: string;
-  flag: string;
+  flag?: string; // Made optional since API won't provide flags
 }
 
-interface ExchangeRate {
-  from: string;
-  to: string;
-  rate: number;
+interface ConversionRate {
+  conversion_rate: number;
+  base: string;
+  target: string;
+  last_updated: string;
+}
+
+interface TableData {
+  amount_major_base: string[];
+  amount_major_target: string[];
+  major_currencies: Array<{
+    from: string;
+    to: string;
+    rate: string;
+  }>;
 }
 
 const CurrencyConverter: React.FC = () => {
-    const navigate = useNavigate();
-  const [fromCurrency, setFromCurrency] = useState<Currency>({ code: 'EUR', name: 'Euro', flag: '🇪🇺' });
-  const [toCurrency, setToCurrency] = useState<Currency>({ code: 'USD', name: 'United States Dollar', flag: '🇺🇸' });
-  const [fromAmount, setFromAmount] = useState<string>('1');
-  const [toAmount, setToAmount] = useState<string>('1.162');
+  const navigate = useNavigate();
+  const [fromCurrency, setFromCurrency] = useState<Currency>({
+    code: "EUR",
+    name: "Euro",
+    flag: "🇪🇺",
+  });
+  const [toCurrency, setToCurrency] = useState<Currency>({
+    code: "USD",
+    name: "United States Dollar",
+    flag: "🇺🇸",
+  });
+  const [fromAmount, setFromAmount] = useState<string>("1");
+  const [toAmount, setToAmount] = useState<string>("1.162");
   const [exchangeRate, setExchangeRate] = useState<number>(1.162);
   const [showFromDropdown, setShowFromDropdown] = useState<boolean>(false);
   const [showToDropdown, setShowToDropdown] = useState<boolean>(false);
-  const [fromSearchTerm, setFromSearchTerm] = useState<string>('');
-  const [toSearchTerm, setToSearchTerm] = useState<string>('');
+  const [fromSearchTerm, setFromSearchTerm] = useState<string>("");
+  const [toSearchTerm, setToSearchTerm] = useState<string>("");
+  const [currencies, setCurrencies] = useState<Currency[]>([]);
+  const [eurToUsdRates, setEurToUsdRates] = useState<
+    { amount: string; converted: string }[]
+  >([]);
+  const [usdToEurRates, setUsdToEurRates] = useState<
+    { amount: string; converted: string }[]
+  >([]);
+  const [majorCurrencies, setMajorCurrencies] = useState<
+    { name: string;  symbol: string; flag: string }[]
+  >([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const currencies: Currency[] = [
-    { code: 'EUR', name: 'Euro', flag: '🇪🇺' },
-    { code: 'USD', name: 'United States Dollar', flag: '🇺🇸' },
-    { code: 'GBP', name: 'British Pound', flag: '🇬🇧' },
-    { code: 'JPY', name: 'Japanese Yen', flag: '🇯🇵' },
-    { code: 'CHF', name: 'Swiss Franc', flag: '🇨🇭' },
-    { code: 'CAD', name: 'Canadian Dollar', flag: '🇨🇦' },
-    { code: 'AUD', name: 'Australian Dollar', flag: '🇦🇺' },
-    { code: 'NZD', name: 'New Zealand Dollar', flag: '🇳🇿' }
-  ];
+  // Fetch supported currencies on mount
+  useEffect(() => {
+    const fetchSupportedCurrencies = async () => {
+      try {
+        const response = await api.get(API_ENDPOINTS.currencySupportedCodes);
+        const supportedCodes = response.data.data.data;
 
-  const eurToUsdRates = [
-    { amount: '5 EUR', converted: '5.81 USD' },
-    { amount: '10 EUR', converted: '11.62 USD' },
-    { amount: '25 EUR', converted: '29.05 USD' },
-    { amount: '50 EUR', converted: '58.09 USD' },
-    { amount: '100 EUR', converted: '116.19 USD' },
-    { amount: '500 EUR', converted: '580.95 USD' },
-    { amount: '1,000 EUR', converted: '1,161.90 USD' },
-    { amount: '5,000 EUR', converted: '5,809.50 USD' },
-    { amount: '10,000 EUR', converted: '11,619.00 USD' },
-    { amount: '50,000 EUR', converted: '58,095.00 USD' }
-  ];
+        // Transform API data to our Currency interface
+        const formattedCurrencies: Currency[] = supportedCodes.map(
+          ([code, name]: [string, string]) => ({
+            code,
+            name,
+            flag: getFlagEmoji(code), // Helper function to get flag emoji
+          })
+        );
 
-  const usdToEurRates = [
-    { amount: '5 USD', converted: '4.30 EUR' },
-    { amount: '10 USD', converted: '8.61 EUR' },
-    { amount: '25 USD', converted: '21.52 EUR' },
-    { amount: '50 USD', converted: '43.03 EUR' },
-    { amount: '100 USD', converted: '86.07 EUR' },
-    { amount: '500 USD', converted: '430.33 EUR' },
-    { amount: '1,000 USD', converted: '860.66 EUR' },
-    { amount: '5,000 USD', converted: '4,303.30 EUR' },
-    { amount: '10,000 USD', converted: '8,606.59 EUR' },
-    { amount: '50,000 USD', converted: '43,032.96 EUR' }
-  ];
+        // Update currencies state
+        setCurrencies(formattedCurrencies);
 
-  const majorCurrencies = [
-    { from: '1 EUR to USD', to: 'US Dollar', flag: '🇺🇸', rate: '1.162' },
-    { from: '1 EUR to GBP', to: 'British Pound', flag: '🇬🇧', rate: '0.845' },
-    { from: '1 EUR to JPY', to: 'Japanese Yen', flag: '🇯🇵', rate: '174.25' },
-    { from: '1 EUR to CHF', to: 'Swiss Franc', flag: '🇨🇭', rate: '0.985' },
-    { from: '1 EUR to CAD', to: 'Canadian Dollar', flag: '🇨🇦', rate: '1.578' },
-    { from: '1 EUR to AUD', to: 'Australian Dollar', flag: '🇦🇺', rate: '1.745' },
-    { from: '1 EUR to NZD', to: 'New Zealand Dollar', flag: '🇳🇿', rate: '1.925' }
-  ];
+        // Set default currencies if available
+        const defaultEUR = formattedCurrencies.find((c) => c.code === "EUR");
+        const defaultUSD = formattedCurrencies.find((c) => c.code === "USD");
 
-  const majorCurrenciesUsd = [
-    { from: '1 USD to EUR', to: 'Euro', flag: '🇪🇺', rate: '0.861' },
-    { from: '1 USD to GBP', to: 'British Pound', flag: '🇬🇧', rate: '0.727' },
-    { from: '1 USD to JPY', to: 'Japanese Yen', flag: '🇯🇵', rate: '149.95' },
-    { from: '1 USD to CHF', to: 'Swiss Franc', flag: '🇨🇭', rate: '0.848' },
-    { from: '1 USD to CAD', to: 'Canadian Dollar', flag: '🇨🇦', rate: '1.358' },
-    { from: '1 USD to AUD', to: 'Australian Dollar', flag: '🇦🇺', rate: '1.502' },
-    { from: '1 USD to NZD', to: 'New Zealand Dollar', flag: '🇳🇿', rate: '1.656' }
-  ];
+        if (defaultEUR && defaultUSD) {
+          setFromCurrency(defaultEUR);
+          setToCurrency(defaultUSD);
+          // Fetch initial conversion rate
+          fetchConversionRate(defaultEUR.code, defaultUSD.code);
+        }
+      } catch (err) {
+        console.error("Failed to fetch supported currencies:", err);
+        setError("Failed to load currencies");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleSwapCurrencies = () => {
-    const tempCurrency = fromCurrency;
-    setFromCurrency(toCurrency);
-    setToCurrency(tempCurrency);
-    
-    const tempAmount = fromAmount;
-    setFromAmount(toAmount);
-    setToAmount(tempAmount);
-    
-    setExchangeRate(1 / exchangeRate);
+    fetchSupportedCurrencies();
+  }, []);
+
+  // Fetch conversion rate when currencies change
+  const fetchConversionRate = async (baseCode: string, targetCode: string) => {
+    try {
+      // Get latest rates for base currency
+      const latestResponse = await api.get(
+        `${API_ENDPOINTS.currencyLatest}${baseCode}`
+      );
+
+      // Get specific pair rate
+      const pairResponse = await api.get(
+        `${API_ENDPOINTS.currencyPairs}base=${baseCode}&target=${targetCode}`
+      );
+
+      const rate = pairResponse.data.data.data.conversion_rate;
+      setExchangeRate(rate);
+
+      // Update amount based on new rate
+      const numFromAmount = parseFloat(fromAmount) || 0;
+      setToAmount((numFromAmount * rate).toFixed(3));
+
+      // Fetch tables for the currency pair
+      fetchConversionTables(baseCode, targetCode);
+    } catch (err) {
+      console.error("Failed to fetch conversion rate:", err);
+      setError("Failed to update conversion rate");
+    }
   };
 
-  const handleFromAmountChange = (value: string) => {
-    setFromAmount(value);
-    const numValue = parseFloat(value) || 0;
-    setToAmount((numValue * exchangeRate).toFixed(3));
+  // Fetch conversion tables
+  const fetchConversionTables = async (
+    baseCode: string,
+    targetCode: string
+  ) => {
+    try {
+      const response = await api.get(
+        `${API_ENDPOINTS.currencyTables}?base=${baseCode}&target=${targetCode}`
+      );
+
+      const tables = response.data.data; // Adjust based on your API response structure
+      // Ensure we have valid arrays before updating state
+      if (Array.isArray(tables.amount_major_base) && Array.isArray(tables.amount_major_target)) {
+        setEurToUsdRates(
+          formatTableData(tables.amount_major_base, tables.amount_major_target)
+        );
+        setUsdToEurRates(
+          formatTableData(tables.amount_major_target, tables.amount_major_base)
+        );
+      }
+
+      if (Array.isArray(tables.major_currencies)) {
+        setMajorCurrencies(formatMajorCurrencies(tables.major_currencies));
+      }
+    } catch (err) {
+      console.error("Failed to fetch conversion tables:", err);
+      setError("Failed to load conversion tables");
+    }
   };
 
-  const handleToAmountChange = (value: string) => {
-    setToAmount(value);
-    const numValue = parseFloat(value) || 0;
-    setFromAmount((numValue / exchangeRate).toFixed(3));
+  // Helper to format table data
+  const formatTableData = (amounts: any[], converted: any[]) => {
+    return amounts.map((amount, index) => ({
+      amount: typeof amount === 'object' ? amount.base_amount : amount,
+      converted: typeof converted[index] === 'object' ? converted[index].target_amount : converted[index]
+    }));
   };
 
+  // Helper to format major currencies
+  const formatMajorCurrencies = (majors: any[]) => {
+ 
+    return majors.map((m) => ({
+      name: m.name || '',
+      symbol: m.symbol || '',
+      flag: getFlagEmoji(m.symbol || 'USD'),
+     // rate: typeof m.rate === 'object' ? m.rate.conversion_rate : m.rate
+    }));
+  };
+
+  // Update handlers to use API
   const handleFromCurrencySelect = (currency: Currency) => {
     setFromCurrency(currency);
     setShowFromDropdown(false);
-    setFromSearchTerm('');
-    // Update exchange rate based on new currency pair
-    updateExchangeRate(currency, toCurrency);
+    setFromSearchTerm("");
+    fetchConversionRate(currency.code, toCurrency.code);
   };
 
   const handleToCurrencySelect = (currency: Currency) => {
     setToCurrency(currency);
     setShowToDropdown(false);
-    setToSearchTerm('');
-    // Update exchange rate based on new currency pair
-    updateExchangeRate(fromCurrency, currency);
+    setToSearchTerm("");
+    fetchConversionRate(fromCurrency.code, currency.code);
   };
 
-  const updateExchangeRate = (from: Currency, to: Currency) => {
-    // Mock exchange rates - in real app, this would come from an API
-    const rates: { [key: string]: number } = {
-      'EUR-USD': 1.162,
-      'USD-EUR': 0.861,
-      'EUR-GBP': 0.845,
-      'GBP-EUR': 1.183,
-      'EUR-JPY': 174.25,
-      'JPY-EUR': 0.0057,
-      'USD-GBP': 0.727,
-      'GBP-USD': 1.375,
-      'USD-JPY': 149.95,
-      'JPY-USD': 0.0067,
-    };
-    
-    const rateKey = `${from.code}-${to.code}`;
-    const newRate = rates[rateKey] || 1;
-    setExchangeRate(newRate);
-    
-    // Recalculate amounts
-    const numFromAmount = parseFloat(fromAmount) || 0;
-    setToAmount((numFromAmount * newRate).toFixed(3));
+  const handleSwapCurrencies = () => {
+    const tempCurrency = fromCurrency;
+    setFromCurrency(toCurrency);
+    setToCurrency(tempCurrency);
+    fetchConversionRate(toCurrency.code, fromCurrency.code);
   };
 
-  const filteredFromCurrencies = currencies.filter(currency =>
-    currency.code.toLowerCase().includes(fromSearchTerm.toLowerCase()) ||
-    currency.name.toLowerCase().includes(fromSearchTerm.toLowerCase())
-  );
+  // Handle changes to the "from" amount input
+  const handleFromAmountChange = (value: string) => {
+    // allow empty input
+    const raw = String(value);
+    // Normalize commas to dots and strip invalid chars (allow digits, dot, minus)
+    const cleaned = raw.replace(/,/g, ".").replace(/[^\d.\-]/g, "");
+    setFromAmount(cleaned);
 
-  const filteredToCurrencies = currencies.filter(currency =>
-    currency.code.toLowerCase().includes(toSearchTerm.toLowerCase()) ||
-    currency.name.toLowerCase().includes(toSearchTerm.toLowerCase())
-  );
+    // If cleaned is empty or not a valid number, clear converted value
+    const num = parseFloat(cleaned);
+    if (!cleaned || Number.isNaN(num) || !exchangeRate) {
+      setToAmount("");
+      return;
+    }
 
-  const handleBackToCalculators = () => {
+    const converted = num * (exchangeRate || 0);
+    setToAmount(isFinite(converted) ? converted.toFixed(3) : "");
+  };
+
+  // Handle changes to the "to" amount input (reverse conversion)
+  const handleToAmountChange = (value: string) => {
+    const raw = String(value);
+    const cleaned = raw.replace(/,/g, ".").replace(/[^\d.\-]/g, "");
+    setToAmount(cleaned);
+
+    const num = parseFloat(cleaned);
+    if (!cleaned || Number.isNaN(num) || !exchangeRate) {
+      setFromAmount("");
+      return;
+    }
+
+    const converted = num / (exchangeRate || 1);
+    setFromAmount(isFinite(converted) ? converted.toFixed(3) : "");
+  };
+
+  // Helper to get flag emoji from currency code
+  const getFlagEmoji = (countryCode: string) => {
+    // Special case for EUR
+    if (countryCode === "EUR") return "🇪🇺";
+
+    // Convert currency code to country code (usually first two letters)
+    const cc = countryCode.slice(0, 2);
+    return cc
+      .toUpperCase()
+      .replace(/./g, (char) =>
+        String.fromCodePoint(127397 + char.charCodeAt(0))
+      );
+  };
+
+  if (loading) {
+    return <div className="loading">Loading currency data...</div>;
+  }
+
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
+
+
+    const handleBackToCalculators = () => {
     navigate(`${base}forum-calculators`);
   };
-
-  // Close dropdowns when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element;
-      if (!target.closest('.currency-input')) {
-        setShowFromDropdown(false);
-        setShowToDropdown(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
 
   return (
     <div className="currency-converter">
@@ -193,15 +285,21 @@ const CurrencyConverter: React.FC = () => {
         <div className="converter-main">
           <div className="converter-card">
             <div className="currency-input">
-              <div className="currency-select" onClick={() => setShowFromDropdown(!showFromDropdown)}>
+              <div
+                className="currency-select"
+                onClick={() => setShowFromDropdown(!showFromDropdown)}
+              >
                 <span className="currency-flag">{fromCurrency.flag}</span>
                 <div className="currency-info">
                   <span className="currency-code">{fromCurrency.code}</span>
                   <span className="currency-name">- {fromCurrency.name}</span>
                 </div>
-                <ChevronDown size={20} className={`dropdown-arrow ${showFromDropdown ? 'open' : ''}`} />
+                <ChevronDown
+                  size={20}
+                  className={`dropdown-arrow ${showFromDropdown ? "open" : ""}`}
+                />
               </div>
-              
+
               {showFromDropdown && (
                 <div className="currency-dropdown">
                   <div className="dropdown-search">
@@ -215,23 +313,41 @@ const CurrencyConverter: React.FC = () => {
                     />
                   </div>
                   <div className="dropdown-list">
-                    {filteredFromCurrencies.map((currency) => (
-                      <div
-                        key={currency.code}
-                        className={`dropdown-item ${currency.code === fromCurrency.code ? 'selected' : ''}`}
-                        onClick={() => handleFromCurrencySelect(currency)}
-                      >
-                        <span className="currency-flag">{currency.flag}</span>
-                        <div className="currency-info">
-                          <span className="currency-code">{currency.code}</span>
-                          <span className="currency-name">- {currency.name}</span>
+                    {currencies
+                      .filter(
+                        (currency) =>
+                          currency.code
+                            .toLowerCase()
+                            .includes(fromSearchTerm.toLowerCase()) ||
+                          currency.name
+                            .toLowerCase()
+                            .includes(fromSearchTerm.toLowerCase())
+                      )
+                      .map((currency) => (
+                        <div
+                          key={currency.code}
+                          className={`dropdown-item ${
+                            currency.code === fromCurrency.code
+                              ? "selected"
+                              : ""
+                          }`}
+                          onClick={() => handleFromCurrencySelect(currency)}
+                        >
+                          <span className="currency-flag">{currency.flag}</span>
+                          <div className="currency-info">
+                            <span className="currency-code">
+                              {currency.code}
+                            </span>
+                            <span className="currency-name">
+                              - {currency.name}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
                   </div>
                 </div>
               )}
-              
+
               <input
                 type="number"
                 value={fromAmount}
@@ -245,15 +361,21 @@ const CurrencyConverter: React.FC = () => {
             </button>
 
             <div className="currency-input">
-              <div className="currency-select" onClick={() => setShowToDropdown(!showToDropdown)}>
+              <div
+                className="currency-select"
+                onClick={() => setShowToDropdown(!showToDropdown)}
+              >
                 <span className="currency-flag">{toCurrency.flag}</span>
                 <div className="currency-info">
                   <span className="currency-code">{toCurrency.code}</span>
                   <span className="currency-name">- {toCurrency.name}</span>
                 </div>
-                <ChevronDown size={20} className={`dropdown-arrow ${showToDropdown ? 'open' : ''}`} />
+                <ChevronDown
+                  size={20}
+                  className={`dropdown-arrow ${showToDropdown ? "open" : ""}`}
+                />
               </div>
-              
+
               {showToDropdown && (
                 <div className="currency-dropdown">
                   <div className="dropdown-search">
@@ -267,23 +389,39 @@ const CurrencyConverter: React.FC = () => {
                     />
                   </div>
                   <div className="dropdown-list">
-                    {filteredToCurrencies.map((currency) => (
-                      <div
-                        key={currency.code}
-                        className={`dropdown-item ${currency.code === toCurrency.code ? 'selected' : ''}`}
-                        onClick={() => handleToCurrencySelect(currency)}
-                      >
-                        <span className="currency-flag">{currency.flag}</span>
-                        <div className="currency-info">
-                          <span className="currency-code">{currency.code}</span>
-                          <span className="currency-name">- {currency.name}</span>
+                    {currencies
+                      .filter(
+                        (currency) =>
+                          currency.code
+                            .toLowerCase()
+                            .includes(toSearchTerm.toLowerCase()) ||
+                          currency.name
+                            .toLowerCase()
+                            .includes(toSearchTerm.toLowerCase())
+                      )
+                      .map((currency) => (
+                        <div
+                          key={currency.code}
+                          className={`dropdown-item ${
+                            currency.code === toCurrency.code ? "selected" : ""
+                          }`}
+                          onClick={() => handleToCurrencySelect(currency)}
+                        >
+                          <span className="currency-flag">{currency.flag}</span>
+                          <div className="currency-info">
+                            <span className="currency-code">
+                              {currency.code}
+                            </span>
+                            <span className="currency-name">
+                              - {currency.name}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
                   </div>
                 </div>
               )}
-              
+
               <input
                 type="number"
                 value={toAmount}
@@ -295,10 +433,12 @@ const CurrencyConverter: React.FC = () => {
 
           <div className="exchange-info">
             <p className="exchange-rate">
-              1 {fromCurrency.code} = {exchangeRate.toFixed(3)} {toCurrency.code}
+              1 {fromCurrency.code} = {exchangeRate.toFixed(3)}{" "}
+              {toCurrency.code}
             </p>
             <p className="exchange-rate">
-              1 {toCurrency.code} = {(1/exchangeRate).toFixed(5)} {fromCurrency.code}
+              1 {toCurrency.code} = {(1 / exchangeRate).toFixed(5)}{" "}
+              {fromCurrency.code}
             </p>
           </div>
         </div>
@@ -309,7 +449,7 @@ const CurrencyConverter: React.FC = () => {
             Live Exchange Rates
           </h2>
 
-          <div className="rates-grid">
+          {/* <div className="rates-grid">
             <div className="rates-table">
               <h3>Convert EUR to USD</h3>
               <div className="table-header">
@@ -356,7 +496,7 @@ const CurrencyConverter: React.FC = () => {
 
             <div className="major-currency-section">
               <h3>Convert USD to Majors</h3>
-              {majorCurrenciesUsd.map((currency, index) => (
+              {majorCurrencies.map((currency, index) => (
                 <div key={index} className="major-currency-row">
                   <span className="currency-pair">{currency.from}</span>
                   <div className="currency-result">
@@ -367,8 +507,74 @@ const CurrencyConverter: React.FC = () => {
                 </div>
               ))}
             </div>
+          </div> */}
+
+          <div className="rates-grid">
+            <div className="rates-table">
+              <h3>
+                Convert {fromCurrency.code} to {toCurrency.code}
+              </h3>
+              <div className="table-header">
+                <span>{fromCurrency.code}</span>
+                <span>{toCurrency.code}</span>
+              </div>
+              {eurToUsdRates.map((rate, index) => (
+                <div key={index} className="table-row">
+                  <span>{rate.amount || 0}</span>
+                  <span>{rate.converted || 0}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="rates-table">
+              <h3>
+                Convert {toCurrency.code} to {fromCurrency.code}
+              </h3>
+              <div className="table-header">
+                <span>{toCurrency.code}</span>
+                <span>{fromCurrency.code}</span>
+              </div>
+              {usdToEurRates.map((rate, index) => (
+                <div key={index} className="table-row">
+                  <span>{rate.amount || 0}</span>
+                  <span>{rate.converted || 0}</span>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+
+          <div className="major-currencies">
+            <div className="major-currency-section">
+              <h3>Convert {fromCurrency.code} to Majors</h3>
+              {majorCurrencies.map((currency, index) => (
+                <div key={index} className="major-currency-row">
+                  <span className="currency-pair">{currency.name || ''}</span>
+                  <div className="currency-result">
+                    <span className="currency-name">{fromCurrency.code || ''}</span>
+                    <span className="currency-flag">{currency.symbol || ''}</span>
+                    <span className="currency-rate">{currency.flag}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+             <div className="major-currency-section">
+              <h3>Convert {toCurrency.code} to Majors</h3>
+              {majorCurrencies.map((currency, index) => (
+                <div key={index} className="major-currency-row">
+                  <span className="currency-pair">{currency.name || ''}</span>
+                  <div className="currency-result">
+                    <span className="currency-name">{currency.symbol || ''}</span>
+                    <span className="currency-flag">{toCurrency.code || ''}</span>
+                    <span className="currency-rate">{currency.flag || ''}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          </div>
+
+        
 
         <div className="info-section">
           <div className="info-card">
@@ -377,7 +583,13 @@ const CurrencyConverter: React.FC = () => {
               What is Currency Exchange?
             </h3>
             <p>
-              A currency exchange is when you convert a currency to another. Usually each country has its own currency and if for example you're buying an item with a different currency or traveling to a country with a different currency than you, this would require an exchange of currencies where you sell your currency and buy another (this would usually require a conversion fee) through a financial institution.
+              A currency exchange is when you convert a currency to another.
+              Usually each country has its own currency and if for example
+              you're buying an item with a different currency or traveling to a
+              country with a different currency than you, this would require an
+              exchange of currencies where you sell your currency and buy
+              another (this would usually require a conversion fee) through a
+              financial institution.
             </p>
           </div>
 
@@ -387,7 +599,10 @@ const CurrencyConverter: React.FC = () => {
               What is the purpose of a currency converter?
             </h3>
             <p>
-              A currency converter is a useful tool to quickly convert between different foreign currencies, for example Euros to US Dollars. Using our calculator will do a live currency conversion with the current exchange rates.
+              A currency converter is a useful tool to quickly convert between
+              different foreign currencies, for example Euros to US Dollars.
+              Using our calculator will do a live currency conversion with the
+              current exchange rates.
             </p>
           </div>
 
@@ -397,7 +612,13 @@ const CurrencyConverter: React.FC = () => {
               How to convert a currency to another?
             </h3>
             <p>
-              If you are converting Euros to US Dollars, you would need to know the current exchange rate. Take for example the current value of 1.19 - this would mean that 1 Euro is equal to 1.19 US Dollars. This can be applied for any amount by just multiplying the conversion value. Moreover, you can convert it the other way around, ie US Dollars to Euro by inverting the conversion value: 1/1.19=0.84 which means that 1 US Dollar is equal to 0.84 Euro.
+              If you are converting Euros to US Dollars, you would need to know
+              the current exchange rate. Take for example the current value of
+              1.19 - this would mean that 1 Euro is equal to 1.19 US Dollars.
+              This can be applied for any amount by just multiplying the
+              conversion value. Moreover, you can convert it the other way
+              around, ie US Dollars to Euro by inverting the conversion value:
+              1/1.19=0.84 which means that 1 US Dollar is equal to 0.84 Euro.
             </p>
           </div>
 
@@ -407,33 +628,58 @@ const CurrencyConverter: React.FC = () => {
               Where can I find forex historical data?
             </h3>
             <p>
-              If you're looking for historical forex exchange rates, you can find it in our market section, by clicking the desired symbol and scrolling down to the historical data link:
+              If you're looking for historical forex exchange rates, you can
+              find it in our market section, by clicking the desired symbol and
+              scrolling down to the historical data link:
             </p>
             <div className="historical-links">
               <div className="link-section">
                 <h4>EURUSD Analysis</h4>
-                <a href="#" className="historical-link">EURUSD Historical Data</a>
-                <span className="link-description">- Historical EURUSD data selectable by date range and timeframe.</span>
+                <a href="#" className="historical-link">
+                  EURUSD Historical Data
+                </a>
+                <span className="link-description">
+                  - Historical EURUSD data selectable by date range and
+                  timeframe.
+                </span>
               </div>
               <div className="link-item">
-                <a href="#" className="historical-link">EURUSD Volatility</a>
-                <span className="link-description">- EURUSD real time currency volatility analysis.</span>
+                <a href="#" className="historical-link">
+                  EURUSD Volatility
+                </a>
+                <span className="link-description">
+                  - EURUSD real time currency volatility analysis.
+                </span>
               </div>
               <div className="link-item">
-                <a href="#" className="historical-link">EURUSD Correlation</a>
-                <span className="link-description">- EURUSD real time currency correlation analysis.</span>
+                <a href="#" className="historical-link">
+                  EURUSD Correlation
+                </a>
+                <span className="link-description">
+                  - EURUSD real time currency correlation analysis.
+                </span>
               </div>
               <div className="link-item">
-                <a href="#" className="historical-link">EURUSD Indicators</a>
-                <span className="link-description">- EURUSD real time indicators.</span>
+                <a href="#" className="historical-link">
+                  EURUSD Indicators
+                </a>
+                <span className="link-description">
+                  - EURUSD real time indicators.
+                </span>
               </div>
               <div className="link-item">
-                <a href="#" className="historical-link">EURUSD Patterns</a>
-                <span className="link-description">- EURUSD real time price patterns.</span>
+                <a href="#" className="historical-link">
+                  EURUSD Patterns
+                </a>
+                <span className="link-description">
+                  - EURUSD real time price patterns.
+                </span>
               </div>
             </div>
             <p>
-              Our forex historical data includes open, high, low and close values as well as change in pips and percent. You could even narrow down your search using the included time filter.
+              Our forex historical data includes open, high, low and close
+              values as well as change in pips and percent. You could even
+              narrow down your search using the included time filter.
             </p>
           </div>
         </div>
