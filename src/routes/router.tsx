@@ -33,6 +33,7 @@ import Checkout from "../pages/checkout";
 import PaymentSuccess from "../pages/checkout/PaymentSuccess";
 import PaymentFailure from "../pages/checkout/PaymentFailure";
 import ActivationCoupons from "../pages/activation-coupons/ActivationCoupons";
+import ProfilePage from "../pages/profile";
 const base = import.meta.env.VITE_BASE;
 
 
