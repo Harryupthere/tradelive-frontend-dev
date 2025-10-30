@@ -4,11 +4,13 @@ import NewsCards, { News } from "../../components/common/NewaCard";
 import { api } from "../../api/Service";
 import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
 import { useEffect, useState } from "react";
+import CardShimmer from "../../components/common/cardShimmer";
 
 const NewsListing = () => {
     const [news, setNews] = useState<News[]>([]);
-
+    const [loading, setLoading] = useState<boolean>(false); 
     const fetchNews = async () => {
+        setLoading(true);
         try {
             const response = await api.get(`${API_ENDPOINTS?.getNews}`);
             if (response?.status) {
@@ -18,6 +20,9 @@ const NewsListing = () => {
         } catch (error) {
             console.log("Failed to fetch news",error);
         }
+    finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -26,7 +31,6 @@ const NewsListing = () => {
 
     return (
         <div className="course-listing-page">
-            <Container>
                 <div className="gradient-title" style={{ textAlign: 'center' }}>
                     <p>News Catalog</p>
                 </div>
@@ -43,13 +47,19 @@ const NewsListing = () => {
                 </div>
 
                 <Grid container spacing={3}>
-                    {news?.map((item) => (
-                        <Grid size={{ lg: 3, md: 4, sm: 6 }} key={item.id}>
+                    {loading
+                        ? Array.from(new Array(4)).map((_, index) => (
+                            <Grid  size={{ md: 4, sm: 6 }}  key={index}>
+                                <CardShimmer />
+                            </Grid>
+                        ))
+                        :
+                        news?.map((item) => (
+                        <Grid size={{  md: 4, sm: 6 }} key={item.id}>
                             <NewsCards news={item} />
                         </Grid>
                     ))}
                 </Grid>
-            </Container>
             <div className="blurs_wrapper"><div className="blurs_object is-fluo"></div></div>
         </div>
     );

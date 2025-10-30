@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { ArrowLeft, LineChart, Calculator, Info, TrendingUp } from 'lucide-react';
 import './PivotPointCalculator.scss';
+import { API_ENDPOINTS } from '../../constants/ApiEndPoints';
+import { api } from '../../api/Service';
+
+const base = import.meta.env.VITE_BASE;
 
 interface PivotPointResults {
   floor: {
@@ -49,118 +53,116 @@ interface PivotPointResults {
   };
 }
 
+//  "data": {
+//         "floor": {
+//             "PP": 6,
+//             "R1": 7,
+//             "R2": 11,
+//             "R3": 12,
+//             "S1": 2,
+//             "S2": 1,
+//             "S3": -3
+//         },
+//         "woodie": {
+//             "PP": 5.25,
+//             "R1": 5.5,
+//             "R2": 10.25,
+//             "S1": 0.5,
+//             "S2": 0.25
+//         },
+//         "camarilla": {
+//             "R4": 5.75,
+//             "R3": 4.375,
+//             "R2": 3.91667,
+//             "R1": 3.45833,
+//             "S1": 2.54167,
+//             "S2": 2.08333,
+//             "S3": 1.625,
+//             "S4": 0.25
+//         },
+//         "demark": {
+//             "PP": 7,
+//             "R1": 9,
+//             "S1": 4
+//         }
+//     }
+
 const PivotPointCalculator: React.FC = () => {
   const [highPrice, setHighPrice] = useState<string>('');
   const [lowPrice, setLowPrice] = useState<string>('');
   const [closePrice, setClosePrice] = useState<string>('');
   const [openPrice, setOpenPrice] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   const [results, setResults] = useState<PivotPointResults | null>(null);
   const [showResults, setShowResults] = useState<boolean>(false);
 
-  const calculatePivotPoints = () => {
+  const calculatePivotPoints = async () => {
+    setError(null);
+
     const high = parseFloat(highPrice);
     const low = parseFloat(lowPrice);
     const close = parseFloat(closePrice);
     const open = parseFloat(openPrice);
 
     if (isNaN(high) || isNaN(low) || isNaN(close) || isNaN(open)) {
-      alert('Please enter valid numbers for all price fields');
+      setError('Please enter valid numbers for all price fields');
       return;
     }
 
-    // Floor Pivot Points (Standard)
-    const floorPivot = (high + low + close) / 3;
-    const floorR1 = (2 * floorPivot) - low;
-    const floorS1 = (2 * floorPivot) - high;
-    const floorR2 = floorPivot + (high - low);
-    const floorS2 = floorPivot - (high - low);
-    const floorR3 = high + 2 * (floorPivot - low);
-    const floorS3 = low - 2 * (high - floorPivot);
-    const floorR4 = high + 3 * (floorPivot - low);
-    const floorS4 = low - 3 * (high - floorPivot);
-
-    // Woodie's Pivot Points
-    const woodiePivot = (high + low + 2 * close) / 4;
-    const woodieR1 = (2 * woodiePivot) - low;
-    const woodieS1 = (2 * woodiePivot) - high;
-    const woodieR2 = woodiePivot + (high - low);
-    const woodieS2 = woodiePivot - (high - low);
-    const woodieR3 = high + 2 * (woodiePivot - low);
-    const woodieS3 = low - 2 * (high - woodiePivot);
-
-    // Camarilla Pivot Points
-    const camarillaPivot = (high + low + close) / 3;
-    const camarillaR1 = close + ((high - low) * 1.1) / 12;
-    const camarillaS1 = close - ((high - low) * 1.1) / 12;
-    const camarillaR2 = close + ((high - low) * 1.1) / 6;
-    const camarillaS2 = close - ((high - low) * 1.1) / 6;
-    const camarillaR3 = close + ((high - low) * 1.1) / 4;
-    const camarillaS3 = close - ((high - low) * 1.1) / 4;
-    const camarillaR4 = close + ((high - low) * 1.1) / 2;
-    const camarillaS4 = close - ((high - low) * 1.1) / 2;
-
-    // DeMark's Pivot Points
-    let demarkX: number;
-    if (close < open) {
-      demarkX = high + 2 * low + close;
-    } else if (close > open) {
-      demarkX = 2 * high + low + close;
-    } else {
-      demarkX = high + low + 2 * close;
+    if (high < low) {
+      setError('High value should not be less than low value');
+      return;
     }
 
-    const demarkR1 = demarkX / 2 - low;
-    const demarkS1 = demarkX / 2 - high;
 
-    const pivotResults: PivotPointResults = {
-      floor: {
-        r4: floorR4,
-        r3: floorR3,
-        r2: floorR2,
-        r1: floorR1,
-        pivot: floorPivot,
-        s1: floorS1,
-        s2: floorS2,
-        s3: floorS3,
-        s4: floorS4,
-      },
-      woodie: {
-        r4: null,
-        r3: null,
-        r2: woodieR2,
-        r1: woodieR1,
-        pivot: woodiePivot,
-        s1: woodieS1,
-        s2: woodieS2,
-        s3: null,
-        s4: null,
-      },
-      camarilla: {
-        r4: camarillaR4,
-        r3: camarillaR3,
-        r2: camarillaR2,
-        r1: camarillaR1,
-        pivot: null,
-        s1: camarillaS1,
-        s2: camarillaS2,
-        s3: camarillaS3,
-        s4: camarillaS4,
-      },
-      demark: {
-        r4: null,
-        r3: null,
-        r2: null,
-        r1: demarkR1,
-        pivot: null,
-        s1: demarkS1,
-        s2: null,
-        s3: null,
-        s4: null,
-      },
-    };
 
-    setResults(pivotResults);
-    setShowResults(true);
+    try {
+      setLoading(true);
+      const resp = await api.post(API_ENDPOINTS.pivotCalculato, {
+        high,
+        low,
+        close,
+        open,
+      });
+
+      const data = resp?.data?.data ?? resp?.data;
+
+      // data expected to be object with keys floor, woodie, camarilla, demark
+      const getNum = (obj: any, key: string) => {
+        if (!obj) return null;
+        const v = obj[key];
+        return v === undefined || v === null || Number.isNaN(Number(v)) ? null : Number(v);
+      };
+
+      const mapMethod = (methodObj: any): PivotPointResults['floor'] => ({
+        r4: getNum(methodObj, 'R4') ?? getNum(methodObj, 'r4') ?? null,
+        r3: getNum(methodObj, 'R3') ?? getNum(methodObj, 'r3') ?? null,
+        r2: getNum(methodObj, 'R2') ?? getNum(methodObj, 'r2') ?? null,
+        r1: getNum(methodObj, 'R1') ?? getNum(methodObj, 'r1') ?? null,
+        pivot: getNum(methodObj, 'PP') ?? getNum(methodObj, 'pivot') ?? null,
+        s1: getNum(methodObj, 'S1') ?? getNum(methodObj, 's1') ?? null,
+        s2: getNum(methodObj, 'S2') ?? getNum(methodObj, 's2') ?? null,
+        s3: getNum(methodObj, 'S3') ?? getNum(methodObj, 's3') ?? null,
+        s4: getNum(methodObj, 'S4') ?? getNum(methodObj, 's4') ?? null,
+      });
+
+      const mapped: PivotPointResults = {
+        floor: mapMethod(data.floor),
+        woodie: mapMethod(data.woodie),
+        camarilla: mapMethod(data.camarilla),
+        demark: mapMethod(data.demark),
+      };
+
+      setResults(mapped);
+      setShowResults(true);
+    } catch (err: any) {
+      console.error('Pivot points API error', err);
+      setError(err?.response?.data?.message || 'Failed to fetch pivot points');
+      setShowResults(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const resetCalculator = () => {

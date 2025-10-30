@@ -16,7 +16,7 @@ import { setCredentials } from "../../utils/redux/slice";
 import {
   setToken as persistToken,
   setUser as persistUser,
-  getUser
+  getUser,
 } from "../../utils/tokenUtils";
 
 const base = import.meta.env.VITE_BASE;
@@ -30,11 +30,11 @@ const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  useEffect(()=>{
-    if(getUser()?.email){
-      navigate(`${base}`)
-    } 
-  },[])
+  useEffect(() => {
+    if (getUser()?.email) {
+      navigate(`${base}`);
+    }
+  }, []);
   const {
     register,
     handleSubmit,
@@ -46,7 +46,10 @@ const LoginPage: React.FC = () => {
   const onSubmit: SubmitHandler<LoginPayload> = async (data) => {
     setLoading(true);
     try {
+    
       data.login_type = 1;
+     
+
       const res = await loginService(data);
       if (res?.status) {
         const token = res?.data?.data?.access_token;
@@ -96,10 +99,13 @@ const LoginPage: React.FC = () => {
           password: "",
           login_type: 2,
         } as any;
+        
+       
         const ress = await loginService(payload);
         const token = ress?.data?.data?.access_token;
         // if backend also returns user object, adapt the path accordingly.
-        const user = ress?.data?.data?.user || ress?.data?.data?.profile || null;
+        const user =
+          ress?.data?.data?.user || ress?.data?.data?.profile || null;
 
         // maintain existing context login if you still use it
         login(token);
@@ -131,10 +137,11 @@ const LoginPage: React.FC = () => {
       <div className="login-page__form-section">
         <div className="login-page__form-container">
           <div className="login-page__header">
-            {<div className="login-page__header-left">
-              <h2 className="login-page__title">Login</h2>
-              <p className="login-page__subtitle">Welcome Back!</p>
-            </div>
+            {
+              <div className="login-page__header-left">
+                <h2 className="login-page__title">Login</h2>
+                <p className="login-page__subtitle">Welcome Back!</p>
+              </div>
             }
           </div>
 
@@ -177,7 +184,7 @@ const LoginPage: React.FC = () => {
                   type="button"
                   className="login-page__toggle-btn"
                   onClick={() => setShowPassword((s) => !s)}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -225,7 +232,8 @@ const LoginPage: React.FC = () => {
               <span className="login-page__new-user">New User? </span>
               <a
                 onClick={() => navigate(`${base}signup`)}
-                className="login-page__signup-link">
+                className="login-page__signup-link"
+              >
                 Sign Up
               </a>
             </div>
@@ -277,9 +285,7 @@ const LoginPage: React.FC = () => {
               </a>
             </p>
           </div>
-
         </div>
-
       </div>
 
       <div className="login-page__promo">
@@ -287,9 +293,12 @@ const LoginPage: React.FC = () => {
           <h2 className="login-page__heading">Learn.</h2>
           <h2 className="login-page__heading">Adapt.</h2>
           <h2 className="login-page__heading">React.</h2>
-          <div className="login-page__tagline"> Built by traders, for traders</div>
+          <div className="login-page__tagline">
+            {" "}
+            Built by traders, for traders
+          </div>
           <Link to={`${base}`}>
-          <img src="/test/graph-logo.png" alt="logo" />
+            <img src="/test/graph-logo.png" alt="logo" />
           </Link>
         </div>
       </div>

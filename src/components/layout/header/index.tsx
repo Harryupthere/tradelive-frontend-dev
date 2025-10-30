@@ -20,7 +20,7 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
+  useEffect(() => { 
     // initialise user from localStorage
     setUser(getUser());
     // reflect changes from other tabs
@@ -38,21 +38,19 @@ const Header = () => {
     return location.pathname === path ? "active" : "";
   };
 
-  const handleLogout = () => {
-    removeToken();
-    removeUser();
-    setUser(null);
-    navigate(`${base}login`);
-  };
+  // const handleLogout = () => {
+  //   removeToken();
+  //   removeUser();
+  //   setUser(null);
+  //   navigate(`${base}login`);
+  // };
 
   const renderUserArea = () => {
     if (!getToken() || !user) {
       return (
-        <div className="right-drawer">
-          <button type="button" className="gradient-btn" onClick={() => navigate(`${base}login`)}>
-            Login
-          </button>
-        </div>
+        <button type="button" className="gradient-btn" onClick={() => navigate(`${base}login`)}>
+          Login
+        </button>
       );
     }
 
@@ -88,9 +86,9 @@ const Header = () => {
           </div>
         ) : null}
 
-        <button type="button" className="gradient-btn" onClick={handleLogout} aria-label="Logout">
+        {/* <button type="button" className="gradient-btn" onClick={handleLogout} aria-label="Logout">
           Logout
-        </button>
+        </button> */}
       </div>
     );
   };
@@ -109,26 +107,9 @@ const Header = () => {
                 Home
               </Link>
             </li>
-            { (
-              <li>
-                <Link to={`${base}courses`} className={isActive(`${base}courses`)}>
-                  Courses
-                </Link>
-              </li>
-            )}
-            <li>
-              <Link to={`${base}news`} className={isActive(`${base}news`)}>
-                News
-              </Link>
-            </li>
-            <li>
+                 <li>
               <Link to={`${base}forum`} className={isActive(`${base}forum`)}>
                 Forum
-              </Link>
-            </li>
-            <li>
-              <Link to={`${base}forum-calculators`} className={isActive(`${base}forum-calculators`)}>
-                FX Calculators
               </Link>
             </li>
             <li>
@@ -140,11 +121,13 @@ const Header = () => {
               </Link>
             </li>
           </ul>
-          <div className="me-3 ">
-                      <Translator className="" />
-                    </div>
 
-          {renderUserArea()}
+
+          <div className="right-drawer">
+            <Translator />
+            {renderUserArea()}
+          </div>
+
         </div>
       </div>
     </header>

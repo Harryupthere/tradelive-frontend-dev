@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import './FibonacciCalculator.scss';
 import { ArrowLeft } from 'lucide-react';
+import { errorMsg } from '../../utils/customFn';
+import { API_ENDPOINTS } from '../../constants/ApiEndPoints';
+import { api } from '../../api/Service';
 
 const base = import.meta.env.VITE_BASE;
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -17,55 +20,41 @@ const FibonacciCalculator: React.FC = () => {
   const [trendType, setTrendType] = useState<'uptrend' | 'downtrend'>('uptrend');
   const [results, setResults] = useState<FibonacciResults | null>(null);
 
-  const fibonacciLevels = {
-    retracements: [
-      { label: '0% (b)', value: 0 },
-      { label: '23.6%', value: 0.236 },
-      { label: '38.2%', value: 0.382 },
-      { label: '50%', value: 0.5 },
-      { label: '61.8%', value: 0.618 },
-      { label: '76.4%', value: 0.764 },
-      { label: '100% (a)', value: 1 },
-      { label: '138.2%', value: 1.382 },
-    ],
-    extensions: [
-      { label: '261.8%', value: 2.618 },
-      { label: '200%', value: 2 },
-      { label: '161.8%', value: 1.618 },
-      { label: '138.2%', value: 1.382 },
-      { label: '100%', value: 1 },
-      { label: '61.8%', value: 0.618 },
-    ],
+  const handleRadioChange = (value: 'uptrend' | 'downtrend') => {
+    setTrendType(value);
   };
 
-  const calculateFibonacci = () => {
+  const calculateFibonacci = async () => {
+    console.log('Calculating Fibonacci with:', { highValue, lowValue, customValue, trendType });
+    if( highValue === 0 || lowValue === 0 || customValue===0 || isNaN(highValue) || isNaN(lowValue)) {
+      errorMsg('Please enter valid numbers for High and Low values');
+      return;
+    }
+        if( highValue === 0 || lowValue === 0 || isNaN(highValue) || isNaN(lowValue)) {
+      errorMsg('Please enter valid numbers for High and Low values');
+      return;
+    }
     if (highValue === 0 || lowValue === 0) {
       return;
     }
 
     const difference = highValue - lowValue;
-    const retracements: { [key: string]: number } = {};
-    const extensions: { [key: string]: number } = {};
-
-    if (trendType === 'uptrend') {
-      fibonacciLevels.retracements.forEach((level) => {
-        retracements[level.label] = highValue - difference * level.value;
-      });
-
-      fibonacciLevels.extensions.forEach((level) => {
-        extensions[level.label] = highValue + difference * (level.value - 1);
-      });
-    } else {
-      fibonacciLevels.retracements.forEach((level) => {
-        retracements[level.label] = lowValue + difference * level.value;
-      });
-
-      fibonacciLevels.extensions.forEach((level) => {
-        extensions[level.label] = lowValue - difference * (level.value - 1);
-      });
+    if (difference <= 0) {
+      errorMsg('High value must be greater than Low value');
+      return;
     }
+    const response = await api.post(API_ENDPOINTS.fibonacciCalculator, {
+      high: highValue,
+      low: lowValue,
+      custom: customValue,
+      trend: trendType,
+    });
 
-    setResults({ retracements, extensions });
+
+    setResults({
+      retracements: response.data.data.retracements,
+      extensions: response.data.data.extensions,
+    });
   };
 
   const handleReset = () => {
@@ -116,15 +105,36 @@ const FibonacciCalculator: React.FC = () => {
                   markerEnd="url(#arrowhead-up)"
                 />
                 <circle cx="50" cy="200" r="12" fill="#d4a574" />
-                <text x="50" y="230" textAnchor="middle" fill="#e0e0e0" fontSize="14" fontWeight="500">
+                <text
+                  x="50"
+                  y="230"
+                  textAnchor="middle"
+                  fill="#e0e0e0"
+                  fontSize="14"
+                  fontWeight="500"
+                >
                   Low
                 </text>
                 <circle cx="150" cy="100" r="12" fill="#d4a574" />
-                <text x="150" y="85" textAnchor="middle" fill="#e0e0e0" fontSize="14" fontWeight="500">
+                <text
+                  x="150"
+                  y="85"
+                  textAnchor="middle"
+                  fill="#e0e0e0"
+                  fontSize="14"
+                  fontWeight="500"
+                >
                   High
                 </text>
                 <circle cx="200" cy="70" r="12" fill="#d4a574" />
-                <text x="220" y="50" textAnchor="start" fill="#e0e0e0" fontSize="14" fontWeight="500">
+                <text
+                  x="220"
+                  y="50"
+                  textAnchor="start"
+                  fill="#e0e0e0"
+                  fontSize="14"
+                  fontWeight="500"
+                >
                   Custom
                 </text>
               </svg>
@@ -155,15 +165,36 @@ const FibonacciCalculator: React.FC = () => {
                   markerEnd="url(#arrowhead-down)"
                 />
                 <circle cx="50" cy="50" r="12" fill="#d4a574" />
-                <text x="50" y="35" textAnchor="middle" fill="#e0e0e0" fontSize="14" fontWeight="500">
+                <text
+                  x="50"
+                  y="35"
+                  textAnchor="middle"
+                  fill="#e0e0e0"
+                  fontSize="14"
+                  fontWeight="500"
+                >
                   High
                 </text>
                 <circle cx="150" cy="130" r="12" fill="#d4a574" />
-                <text x="150" y="155" textAnchor="middle" fill="#e0e0e0" fontSize="14" fontWeight="500">
+                <text
+                  x="150"
+                  y="155"
+                  textAnchor="middle"
+                  fill="#e0e0e0"
+                  fontSize="14"
+                  fontWeight="500"
+                >
                   Low
                 </text>
                 <circle cx="200" cy="170" r="12" fill="#d4a574" />
-                <text x="230" y="175" textAnchor="start" fill="#e0e0e0" fontSize="14" fontWeight="500">
+                <text
+                  x="230"
+                  y="175"
+                  textAnchor="start"
+                  fill="#e0e0e0"
+                  fontSize="14"
+                  fontWeight="500"
+                >
                   Custom
                 </text>
               </svg>
@@ -224,8 +255,9 @@ const FibonacciCalculator: React.FC = () => {
                   type="radio"
                   id="uptrend"
                   name="trendType"
+                  value="uptrend"
                   checked={trendType === 'uptrend'}
-                  onChange={() => setTrendType('uptrend')}
+                  onChange={(e) => handleRadioChange(e.target.value as 'uptrend' | 'downtrend')}
                 />
                 <label htmlFor="uptrend">Uptrend</label>
               </div>
@@ -234,8 +266,10 @@ const FibonacciCalculator: React.FC = () => {
                   type="radio"
                   id="downtrend"
                   name="trendType"
+                  value="downtrend"
                   checked={trendType === 'downtrend'}
-                  onChange={() => setTrendType('downtrend')}
+                  onChange={(e) => handleRadioChange(e.target.value as 'uptrend' | 'downtrend')}
+           
                 />
                 <label htmlFor="downtrend">Downtrend</label>
               </div>
@@ -257,11 +291,11 @@ const FibonacciCalculator: React.FC = () => {
             <div className="results-card">
               <h2 className="section-title">Retracements</h2>
               <div className="results-grid">
-                {fibonacciLevels.retracements.map((level) => (
+                {results.retracements.map((level) => (
                   <div key={level.label} className="result-item">
-                    <span className="result-label">{level.label}</span>
+                    <span className="result-label">{level.level}</span>
                     <span className="result-value">
-                      {results.retracements[level.label]?.toFixed(3) || '-'}
+                      {results.retracements[level.value]?.toFixed(3) || '-'}
                     </span>
                   </div>
                 ))}
@@ -271,18 +305,18 @@ const FibonacciCalculator: React.FC = () => {
             <div className="results-card">
               <h2 className="section-title">Extensions</h2>
               <div className="results-grid">
-                {fibonacciLevels.extensions.map((level) => (
+                {results.extensions.map((level) => (
                   <div key={level.label} className="result-item">
-                    <span className="result-label">{level.label}</span>
+                    <span className="result-label">{level.level}</span>
                     <span className="result-value">
-                      {results.extensions[level.label]?.toFixed(3) || '-'}
+                      {results.extensions[level.value]?.toFixed(3) || '-'}
                     </span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="results-card">
+            {/* <div className="results-card">
               <h2 className="section-title">Custom Level</h2>
               <div className="results-grid">
                 {customValue > 0 && (
@@ -308,7 +342,7 @@ const FibonacciCalculator: React.FC = () => {
                   </div>
                 )}
               </div>
-            </div>
+            </div> */}
           </div>
         )}
 
