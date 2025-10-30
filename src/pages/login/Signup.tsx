@@ -12,8 +12,7 @@ import { SignupPayload, signupService } from "../../api/authServices";
 import { errorMsg, successMsg } from "../../utils/customFn";
 import TelegramSignup from "./telegram";
 import { useGoogleLogin } from "@react-oauth/google";
- import { getUser
-} from "../../utils/tokenUtils";
+import { getUser } from "../../utils/tokenUtils";
 const base = import.meta.env.VITE_BASE;
 
 type FormValues = {
@@ -28,11 +27,11 @@ type FormValues = {
 const SignupPage: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
-  useEffect(()=>{
-    if(getUser()?.email){
-      navigate(`${base}`)
-    } 
-  },[])
+  useEffect(() => {
+    if (getUser()?.email) {
+      navigate(`${base}`);
+    }
+  }, []);
   const [acceptMarketing, setAcceptMarketing] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -78,6 +77,8 @@ const SignupPage: React.FC = () => {
       if (referral) {
         payload.referral_id = referral;
       }
+
+
 
       const res = await signupService(payload);
       if (res?.status) {
@@ -162,7 +163,6 @@ const SignupPage: React.FC = () => {
 
   return (
     <div className="login-page">
-
       <div className="login-page__form-section">
         <div className="login-page__form-container">
           <div className="login-page__header">
@@ -255,7 +255,7 @@ const SignupPage: React.FC = () => {
                 />
                 <button
                   type="button"
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                   className="login-page__toggle-btn"
                   onClick={() => setShowPassword((s) => !s)}
                 >
@@ -283,11 +283,19 @@ const SignupPage: React.FC = () => {
                 />
                 <button
                   type="button"
-                  aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                  aria-label={
+                    showConfirmPassword
+                      ? "Hide confirm password"
+                      : "Show confirm password"
+                  }
                   className="login-page__toggle-btn"
                   onClick={() => setShowConfirmPassword((s) => !s)}
                 >
-                  {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showConfirmPassword ? (
+                    <EyeOff size={16} />
+                  ) : (
+                    <Eye size={16} />
+                  )}
                 </button>
               </div>
               {errors.confirmPassword && (
@@ -320,7 +328,7 @@ const SignupPage: React.FC = () => {
               {loading || isSubmitting ? "Signing Up..." : "Sign Up"}
             </button>
           </form>
-              
+
           <div className="login-page__divider">
             <span>Or</span>
           </div>
@@ -379,9 +387,12 @@ const SignupPage: React.FC = () => {
           <h2 className="login-page__heading">Learn.</h2>
           <h2 className="login-page__heading">Adapt.</h2>
           <h2 className="login-page__heading">React.</h2>
-          <div className="login-page__tagline"> Built by traders, for traders</div>
-           <Link to={`${base}`}>
-          <img src="/test/graph-logo.png" alt="logo" />
+          <div className="login-page__tagline">
+            {" "}
+            Built by traders, for traders
+          </div>
+          <Link to={`${base}`}>
+            <img src="/test/graph-logo.png" alt="logo" />
           </Link>
         </div>
       </div>

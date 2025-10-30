@@ -1,72 +1,82 @@
 import { useState, useEffect } from 'react';
 import './MarginCalculator.scss';
 import { ArrowLeft } from 'lucide-react';
+import { API_ENDPOINTS } from '../../constants/ApiEndPoints';
+import { api } from '../../api/Service';
 
 const base = import.meta.env.VITE_BASE;
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const MarginCalculator: React.FC = () => {
-  const [currencyPair, setCurrencyPair] = useState('EURUSD');
+  const [currencyPair, setCurrencyPair] = useState('EUR/USD');
   const [accountCurrency, setAccountCurrency] = useState('USD');
   const [marginRatio, setMarginRatio] = useState('100:1');
   const [tradeSize, setTradeSize] = useState(1);
-  const [exchangeRate, setExchangeRate] = useState(1.16055);
+  const [exchangeRate, setExchangeRate] = useState();
   const [result, setResult] = useState<number | null>(null);
 
-  const currencyPairs = [
-    'EURUSD', 'GBPUSD', 'USDJPY', 'USDCHF', 'AUDUSD', 'USDCAD',
-    'NZDUSD', 'EURGBP', 'EURJPY', 'GBPJPY', 'AUDJPY', 'EURAUD'
-  ];
+  const [currencyPairs, setCurrencyPairs] = useState([
+  ]);
 
-  const currencies = ['USD', 'EUR', 'GBP', 'JPY', 'CHF', 'AUD', 'CAD', 'NZD'];
+  const [currencies, setCurrencies] = useState([]);
 
   const marginRatios = [
     '50:1', '100:1', '200:1', '400:1', '500:1'
   ];
 
-  const exchangeRates: { [key: string]: number } = {
-    'EURUSD': 1.16055,
-    'GBPUSD': 1.38420,
-    'USDJPY': 110.250,
-    'USDCHF': 0.92150,
-    'AUDUSD': 0.77402,
-    'USDCAD': 1.25680,
-    'NZDUSD': 0.71850,
-    'EURGBP': 0.84120,
-    'EURJPY': 128.550,
-    'GBPJPY': 152.680,
-    'AUDJPY': 85.320,
-    'EURAUD': 1.50120,
-  };
-
   useEffect(() => {
-    if (exchangeRates[currencyPair]) {
-      setExchangeRate(exchangeRates[currencyPair]);
-    }
-  }, [currencyPair]);
+    // Fetch supported currency codes
+    fetchCurrenciesAndPairs()
+  },[])
+  useEffect(() => {
+    // if (exchangeRates[currencyPair]) {
+    //   setExchangeRate(exchangeRates[currencyPair]);
+    // }
+    fetchCurrentRate()
+  }, [currencyPair,accountCurrency]);
 
-  const calculateMargin = () => {
+
+
+  const fetchCurrenciesAndPairs = async () => {
+    try {
+      const response = await api.get(API_ENDPOINTS.positionList);
+      setCurrencies(response.data.data.currencies);
+      setCurrencyPairs(response.data.data.currencyPairs);
+  }catch(error){
+      console.error('Error fetching supported currencies:', error);
+    }
+  }
+
+
+  const fetchCurrentRate = async () => {
+    try {
+      const response = await api.get(API_ENDPOINTS.currencyPairs + `base=${currencyPair.substring(0,3)}&target=${accountCurrency}`);
+      if (response && response.data.data.data.conversion_rate) {
+        setExchangeRate(response.data.data.data.conversion_rate);
+      }
+    }catch(error){
+      console.error('Error fetching exchange rate:', error);
+    }
+  }
+  const calculateMargin = async () => {
     if (!tradeSize || tradeSize <= 0) {
       setResult(null);
       return;
     }
 
-    const leverage = parseInt(marginRatio.split(':')[0]);
-    const baseCurrency = currencyPair.substring(0, 3);
-    const quoteCurrency = currencyPair.substring(3, 6);
+    const response = await api.post(API_ENDPOINTS.marginCalculator, {
+      currencyPair,
+      accountCurrency,
+      marginRatio,
+      tradeSizeLots:tradeSize,
+    //  exchangeRate
+    });
 
-    let margin = 0;
-    const contractSize = tradeSize * 100000;
+    // console.log('Margin Calculator Response:', response);
 
-    if (quoteCurrency === accountCurrency) {
-      margin = (contractSize * exchangeRate) / leverage;
-    } else if (baseCurrency === accountCurrency) {
-      margin = contractSize / leverage;
-    } else {
-      margin = (contractSize * exchangeRate) / leverage;
+    if (response && response.data.data.requiredMargin) {
+      setResult(parseFloat(response.data.data.requiredMargin.toFixed(2)));
     }
-
-    setResult(parseFloat(margin.toFixed(2)));
   };
 
   const handleReset = () => {
@@ -74,8 +84,8 @@ const MarginCalculator: React.FC = () => {
     setAccountCurrency('USD');
     setMarginRatio('100:1');
     setTradeSize(1);
-    setExchangeRate(1.16055);
     setResult(null);
+    
   };
 
   const handleBackToCalculators = () => {
@@ -164,7 +174,7 @@ const MarginCalculator: React.FC = () => {
 
           <div className="exchange-rate-display">
             <span className="rate-label">{currencyPair}:</span>
-            <span className="rate-value">{exchangeRate.toFixed(5)}</span>
+            <span className="rate-value">{exchangeRate}</span>
           </div>
 
           <div className="result-section">
