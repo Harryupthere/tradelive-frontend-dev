@@ -5,12 +5,9 @@ import Layout from "../components/layout/layout";
 import { ContactUs, CourseListing, Home } from "../pages";
 import { RoutesArray } from "./routeArray";
 import { PrivateRoute } from "./authRoute";
-import NewsListing from "../pages/newsListing";
 import CourseOverview from "../pages/courseOverview";
 import NewsDetailPage from "../components/newsDetail/NewsDetailPage";
-import Login from "../pages/login";
 import CourseDetail from "../pages/courseDetail";
-import CoursesPage from "../components/courses/CoursesPage";
 import ForumPage from "../pages/forumCategory/ForumPage";
 import ForumTopicsPage from "../pages/ForumTopic/ForumTopicsPage";
 import ForexCalculators from "../pages/forexCalculatros/ForexCalculators";
@@ -32,7 +29,6 @@ import TermsConditions from "../pages/term-and-condition";
 import SignupPage from "../pages/login/Signup";
 import ResetPasswordPage from "../pages/login/ResetPassword";
 import ForgetPasswordPage from "../pages/login/ForgetPassword";
-import ProfilePage from "../pages/profile";
 import Checkout from "../pages/checkout";
 import PaymentSuccess from "../pages/checkout/PaymentSuccess";
 import PaymentFailure from "../pages/checkout/PaymentFailure";
@@ -56,8 +52,6 @@ const Router = () => {
       element: <Layout />,
       children: [
         { path: `${base}`, element: <Home /> },
-        { path: `${base}courses`, element: <CourseListing /> },
-        { path: `${base}news`, element: <NewsListing /> },
         { path: `${base}news-detail/:id`, element: <NewsDetailPage /> },
         { path: `${base}course-overview/:id`, element: <CourseOverview /> },
         { path: `${base}course/detail/:id`, element: <CourseDetail /> },
@@ -81,10 +75,12 @@ const Router = () => {
         { path: `${base}contactus`, element: <ContactUs /> },
 
         { path: `${base}about-us`, element: <AboutUs /> },
-        { path: `${base}profile`, element: <ProfilePage /> },
+        // { path: `${base}profile`, element: <ProfilePage /> },
         { path: `${base}checkout`, element: <Checkout/> },
-        { path: `${base}activation-coupons`, element: <ActivationCoupons /> }
+        { path: `${base}activation-coupons`, element: <ActivationCoupons /> },
 
+        // { path: `${base}profile`, element: <ProfilePage /> },
+        { path: `${base}checkout`, element: <Checkout/> }
 
       ],
     },

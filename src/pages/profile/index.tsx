@@ -52,7 +52,7 @@ const iso2ToFlag = (iso2: string) => {
 };
 
 const ProfilePage: React.FC = () => {
-  const navigate=useNavigate()
+  const navigate = useNavigate()
   const dispatch = useAppDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -169,7 +169,7 @@ const ProfilePage: React.FC = () => {
           const storedUser = getUser() || {};
           // API might return a full user object (data.user) or just profile fields (data)
           const apiUser = (res?.data?.data?.user) ? res.data.data.user : data;
-          const mergedUser = { ...storedUser,  userType: (data as any).userType || apiUser.userType || storedUser.userType };
+          const mergedUser = { ...storedUser, userType: (data as any).userType || apiUser.userType || storedUser.userType };
           // persist to local storage and update redux
           persistUser(mergedUser as any);
           dispatch(setUserProfile(mergedUser as any));
@@ -366,197 +366,196 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div className="profile-page">
-      <div className="profile-page__container">
-        <div className="profile-page__title-section">
+      <div className="profile-page__title-section">
+        <div>
           <h1 className="profile-page__title">Profile Settings</h1>
           <p className="profile-page__subtitle">
             Manage your account information and preferences
           </p>
-
-         <div> {getUser().userType.id==1 && 
+        </div>
+        {getUser().userType.id == 1 &&
           <button
-              className="profile-page__save-btn"
-              onClick={()=>navigate(`${base}checkout`)}
-            >
-              <ArrowUpCircle size={16} />{" "}
-              Upgrade
-            </button>}
-
-                
-          <button
+            className="profile-page__save-btn"
+            onClick={() => navigate(`${base}checkout`)}
+          >
+            <ArrowUpCircle size={16} />{" "}
+            Upgrade
+          </button>
+        }
+         <button
               className="profile-page__save-btn"
               onClick={()=>navigate(`${base}activation-coupons`)}
             >
               <ArrowUpCircle size={16} />{" "}
               Activation Coupons
             </button>
-            </div>
+      </div>
+
+      <div className="profile-page__section">
+        <div className="profile-page__section-header">
+          <h2>Personal Information</h2>
+          <button
+            onClick={() => setIsEditing(!isEditing)}
+            className="profile-page__edit-btn"
+          >
+            <Edit3 size={16} /> {isEditing ? "Cancel" : "Edit"}
+          </button>
         </div>
 
-        <div className="profile-page__section">
-          <div className="profile-page__section-header">
-            <h2>Personal Information</h2>
-            <button
-              onClick={() => setIsEditing(!isEditing)}
-              className="profile-page__edit-btn"
-            >
-              <Edit3 size={16} /> {isEditing ? "Cancel" : "Edit"}
-            </button>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="profile-page__form"
+        >
+          <div className="profile-page__image-section">
+            <div className="profile-page__image-container">
+              {previewSrc ? (
+                <img
+                  src={previewSrc}
+                  alt="Profile"
+                  className="profile-page__image"
+                />
+              ) : (
+                <div className="profile-page__image-placeholder">
+                  <User size={40} />
+                </div>
+              )}
+              {isEditing && (
+                <label className="profile-page__image-upload">
+                  <Camera size={16} />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageSelect}
+                    style={{ display: "none" }}
+                  />
+                </label>
+              )}
+            </div>
           </div>
 
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="profile-page__form"
-          >
-            <div className="profile-page__image-section">
-              <div className="profile-page__image-container">
-                {previewSrc ? (
-                  <img
-                    src={previewSrc}
-                    alt="Profile"
-                    className="profile-page__image"
-                  />
-                ) : (
-                  <div className="profile-page__image-placeholder">
-                    <User size={40} />
-                  </div>
-                )}
-                {isEditing && (
-                  <label className="profile-page__image-upload">
-                    <Camera size={16} />
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageSelect}
-                      style={{ display: "none" }}
-                    />
-                  </label>
-                )}
-              </div>
+          <div className="profile-page__form-grid">
+            <div className="profile-page__form-group">
+              <label>First Name</label>
+              <input
+                type="text"
+                {...register("first_name", {
+                  required: "First name is required",
+                })}
+                disabled={!isEditing}
+                className="profile-page__input"
+              />
+              {errors.first_name && (
+                <p className="profile-page__error">
+                  {errors.first_name.message}
+                </p>
+              )}
             </div>
 
-            <div className="profile-page__form-grid">
-              <div className="profile-page__form-group">
-                <label>First Name</label>
-                <input
-                  type="text"
-                  {...register("first_name", {
-                    required: "First name is required",
-                  })}
-                  disabled={!isEditing}
-                  className="profile-page__input"
-                />
-                {errors.first_name && (
-                  <p className="profile-page__error">
-                    {errors.first_name.message}
-                  </p>
-                )}
-              </div>
+            <div className="profile-page__form-group">
+              <label>Last Name</label>
+              <input
+                type="text"
+                {...register("last_name", {
+                  required: "Last name is required",
+                })}
+                disabled={!isEditing}
+                className="profile-page__input"
+              />
+              {errors.last_name && (
+                <p className="profile-page__error">
+                  {errors.last_name.message}
+                </p>
+              )}
+            </div>
 
-              <div className="profile-page__form-group">
-                <label>Last Name</label>
-                <input
-                  type="text"
-                  {...register("last_name", {
-                    required: "Last name is required",
-                  })}
-                  disabled={!isEditing}
-                  className="profile-page__input"
-                />
-                {errors.last_name && (
-                  <p className="profile-page__error">
-                    {errors.last_name.message}
-                  </p>
-                )}
-              </div>
+            <div className="profile-page__form-group">
+              <label>Email</label>
+              <input
+                type="email"
+                {...register("email")}
+                disabled
+                className="profile-page__input profile-page__input--disabled"
+              />
+              <span className="profile-page__input-note">
+                Email cannot be changed
+              </span>
+            </div>
 
-              <div className="profile-page__form-group">
-                <label>Email</label>
-                <input
-                  type="email"
-                  {...register("email")}
-                  disabled
-                  className="profile-page__input profile-page__input--disabled"
-                />
-                <span className="profile-page__input-note">
-                  Email cannot be changed
-                </span>
-              </div>
+            <div className="profile-page__form-group">
+              <label>Country</label>
+              <select
+                {...register("country")}
+                disabled={!isEditing}
+                className="profile-page__input"
+              >
+                <option value="">Select country</option>
+                {countries.map((c) => (
+                  <option key={c.iso2} value={c.name}>
+                    {iso2ToFlag(c.iso2)} {c.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-              <div className="profile-page__form-group">
-                <label>Country</label>
+            <div className="profile-page__form-group profile-page__form-group--phone">
+              <label>Phone Number</label>
+              <div className="profile-page__phone-input">
                 <select
-                  {...register("country")}
+                  {...register("country_code")}
                   disabled={!isEditing}
-                  className="profile-page__input"
+                  className="profile-page__country-code"
                 >
-                  <option value="">Select country</option>
+                  <option value="">Code</option>
                   {countries.map((c) => (
-                    <option key={c.iso2} value={c.name}>
-                      {iso2ToFlag(c.iso2)} {c.name}
+                    <option key={c.iso2} value={c.dialCode}>
+                      {iso2ToFlag(c.iso2)} {c.dialCode}
                     </option>
                   ))}
                 </select>
-              </div>
-
-              <div className="profile-page__form-group profile-page__form-group--phone">
-                <label>Phone Number</label>
-                <div className="profile-page__phone-input">
-                  <select
-                    {...register("country_code")}
-                    disabled={!isEditing}
-                    className="profile-page__country-code"
-                  >
-                    <option value="">Code</option>
-                    {countries.map((c) => (
-                      <option key={c.iso2} value={c.dialCode}>
-                        {iso2ToFlag(c.iso2)} {c.dialCode}
-                      </option>
-                    ))}
-                  </select>
-                  <input
-                    type="tel"
-                    {...register("phone_number")}
-                    disabled={!isEditing}
-                    className="profile-page__input"
-                  />
-                </div>
-              </div>
-
-              <div className="profile-page__form-group">
-                <label>Telegram ID</label>
                 <input
-                  type="text"
-                  {...register("telegram_id")}
+                  type="tel"
+                  {...register("phone_number")}
                   disabled={!isEditing}
                   className="profile-page__input"
-                  placeholder="@username"
                 />
               </div>
             </div>
 
-            {isEditing && (
-              <button
-                type="submit"
-                className="profile-page__save-btn"
-                disabled={uploading}
-              >
-                <Save size={16} />{" "}
-                {uploading ? "Saving..." : "Save Changes"}
-              </button>
-            )}
-          </form>
-        </div>
-
-        <div className="profile-page__section">
-          <div className="profile-page__section-header">
-            <h2>Change Password</h2>
+            <div className="profile-page__form-group">
+              <label>Telegram ID</label>
+              <input
+                type="text"
+                {...register("telegram_id")}
+                disabled={!isEditing}
+                className="profile-page__input"
+                placeholder="@username"
+              />
+            </div>
           </div>
 
-          <form
-            onSubmit={handleSubmitPwd(onSubmitPassword)}
-            className="profile-page__password-form"
-          >
+          {isEditing && (
+            <button
+              type="submit"
+              className="profile-page__save-btn"
+              disabled={uploading}
+            >
+              <Save size={16} />{" "}
+              {uploading ? "Saving..." : "Save Changes"}
+            </button>
+          )}
+        </form>
+      </div>
+
+      <div className="profile-page__section">
+        <div className="profile-page__section-header">
+          <h2>Change Password</h2>
+        </div>
+
+        <form
+          onSubmit={handleSubmitPwd(onSubmitPassword)}
+          className="profile-page__password-form"
+        >
+          <div className="profile-page__profile-flex">
             <div className="profile-page__form-group">
               <label>Current Password</label>
               <div className="profile-page__password-input">
@@ -636,94 +635,94 @@ const ProfilePage: React.FC = () => {
                 </p>
               )}
             </div>
-
-            <button
-              type="submit"
-              className="profile-page__save-btn"
-              disabled={isSubmittingPwd}
-            >
-              <Save size={16} />{" "}
-              {isSubmittingPwd ? "Updating..." : "Update Password"}
-            </button>
-          </form>
-        </div>
-
-        <div className="profile-page__section">
-          <div className="profile-page__section-header">
-            <h2>Transaction History</h2>
           </div>
-          <div className="profile-page__table-container">
-            <table className="profile-page__table">
-              <thead>
-                <tr>
-                  <th>Transaction ID</th>
-                  <th>Date</th>
-                  <th>Type</th>
-                  <th>Amount</th>
-                  <th>Status</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                {transactions.map((t) => (
-                  <tr key={t.id}>
-                    <td className="profile-page__table-id">{t.id}</td>
-                    <td>{t.date}</td>
-                    <td>{t.type}</td>
-                    <td
-                      className={
-                        t.amount < 0
-                          ? "profile-page__amount--negative"
-                          : "profile-page__amount--positive"
-                      }
+
+          <button
+            type="submit"
+            className="profile-page__save-btn"
+            disabled={isSubmittingPwd}
+          >
+            <Save size={16} />{" "}
+            {isSubmittingPwd ? "Updating..." : "Update Password"}
+          </button>
+        </form>
+      </div>
+
+      <div className="profile-page__section">
+        <div className="profile-page__section-header">
+          <h2>Transaction History</h2>
+        </div>
+        <div className="profile-page__table-container">
+          <table className="profile-page__table">
+            <thead>
+              <tr>
+                <th>Transaction ID</th>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              {transactions.map((t) => (
+                <tr key={t.id}>
+                  <td className="profile-page__table-id">{t.id}</td>
+                  <td>{t.date}</td>
+                  <td>{t.type}</td>
+                  <td
+                    className={
+                      t.amount < 0
+                        ? "profile-page__amount--negative"
+                        : "profile-page__amount--positive"
+                    }
+                  >
+                    ₹{Math.abs(t.amount)}
+                  </td>
+                  <td>
+                    <span
+                      className={`profile-page__status ${getStatusClass(t.status)}`}
                     >
-                      ₹{Math.abs(t.amount)}
-                    </td>
-                    <td>
-                      <span
-                        className={`profile-page__status ${getStatusClass(t.status)}`}
-                      >
-                        {t.status}
-                      </span>
-                    </td>
-                    <td>{t.description}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div className="profile-page__section">
-          <div className="profile-page__section-header">
-            <h2>Recent Activity</h2>
-          </div>
-          <div className="profile-page__table-container">
-            <table className="profile-page__table">
-              <thead>
-                <tr>
-                  <th>Action ID</th>
-                  <th>Timestamp</th>
-                  <th>Action</th>
-                  <th>Details</th>
-                  <th>IP Address</th>
+                      {t.status}
+                    </span>
+                  </td>
+                  <td>{t.description}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {userActions.map((a) => (
-                  <tr key={a.id}>
-                    <td className="profile-page__table-id">{a.id}</td>
-                    <td>{a.timestamp}</td>
-                    <td>
-                      <span className="profile-page__action-type">{a.action}</span>
-                    </td>
-                    <td>{a.details}</td>
-                    <td className="profile-page__ip-address">{a.ip_address}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="profile-page__section">
+        <div className="profile-page__section-header">
+          <h2>Recent Activity</h2>
+        </div>
+        <div className="profile-page__table-container">
+          <table className="profile-page__table">
+            <thead>
+              <tr>
+                <th>Action ID</th>
+                <th>Timestamp</th>
+                <th>Action</th>
+                <th>Details</th>
+                <th>IP Address</th>
+              </tr>
+            </thead>
+            <tbody>
+              {userActions.map((a) => (
+                <tr key={a.id}>
+                  <td className="profile-page__table-id">{a.id}</td>
+                  <td>{a.timestamp}</td>
+                  <td>
+                    <span className="profile-page__action-type">{a.action}</span>
+                  </td>
+                  <td>{a.details}</td>
+                  <td className="profile-page__ip-address">{a.ip_address}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

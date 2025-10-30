@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ChevronDown } from 'lucide-react';
 import './PipCalculator.scss';
+import { Info, Search } from "lucide-react";
+import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
+import { api } from "../../api/Service";
 
 interface CurrencyPair {
   pair: string;
@@ -9,11 +12,27 @@ interface CurrencyPair {
 
 interface PipResult {
   pair: string;
-  standardLot: string;
-  miniLot: string;
-  microLot: string;
   price: number;
-  pipValue: number;
+  pipSize: number;
+  standardLot: number;
+  miniLot: number;
+  microLot: number;
+  pipValueForTradeLots: number;
+  valueForPips: number;
+  units: {
+    standard: number;
+    mini: number;
+    micro: number;
+  };
+  quoteToAccountRate: number;
+}
+
+interface ApiResponse {
+  accountCurrency: string;
+  tradeSizeLots: number;
+  pips: number;
+  generatedAt: string;
+  rows: PipResult[];
 }
 
 const PipCalculator: React.FC = () => {
@@ -21,54 +40,58 @@ const PipCalculator: React.FC = () => {
   const [tradeSize, setTradeSize] = useState<string>('1');
   const [pips, setPips] = useState<string>('1');
   const [selectedPair, setSelectedPair] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [results, setResults] = useState<PipResult[]>([]);
 
   const currencies = ['USD', 'AUD', 'CAD', 'CHF', 'EUR', 'GBP', 'JPY', 'NZD'];
 
+
   const currencyPairs: CurrencyPair[] = [
-    { pair: 'AUDCAD', price: 0.91311 },
-    { pair: 'AUDCHF', price: 0.52252 },
-    { pair: 'AUDJPY', price: 99.102 },
-    { pair: 'AUDNZD', price: 1.137 },
-    { pair: 'AUDSGD', price: 0.84614 },
-    { pair: 'AUDUSD', price: 0.65272 },
-    { pair: 'CADCHF', price: 0.57223 },
-    { pair: 'CADJPY', price: 108.524 },
-    { pair: 'CHFJPY', price: 189.640 },
-    { pair: 'CHFSGD', price: 1.619 },
-    { pair: 'EURAUD', price: 1.781 },
-    { pair: 'EURCAD', price: 1.626 },
-    { pair: 'EURCHF', price: 0.93065 },
-    { pair: 'EURCZK', price: 24.309 },
-    { pair: 'EURGBP', price: 0.86994 },
-    { pair: 'EURHUF', price: 391.527 },
-    { pair: 'EURJPY', price: 176.490 },
-    { pair: 'EURMXN', price: 21.460 },
-    { pair: 'EURNOK', price: 11.716 },
-    { pair: 'EURNZD', price: 2.025 },
-    { pair: 'EURPLN', price: 4.260 },
-    { pair: 'EURSEK', price: 11.034 },
-    { pair: 'EURSGD', price: 1.458 },
-    { pair: 'EURUSD', price: 1.162 },
-    { pair: 'GBPAUD', price: 2.047 },
-    { pair: 'GBPCAD', price: 1.869 },
-    { pair: 'GBPCHF', price: 1.070 },
-    { pair: 'GBPJPY', price: 202.875 },
-    { pair: 'GBPNZD', price: 2.327 },
-    { pair: 'GBPUSD', price: 1.336 },
-    { pair: 'NZDCAD', price: 0.803 },
-    { pair: 'NZDCHF', price: 0.460 },
-    { pair: 'NZDJPY', price: 87.115 },
-    { pair: 'NZDUSD', price: 0.574 },
-    { pair: 'USDCAD', price: 1.399 },
-    { pair: 'USDCHF', price: 0.801 },
-    { pair: 'USDCZK', price: 20.925 },
-    { pair: 'USDJPY', price: 151.887 },
-    { pair: 'USDMXN', price: 18.469 },
-    { pair: 'USDNOK', price: 10.082 },
-    { pair: 'USDPLN', price: 3.666 },
-    { pair: 'USDSEK', price: 9.494 },
-    { pair: 'USDSGD', price: 1.255 },
-  ];
+    { pair: 'AUD/CAD', price: 0.91311 },
+    { pair: 'AUD/CHF', price: 0.52252 },
+    { pair: 'AUD/JPY', price: 99.102 },
+    { pair: 'AUD/NZD', price: 1.137 },
+    { pair: 'AUD/SGD', price: 0.84614 },
+    { pair: 'AUD/USD', price: 0.65272 },
+    { pair: 'CAD/CHF', price: 0.57223 },
+    { pair: 'CAD/JPY', price: 108.524 },
+    { pair: 'CHF/JPY', price: 189.640 },
+    { pair: 'CHF/SGD', price: 1.619 },
+    { pair: 'EUR/AUD', price: 1.781 },
+    { pair: 'EUR/CAD', price: 1.626 },
+    { pair: 'EUR/CHF', price: 0.93065 },
+    { pair: 'EUR/CZK', price: 24.309 },
+    { pair: 'EUR/GBP', price: 0.86994 },
+    { pair: 'EUR/HUF', price: 391.527 },
+    { pair: 'EUR/JPY', price: 176.490 },
+    { pair: 'EUR/MXN', price: 21.460 },
+    { pair: 'EUR/NOK', price: 11.716 },
+    { pair: 'EUR/NZD', price: 2.025 },
+    { pair: 'EUR/PLN', price: 4.260 },
+    { pair: 'EUR/SEK', price: 11.034 },
+    { pair: 'EUR/SGD', price: 1.458 },
+    { pair: 'EUR/USD', price: 1.162 },
+    { pair: 'GBP/AUD', price: 2.047 },
+    { pair: 'GBP/CAD', price: 1.869 },
+    { pair: 'GBP/CHF', price: 1.070 },
+    { pair: 'GBP/JPY', price: 202.875 },
+    { pair: 'GBP/NZD', price: 2.327 },
+    { pair: 'GBP/USD', price: 1.336 },
+    { pair: 'NZD/CAD', price: 0.803 },
+    { pair: 'NZD/CHF', price: 0.460 },
+    { pair: 'NZD/JPY', price: 87.115 },
+    { pair: 'NZD/USD', price: 0.574 },
+    { pair: 'USD/CAD', price: 1.399 },
+    { pair: 'USD/CHF', price: 0.801 },
+    { pair: 'USD/CZK', price: 20.925 },
+    { pair: 'USD/JPY', price: 151.887 },
+    { pair: 'USD/MXN', price: 18.469 },
+    { pair: 'USD/NOK', price: 10.082 },
+    { pair: 'USD/PLN', price: 3.666 },
+    { pair: 'USD/SEK', price: 9.494 },
+    { pair: 'USD/SGD', price: 1.255 },
+];
 
   const calculatePipValue = (pair: string, accountCurr: string, lots: number): number => {
     const pairData = currencyPairs.find(p => p.pair === pair);
@@ -102,27 +125,26 @@ const PipCalculator: React.FC = () => {
     return pipValue;
   };
 
-  const generateResults = (): PipResult[] => {
-    const tradeSizeNum = parseFloat(tradeSize) || 0;
+  const fetchPipCalculations = async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-    return currencyPairs.map(pair => {
-      const standardLotValue = calculatePipValue(pair.pair, accountCurrency, 1);
-      const miniLotValue = standardLotValue / 10;
-      const microLotValue = standardLotValue / 100;
-      const pipValueForTradeSize = calculatePipValue(pair.pair, accountCurrency, tradeSizeNum);
+      const response = await api.post(API_ENDPOINTS.pipcalculator, {
+        accountCurrency,
+        tradeSizeLots: parseFloat(tradeSize) || 0,
+        pips: parseFloat(pips) || 0
+      });
 
-      return {
-        pair: pair.pair,
-        standardLot: standardLotValue > 0 ? `$${standardLotValue.toFixed(5)}` : '-',
-        miniLot: miniLotValue > 0 ? `$${miniLotValue.toFixed(5)}` : '-',
-        microLot: microLotValue > 0 ? `$${microLotValue.toFixed(5)}` : '-',
-        price: pair.price,
-        pipValue: pipValueForTradeSize
-      };
-    });
+      const data: ApiResponse = response.data.data;
+      setResults(data.rows);
+    } catch (err: any) {
+      console.error('Failed to fetch pip calculations:', err);
+      setError(err?.response?.data?.message || 'Failed to calculate pip values');
+    } finally {
+      setLoading(false);
+    }
   };
-
-  const results = generateResults();
 
   const handleReset = () => {
     setAccountCurrency('USD');
@@ -132,8 +154,7 @@ const PipCalculator: React.FC = () => {
   };
 
   const handleCalculate = () => {
-    // Trigger recalculation by updating state
-    setTradeSize(tradeSize);
+    fetchPipCalculations();
   };
 
   const handleRowClick = (pair: string) => {
@@ -406,24 +427,86 @@ const PipCalculator: React.FC = () => {
               <div className="results-table__cell">Pip value</div>
             </div>
 
-            <div className="results-table__body">
-              {results.map((result) => (
-                <div
-                  key={result.pair}
-                  className="results-table__row"
-                  onClick={() => handleRowClick(result.pair)}
-                >
-                  <div className="results-table__cell currency-pair">{result.pair}</div>
-                  <div className="results-table__cell">{result.standardLot}</div>
-                  <div className="results-table__cell">{result.miniLot}</div>
-                  <div className="results-table__cell">{result.microLot}</div>
-                  <div className="results-table__cell">{result.price.toFixed(5)}</div>
-                  <div className="results-table__cell pip-value">
-                    ${result.pipValue.toFixed(2)}
+            {loading ? (
+              <div className="results-table__loading">Calculating...</div>
+            ) : error ? (
+              <div className="results-table__error">{error}</div>
+            ) : (
+              <div className="results-table__body">
+                {results.map((result) => (
+                  <div
+                    key={result.pair}
+                    className="results-table__row"
+                    onClick={() => handleRowClick(result.pair)}
+                  >
+                    <div className="results-table__cell currency-pair">{result.pair}</div>
+                    <div className="results-table__cell">${result.standardLot.toFixed(5)}</div>
+                    <div className="results-table__cell">${result.miniLot.toFixed(5)}</div>
+                    <div className="results-table__cell">${result.microLot.toFixed(5)}</div>
+                    <div className="results-table__cell">{result.price.toFixed(5)}</div>
+                    <div className="results-table__cell pip-value">
+                      ${result.valueForPips.toFixed(2)}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="info-section">
+          <div className="info-card">
+            <h3>
+              <Info size={20} />
+              What is pip value?
+            </h3>
+            <p>
+              For example, with a EURUSD price of 1.23456, the digit '5' represents the pip location while the digit '6' represents a partial pip. So, movement of the price by 1 pip would mean 1.23456+0.0001=1.23466.
+              <br/><br/>
+              If the price would move down to 1.23443, this would represent 1.23456-1.23443=0.00013, a 1.3 pips change.
+              <br/><br/>
+              The same calculation works with currency pairs where pips are represented by the 2nd decimal.
+              <br/><br/>
+              The pip value in Monetary value is crucial for Forex Traders as this helps to analyze and understand an account's growth (or loss) in an easy format as well as calculate stop loss and take profit targets. For example, if you set a stop loss of 10 pips for your trade, this could mean $100 or $1000 loss, depending on the lot size you are trading.
+              <br/><br/>
+              Keep in mind that the value of pip will always differ for the different currency pairs, depending on the quote currency. For example, when trading EURUSD the pip value will be displayed in USD while trading EURGBP it will be in GBP.
+            </p>
+          </div>
+
+          <div className="info-card">
+            <h3>
+              <Info size={20} />
+              How to use the pip calculator?
+            </h3>
+            <p>
+              Account currency: your account deposit currency, can be AUD, CAD, CHF, EUR, GBP, JPY, NZD or USD.
+              <br/><br/>
+              Trade size: the trade size you are trading in lots or units, where 1 lot=100,000 units.
+              <br/><br/>
+              Once you select your account currency and the trade size, the calculator will calculate the pip value with Standard, Mini and Micro lots with the current market rates.
+            </p>
+          </div>
+
+          <div className="info-card">
+            <h3>
+              <Info size={20} />
+              How to calculate the value of a pip?
+            </h3>
+            <p>
+              Depending on your account base currency, you would need to convert the pip value accordingly.
+              <br/><br/>
+              Pip Value = (1 pip / Quote Currency Exchange Rate to Account Currency) * Lot size in units
+              <br/><br/>
+              For example, the pip value of EURUSD is $10 per pip with a standard lot size and a USD account:
+              <br/>
+              Pip Value = (0.0001 / 1)*100000 = $10.
+              <br/><br/>
+              However, if your account is denominated in EUR, you would need to divide the $10 by the EURUSD exchange rate which would result in a pip value of 8.92 EUR:
+              <br/>
+              (for example, EURUSD=1.1200)
+              <br/>
+              Pip Value = (0.0001 / [1.1200])*100000 = EUR 8.92.
+            </p>
           </div>
         </div>
       </div>

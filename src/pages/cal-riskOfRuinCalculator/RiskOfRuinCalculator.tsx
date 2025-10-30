@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { ArrowLeft, AlertTriangle, Calculator, Info, TrendingDown } from 'lucide-react';
 import './RiskOfRuinCalculator.scss';
 import { useNavigate } from 'react-router-dom'; 
+import { errorMsg } from '../../utils/customFn';
+import { API_ENDPOINTS } from '../../constants/ApiEndPoints';
+import { api } from '../../api/Service';
 const base = import.meta.env.VITE_BASE;
 const apiUrl = import.meta.env.VITE_API_URL;
 interface RiskOfRuinResults {
@@ -21,7 +24,7 @@ const RiskOfRuinCalculator: React.FC = () => {
   const [results, setResults] = useState<RiskOfRuinResults | null>(null);
   const [showResults, setShowResults] = useState<boolean>(false);
 
-  const calculateRiskOfRuin = () => {
+  const calculateRiskOfRuin =async () => {
     const winRateValue = parseFloat(winRate);
     const avgWin = parseFloat(averageWin);
     const avgLoss = parseFloat(averageLoss);
@@ -37,69 +40,36 @@ const RiskOfRuinCalculator: React.FC = () => {
       isNaN(lossLevelValue) || 
       isNaN(numTrades)
     ) {
-      alert('Please enter valid numbers for all fields');
+      errorMsg('Please enter valid numbers for all fields');
       return;
     }
 
     if (winRateValue < 0 || winRateValue > 100) {
-      alert('Win rate must be between 0 and 100');
+      errorMsg('Win rate must be between 0 and 100');
       return;
     }
 
     if (lossLevelValue < 0 || lossLevelValue > 100) {
-      alert('Loss level must be between 0 and 100');
+      errorMsg('Loss level must be between 0 and 100');
       return;
     }
 
     if (riskPerTradeValue < 0 || riskPerTradeValue > 100) {
-      alert('Risk per trade must be between 0 and 100');
+      errorMsg('Risk per trade must be between 0 and 100');
       return;
     }
 
-    // Convert percentages to decimals
-    const p = winRateValue / 100; // Win probability
-    const q = 1 - p; // Loss probability
-    const b = avgWin / avgLoss; // Win/Loss ratio
-    const riskPerTradeDecimal = riskPerTradeValue / 100;
-    const lossLevelDecimal = lossLevelValue / 100;
+    const response =await api.post(API_ENDPOINTS.riskCalculator, {
+      winRate: winRateValue,
+      avgWin: avgWin,
+     avgLoss: avgLoss,
+      riskPerTrade: riskPerTradeValue,
+      lossLevel: lossLevelValue,
+      numberOfTrades: numTrades,
+    });
 
-    // Calculate Risk of Ruin using the formula
-    // ROR = ((1-p)/p * 1/b)^(capital/risk_per_trade)
-    let riskOfRuin = 0;
-    
-    if (p > 0 && b > 0) {
-      const a = (q / p) * (1 / b);
-      if (a !== 1) {
-        const n = lossLevelDecimal / riskPerTradeDecimal;
-        riskOfRuin = Math.pow(a, n) * 100;
-      } else {
-        // When a = 1, use alternative formula
-        riskOfRuin = (lossLevelDecimal / riskPerTradeDecimal) / (1 + (lossLevelDecimal / riskPerTradeDecimal)) * 100;
-      }
-    }
 
-    // Risk of Drawdown calculation (simplified)
-    // This is a more complex calculation, using approximation
-    const expectedValue = (p * avgWin) - (q * avgLoss);
-    const variance = (p * Math.pow(avgWin, 2)) + (q * Math.pow(avgLoss, 2)) - Math.pow(expectedValue, 2);
-    const standardDeviation = Math.sqrt(variance);
-    
-    let riskOfDrawdown = 0;
-    if (standardDeviation > 0) {
-      const z = (lossLevelDecimal * 100) / (standardDeviation * Math.sqrt(numTrades));
-      riskOfDrawdown = Math.min(100, Math.max(0, 50 * (1 + Math.tanh(z / 2))));
-    }
-
-    // Cap values at 100%
-    riskOfRuin = Math.min(100, Math.max(0, riskOfRuin));
-    riskOfDrawdown = Math.min(100, Math.max(0, riskOfDrawdown));
-
-    const calculatedResults: RiskOfRuinResults = {
-      riskOfDrawdown,
-      riskOfRuin,
-    };
-
-    setResults(calculatedResults);
+    setResults(response.data.data.riskOfRuin);
     setShowResults(true);
   };
 

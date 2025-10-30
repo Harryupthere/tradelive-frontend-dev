@@ -260,9 +260,64 @@ const PositionSizeCalculator: React.FC = () => {
             </div>
           </div>
         )}
-      </div>
-    </div>
+
+        <div className="info-section">
+          <div className="info-card">
+            <h3>
+              <Info size={20} />
+              What is Position Size Calculator?
+            </h3>
+            <p>
+              A position size calculator helps traders determine the optimal lot size for their trades based on their account size, risk tolerance, and stop-loss level. It's an essential risk management tool that ensures you don't risk more than a predetermined percentage of your trading account on any single trade.
+            </p>
+          </div>
+
+          <div className="info-card">
+            <h3>
+              <Info size={20} />
+              How does Position Sizing work?
+            </h3>
+            <p>
+              Position sizing works by calculating the appropriate lot size based on three main factors: your account size, the percentage of your account you're willing to risk per trade, and your stop-loss in pips. The calculator automatically computes the exact position size that keeps your potential loss within your risk parameters.
+            </p>
+          </div>
+
+          <div className="info-card">
+            <h3>
+              <Info size={20} />
+              Why is Position Sizing important?
+            </h3>
+            <p>
+              Proper position sizing is crucial for risk management in forex trading. It helps you:
+              • Protect your trading capital from significant losses
+              • Maintain consistent risk across different trades
+              • Stay within your risk comfort zone
+              • Achieve more sustainable trading results
+              • Avoid emotional trading decisions
+            </p>
+          </div>
+
+          <div className="info-card">
+            <h3>
+              <Info size={20} />
+              How to use the Position Size Calculator?
+            </h3>
+            <p>
+              1. Enter your account size and currency
+              2. Specify your risk percentage (usually 1-2% per trade)
+              3. Input your stop-loss in pips
+              4. Select your trading pair
+              5. The calculator will show you:
+                 • The exact lot size to trade
+                 • The total units of currency
+                 • The amount of money at risk
+            </p>
+          </div>
+        </div>
+
+      </div> {/* Close calculator-container */}
+    </div> 
   );
-};
+}
 
 export default PositionSizeCalculator;
