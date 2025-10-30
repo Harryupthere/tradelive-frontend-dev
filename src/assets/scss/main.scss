@@ -99,11 +99,7 @@ button[type='button'] {
   }
 
   @include responsive(sm) {
-    max-width: 540px;
-  }
-
-  @include responsive(xs) {
-    max-width: 100%;
+    max-width: 90%;
   }
 }
 

@@ -1,4 +1,4 @@
-
+@use '../../assets/scss/mixin.scss' as *;
 .landing-container {
   display: flex;
   align-items: center;
@@ -32,6 +32,7 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     font-weight: 700;
+    
   }
 }
 
@@ -91,7 +92,7 @@
     align-items: center;
     gap: 8px;
     transition: transform 0.2s;
-
+    width: max-content;
     &:hover {
       transform: translateX(4px);
     }
@@ -136,7 +137,9 @@
   overflow: hidden;
   display: flex;
   gap: 20px;
-
+  @include responsive(md) {
+    max-height: 400px;
+  }
   &::before {
     content: '';
     position: absolute;
