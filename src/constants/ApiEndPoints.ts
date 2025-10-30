@@ -35,6 +35,21 @@ export const API_ENDPOINTS = {
 
   positionList:'position-size/list',
   positionSizeCalculator:'position-size/calculate',
+
+  pipcalculator:"pip-calculator/calculate",
+
+  marginCalculator:"margin-calculator",
+
+  fibonacciCalculator:"fibonacci-calculator",
+
+  pivotCalculato:'pivot-point-calculator',
+  riskCalculator:'risk-of-ruin-calculator',
+
+  compondCalculator:'compounding-calculator',
+
+  drawdownCalculator:'drawdown-calculator',
 };
+
+
 
 

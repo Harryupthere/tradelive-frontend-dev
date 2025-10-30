@@ -490,6 +490,11 @@
     "@eslint/core" "^0.15.2"
     levn "^0.4.1"
 
+"@fingerprintjs/fingerprintjs@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@fingerprintjs/fingerprintjs/-/fingerprintjs-5.0.1.tgz#e6ca2f88719b90e54a0fa8ab2896eee970948bb7"
+  integrity sha512-KbaeE/rk2WL8MfpRP6jTI4lSr42SJPjvkyrjP3QU6uUDkOMWWYC2Ts1sNSYcegHC8avzOoYTHBj+2fTqvZWQBA==
+
 "@humanfs/core@^0.19.1":
   version "0.19.1"
   resolved "https://registry.npmjs.org/@humanfs/core/-/core-0.19.1.tgz"

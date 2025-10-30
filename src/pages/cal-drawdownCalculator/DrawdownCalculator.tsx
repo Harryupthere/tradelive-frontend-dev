@@ -8,6 +8,9 @@ import {
 } from "lucide-react";
 import "./DrawdownCalculator.scss";
 import { useNavigate } from "react-router-dom";
+import { errorMsg } from "../../utils/customFn";
+import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
+import { api } from "../../api/Service";
 const base = import.meta.env.VITE_BASE;
 const apiUrl = import.meta.env.VITE_API_URL;
 interface DrawdownResults {
@@ -29,58 +32,38 @@ const DrawdownCalculator: React.FC = () => {
   const [results, setResults] = useState<DrawdownResults | null>(null);
   const [showResults, setShowResults] = useState<boolean>(false);
 
-  const calculateDrawdown = () => {
+  const calculateDrawdown =async () => {
     const startBalance = parseFloat(startingBalance);
     const numPeriods = parseInt(periods);
     const gainPercent = parseFloat(gainPerPeriod);
 
     if (isNaN(startBalance) || isNaN(numPeriods) || isNaN(gainPercent)) {
-      alert("Please enter valid numbers for all fields");
+      errorMsg("Please enter valid numbers for all fields");
       return;
     }
 
     if (startBalance <= 0) {
-      alert("Starting balance must be greater than 0");
+      errorMsg("Starting balance must be greater than 0");
       return;
     }
 
     if (numPeriods <= 0) {
-      alert("Number of periods must be greater than 0");
+      errorMsg("Number of periods must be greater than 0");
       return;
     }
 
     if (gainPercent < -100) {
-      alert("Gain per period cannot be less than -100%");
+      errorMsg("Gain per period cannot be less than -100%");
       return;
     }
 
-    const gainDecimal = gainPercent / 100;
-    const periodsData = [];
+   const response=await api.post(API_ENDPOINTS.drawdownCalculator, {
+      startingBalance: startBalance,
+      periods: numPeriods,
+      gainPerPeriod: gainPercent,
+    });
 
-    let currentBalance = startBalance;
-
-    for (let i = 1; i <= numPeriods; i++) {
-      const startingBalanceForPeriod = currentBalance;
-      const endingBalance = currentBalance * (1 + gainDecimal);
-      const profit = endingBalance - startingBalanceForPeriod;
-      const totalProfit = endingBalance - startBalance;
-      const totalLossPercent =
-        ((endingBalance - startBalance) / startBalance) * 100;
-
-      periodsData.push({
-        period: i,
-        startingBalance: startingBalanceForPeriod,
-        endingBalance: endingBalance,
-        totalProfit: totalProfit,
-        totalLoss: totalLossPercent,
-      });
-
-      currentBalance = endingBalance;
-    }
-
-    const DrawdownResults: DrawdownResults = {
-      periods: periodsData,
-    };
+    const DrawdownResults=   response.data.data;
 
     setResults(DrawdownResults);
     setShowResults(true);

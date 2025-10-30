@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { ArrowLeft, BarChart3, Calculator, Info, TrendingUp } from 'lucide-react';
 import './CompoundingCalculator.scss';
 import { useNavigate } from 'react-router-dom'; 
+import { errorMsg } from '../../utils/customFn';
+import { API_ENDPOINTS } from '../../constants/ApiEndPoints';
+import { api } from '../../api/Service';
 const base = import.meta.env.VITE_BASE;
 const apiUrl = import.meta.env.VITE_API_URL;
 interface CompoundingResults {
@@ -23,57 +26,38 @@ const CompoundingCalculator: React.FC = () => {
   const [results, setResults] = useState<CompoundingResults | null>(null);
   const [showResults, setShowResults] = useState<boolean>(false);
 
-  const calculateCompounding = () => {
+  const calculateCompounding = async () => {
     const startBalance = parseFloat(startingBalance);
     const numPeriods = parseInt(periods);
     const gainPercent = parseFloat(gainPerPeriod);
 
     if (isNaN(startBalance) || isNaN(numPeriods) || isNaN(gainPercent)) {
-      alert('Please enter valid numbers for all fields');
+      errorMsg('Please enter valid numbers for all fields');
       return;
     }
 
     if (startBalance <= 0) {
-      alert('Starting balance must be greater than 0');
+      errorMsg('Starting balance must be greater than 0');
       return;
     }
 
     if (numPeriods <= 0) {
-      alert('Number of periods must be greater than 0');
+      errorMsg('Number of periods must be greater than 0');
       return;
     }
 
     if (gainPercent < -100) {
-      alert('Gain per period cannot be less than -100%');
+      errorMsg('Gain per period cannot be less than -100%');
       return;
     }
 
-    const gainDecimal = gainPercent / 100;
-    const periodsData = [];
+   const response =await api.post(API_ENDPOINTS.compondCalculator, {
+      startingBalance: startBalance,
+      periods: numPeriods,
+      gainPerPeriod: gainPercent,
+    });
 
-    let currentBalance = startBalance;
-
-    for (let i = 1; i <= numPeriods; i++) {
-      const startingBalanceForPeriod = currentBalance;
-      const endingBalance = currentBalance * (1 + gainDecimal);
-      const profit = endingBalance - startingBalanceForPeriod;
-      const totalProfit = endingBalance - startBalance;
-      const totalGainPercent = ((endingBalance - startBalance) / startBalance) * 100;
-
-      periodsData.push({
-        period: i,
-        startingBalance: startingBalanceForPeriod,
-        endingBalance: endingBalance,
-        totalProfit: totalProfit,
-        totalGain: totalGainPercent,
-      });
-
-      currentBalance = endingBalance;
-    }
-
-    const compoundingResults: CompoundingResults = {
-      periods: periodsData,
-    };
+    const compoundingResults = response.data.data
 
     setResults(compoundingResults);
     setShowResults(true);
