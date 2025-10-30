@@ -7,7 +7,8 @@ import {
   EyeOff,
   Save,
   CreditCard as Edit3,
-  ArrowUpCircle
+  ArrowUpCircle,
+  Notebook
 } from "lucide-react";
 import "./Profile.scss";
 import { useForm, SubmitHandler, get } from "react-hook-form";
@@ -371,17 +372,26 @@ const ProfilePage: React.FC = () => {
           <p className="profile-page__subtitle">
             Manage your account information and preferences
           </p>
-        </div>
-        {getUser().userType.id == 1 &&
+
+         <div> {getUser().userType.id==1 && 
           <button
-            className="profile-page__save-btn"
-            onClick={() => navigate(`${base}checkout`)}
-          >
-            <ArrowUpCircle size={16} />{" "}
-            Upgrade
-          </button>
-        }
-      </div>
+              className="profile-page__save-btn"
+              onClick={()=>navigate(`${base}checkout`)}
+            >
+              <ArrowUpCircle size={16} />{" "}
+              Upgrade
+            </button>}
+
+                
+          <button
+              className="profile-page__save-btn"
+              onClick={()=>navigate(`${base}activation-coupons`)}
+            >
+              <ArrowUpCircle size={16} />{" "}
+              Activation Coupons
+            </button>
+            </div>
+        </div>
 
       <div className="profile-page__section">
         <div className="profile-page__section-header">

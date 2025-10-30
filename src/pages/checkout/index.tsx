@@ -57,19 +57,36 @@ const Checkout: React.FC = () => {
     email: "",
     mobileNo: "",
     country: "",
-    subscriptionType: getUser().userType.id==1?"Yearly Subscription":"Activation Coupon",
+    subscriptionType: getUser()?.userType.id==1?"Yearly Subscription":"Activation Coupon",
     paymentGateway: "1",
     couponQuantity: 1,
   });
 
+  const [paymentGateways, setPaymentGateways] = useState<Paymentgateways[]>([]);
+
+  // Initialize pricing with 0 fees, will update after API call
   const [pricing, setPricing] = useState<PricingDetails>({
     basePrice: planPrice ? parseFloat(planPrice) : 12.0,
     quantity: 1,
-    fees: 0.0,
-    total: 12.0,
+    fees: 0, // Initialize with 0
+    total: planPrice ? parseFloat(planPrice) : 12.0, // Initial total without fees
   });
 
-  const [paymentGateways, setPaymentGateways] = useState<Paymentgateways[]>([]);
+  // Add useEffect to update pricing when payment gateways load
+  useEffect(() => {
+    if (paymentGateways.length > 0) {
+      // Update pricing with fees from first gateway
+      const firstGateway = getUser().userType.id==1?paymentGateways[0]:paymentGateways[1];
+      const basePrice = planPrice ? parseFloat(planPrice) : 12.0;
+      const feesPercent = Number(firstGateway.fee_percentage || 0);
+      const fees = (basePrice * feesPercent) / 100;
+      setPricing(prev => ({
+        ...prev,
+        fees,
+        total: basePrice + fees
+      }));
+    }
+  }, [paymentGateways]);
 
   // validation errors
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -160,7 +177,6 @@ const Checkout: React.FC = () => {
     const selectedGateway = paymentGateways.find(
       (g) => String(g.id) === String(data.paymentGateway)
     );
-    console.log("Selected Gateway:", selectedGateway);
     const feesPercentage = Number(
       (selectedGateway as any)?.fee_percentage ||
         (selectedGateway as any)?.fees_percent ||
@@ -203,7 +219,7 @@ const Checkout: React.FC = () => {
       }
       return;
     }
-console.log(formData,"???")
+
     // Process checkout
     const metadata = {
       ...formData,
