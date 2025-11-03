@@ -153,7 +153,7 @@ const SignupPage: React.FC = () => {
           errorMsg(ress?.message || "Google login failed");
         }
       } catch (err: any) {
-        errorMsg(err?.response?.data?.message || "Google login failed");
+        errorMsg(err?.response?.data?.message || "Google login failed ");
       } finally {
         setLoading(false);
       }
