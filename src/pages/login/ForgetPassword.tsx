@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from "react";
 import { Mail } from "lucide-react";
 import "./Login-new.scss";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { errorMsg, successMsg } from "../../utils/customFn";
 import { api } from "../../api/Service";
@@ -61,6 +61,9 @@ const ForgetPasswordPage: React.FC = () => {
         <div className="login-page__form-container">
           <div className="login-page__header">
             <div className="login-page__header-left">
+                <Link to={`${base}`} className="show-mobile">
+                  <img src="/test/logo3.png" alt="logo" />
+                </Link>
               <h2 className="login-page__title">Forgot Password</h2>
               <p className="login-page__subtitle">Enter your registered email</p>
             </div>

@@ -169,7 +169,7 @@ const ProfilePage: React.FC = () => {
           const storedUser = getUser() || {};
           // API might return a full user object (data.user) or just profile fields (data)
           const apiUser = (res?.data?.data?.user) ? res.data.data.user : data;
-          const mergedUser = { ...storedUser, userType: (data as any).userType || apiUser.userType || storedUser.userType };
+          const mergedUser = { ...storedUser, userType: (data as any).userType || apiUser?.userType || storedUser?.userType };
           // persist to local storage and update redux
           persistUser(mergedUser as any);
           dispatch(setUserProfile(mergedUser as any));
@@ -373,7 +373,7 @@ const ProfilePage: React.FC = () => {
             Manage your account information and preferences
           </p>
         </div>
-        {getUser().userType.id == 1 &&
+        {getUser()?.userType.id == 1 &&
           <button
             className="profile-page__save-btn"
             onClick={() => navigate(`${base}checkout`)}

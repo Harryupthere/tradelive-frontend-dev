@@ -46,9 +46,9 @@ const LoginPage: React.FC = () => {
   const onSubmit: SubmitHandler<LoginPayload> = async (data) => {
     setLoading(true);
     try {
-    
+
       data.login_type = 1;
-     
+
 
       const res = await loginService(data);
       if (res?.status) {
@@ -99,8 +99,8 @@ const LoginPage: React.FC = () => {
           password: "",
           login_type: 2,
         } as any;
-        
-       
+
+
         const ress = await loginService(payload);
         const token = ress?.data?.data?.access_token;
         // if backend also returns user object, adapt the path accordingly.
@@ -139,6 +139,9 @@ const LoginPage: React.FC = () => {
           <div className="login-page__header">
             {
               <div className="login-page__header-left">
+                <Link to={`${base}`} className="show-mobile">
+                  <img src="/test/logo3.png" alt="logo" />
+                </Link>
                 <h2 className="login-page__title">Login</h2>
                 <p className="login-page__subtitle">Welcome Back!</p>
               </div>

@@ -166,7 +166,11 @@ const SignupPage: React.FC = () => {
       <div className="login-page__form-section">
         <div className="login-page__form-container">
           <div className="login-page__header">
+              <Link to={`${base}`} className="show-mobile">
+                              <img src="/test/logo3.png" alt="logo" />
+                            </Link>
             {
+              
               <div className="login-page__header-left">
                 <h2 className="login-page__title">Signup</h2>
                 <p className="login-page__subtitle">Welcome!</p>
