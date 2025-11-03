@@ -133,7 +133,7 @@
     overflow-y: auto;
     scroll-behavior: smooth;
     padding-right: 4px; // For custom scrollbar
-
+    overflow-x: hidden;
     // Smooth and styled scrollbar for Webkit browsers
     &::-webkit-scrollbar {
       width: 8px;

@@ -76,7 +76,6 @@ const Router = () => {
         { path: `${base}contactus`, element: <ContactUs /> },
 
         { path: `${base}about-us`, element: <AboutUs /> },
-        { path: `${base}profile`, element: <ProfilePage /> },
         { path: `${base}checkout`, element: <Checkout/> },
         { path: `${base}activation-coupons`, element: <ActivationCoupons /> },
 

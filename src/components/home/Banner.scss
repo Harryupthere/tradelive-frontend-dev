@@ -139,6 +139,7 @@
   gap: 20px;
   @include responsive(md) {
     max-height: 400px;
+    display: block;
   }
   &::before {
     content: '';
