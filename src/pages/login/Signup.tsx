@@ -84,7 +84,7 @@ const SignupPage: React.FC = () => {
       if (res?.status) {
         // login and redirect same as login flow
         // login(res?.data?.data?.access_token);
-        successMsg(res.message);
+        successMsg(res.data.message);
         navigate(`${base}login`);
       } else {
         errorMsg(res?.message || "Signup failed");
@@ -137,7 +137,7 @@ const SignupPage: React.FC = () => {
           last_name: res.data.family_name,
           email: res.data.email,
           password: null,
-          login_type: 2,
+          registration_type_id: 2,
         } as any;
         // add referral_id only when present
         if (referral) {
