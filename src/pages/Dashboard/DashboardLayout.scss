@@ -1,4 +1,19 @@
+@use "./../../assets/scss/mixin.scss" as *;
+
 .dashboard-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  .dashboard-container {
+    flex: 1;
+    overflow: hidden;
+
+    @include responsive(sm) {
+      overflow: visible;
+    }
+  }
 
   .dashboard-layout {
     display: flex;
@@ -7,6 +22,36 @@
     padding: 20px 0;
     gap: 30px;
     position: relative;
+
+    @include responsive(lg) {
+      gap: 25px;
+      padding: 15px 0;
+    }
+
+    @include responsive(md) {
+      gap: 20px;
+      padding: 10px 0;
+    }
+
+    @include responsive(sm) {
+      padding: 0;
+      gap: 0;
+    }
+  }
+
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 98;
+
+    @include responsive(sm) {
+      display: block;
+    }
   }
 
   .dashboard-sidebar {
@@ -26,17 +71,37 @@
     overflow-y: auto;
     position: sticky;
     top: 100px;
-    z-index: 99;
-    @media (max-width: 768px) {
-      width: 250px;
-      min-width: 250px;
-      transform: translateX(-120%);
-      transition: transform 0.3s ease;
-      position: absolute;
-      &.sidebar-open{
-        transform: none;
-      }
-      &.open {
+    z-index: 100;
+    transition: all 0.3s ease;
+
+    @include responsive(lg) {
+      width: 240px;
+      min-width: 240px;
+      max-height: calc(100vh - 30px);
+      top: 80px;
+    }
+
+    @include responsive(md) {
+      width: 220px;
+      min-width: 220px;
+      gap: 15px;
+    }
+
+    @include responsive(sm) {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 280px;
+      min-width: 280px;
+      max-height: 100vh;
+      border-radius: 0;
+      border: none;
+      transform: translateX(-100%);
+      top: 0;
+      height: 100vh;
+
+      &.sidebar-open {
         transform: translateX(0);
       }
     }
@@ -45,10 +110,26 @@
       padding: 20px;
       background-color: var(--card-bg);
 
+      @include responsive(md) {
+        padding: 15px;
+      }
+
+      @include responsive(sm) {
+        padding: 20px;
+      }
+
       h4 {
         text-align: center;
         font-size: 18px;
         font-weight: 500;
+
+        @include responsive(md) {
+          font-size: 16px;
+        }
+
+        @include responsive(sm) {
+          font-size: 18px;
+        }
       }
 
       .new-challenge-btn {
@@ -62,8 +143,18 @@
         cursor: pointer;
         margin-bottom: 15px;
         transition: background-color 0.3s ease;
-      
         font-size: 14px;
+
+        @include responsive(md) {
+          padding: 10px 12px;
+          font-size: 13px;
+          margin-bottom: 12px;
+        }
+
+        @include responsive(sm) {
+          padding: 12px 16px;
+          font-size: 14px;
+        }
 
         &:hover {
           background-color: #1565c0;
@@ -74,9 +165,13 @@
     .sidebar-content {
       flex: 1;
       background-color: var(--card-bg);
+      overflow-y: auto;
+
+      @include responsive(sm) {
+        max-height: calc(100vh - 100px);
+      }
 
       .menu-section {
-
         .menu-title {
           font-size: 14px;
           font-weight: 600;
@@ -84,6 +179,17 @@
           margin-bottom: 15px;
           padding: 0 20px;
           text-transform: uppercase;
+
+          @include responsive(md) {
+            font-size: 12px;
+            margin-bottom: 12px;
+            padding: 0 15px;
+          }
+
+          @include responsive(sm) {
+            font-size: 13px;
+            padding: 0 20px;
+          }
         }
 
         .menu-nav {
@@ -96,6 +202,22 @@
             text-decoration: none;
             transition: all 0.3s ease;
             border-left: 3px solid transparent;
+            font-size: 15px;
+
+            @include responsive(lg) {
+              padding: 14px 16px;
+            }
+
+            @include responsive(md) {
+              padding: 12px 15px;
+              gap: 8px;
+              font-size: 13px;
+            }
+
+            @include responsive(sm) {
+              padding: 16px 20px;
+              font-size: 14px;
+            }
 
             &:hover {
               background-color: rgba(255, 255, 255, 0.05);
@@ -113,13 +235,35 @@
             }
 
             .menu-icon {
-              font-size: 26px;
+              font-size: 22px;
+              flex-shrink: 0;
+
+              @include responsive(md) {
+                font-size: 20px;
+              }
+
+              @include responsive(sm) {
+                font-size: 22px;
+              }
             }
 
             .menu-label {
-              font-size: 16px;
-                  font-weight: 500;
-    letter-spacing: 1px
+              font-size: 15px;
+              font-weight: 500;
+              letter-spacing: 0.5px;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+
+              @include responsive(md) {
+                font-size: 13px;
+                letter-spacing: 0;
+              }
+
+              @include responsive(sm) {
+                font-size: 14px;
+                white-space: normal;
+              }
             }
           }
         }
@@ -137,6 +281,16 @@
           font-weight: 600;
           cursor: pointer;
           transition: color 0.3s ease;
+
+          @include responsive(md) {
+            padding: 10px 15px;
+            font-size: 12px;
+          }
+
+          @include responsive(sm) {
+            padding: 12px 20px;
+            font-size: 13px;
+          }
 
           &:hover {
             color: white;
@@ -158,6 +312,10 @@
         .submenu {
           padding-left: 40px;
 
+          @include responsive(md) {
+            padding-left: 35px;
+          }
+
           .submenu-item {
             display: block;
             padding: 8px 20px;
@@ -165,6 +323,16 @@
             text-decoration: none;
             font-size: 13px;
             transition: color 0.3s ease;
+
+            @include responsive(md) {
+              padding: 6px 15px;
+              font-size: 12px;
+            }
+
+            @include responsive(sm) {
+              padding: 8px 20px;
+              font-size: 13px;
+            }
 
             &:hover {
               color: white;
@@ -177,13 +345,30 @@
         margin-top: auto;
         padding: 20px;
 
+        @include responsive(md) {
+          padding: 15px;
+        }
+
+        @include responsive(sm) {
+          padding: 20px;
+        }
+
         .footer-item {
           display: flex;
           align-items: center;
           padding: 8px 0;
           color: var(--card-bg);
-          font-size: 14px;
+          font-size: 13px;
           cursor: pointer;
+
+          @include responsive(md) {
+            font-size: 12px;
+            padding: 6px 0;
+          }
+
+          @include responsive(sm) {
+            font-size: 13px;
+          }
 
           &:hover {
             color: white;
@@ -191,7 +376,11 @@
 
           .footer-icon {
             margin-right: 8px;
-            font-size: 18px;
+            font-size: 16px;
+
+            @include responsive(md) {
+              font-size: 14px;
+            }
           }
 
           span:first-child {
@@ -212,16 +401,65 @@
     flex-direction: column;
     overflow: hidden;
 
-    @media (max-width: 768px) {
-      width: 100%;
+    @include responsive(md) {
+      overflow: auto;
     }
 
-
+    @include responsive(sm) {
+      width: 100%;
+      overflow: auto;
+    }
 
     .dashboard-content {
       flex: 1;
       overflow-y: auto;
       padding: 20px 0;
+
+      @include responsive(lg) {
+        padding: 15px 0;
+      }
+
+      @include responsive(md) {
+        padding: 10px 0;
+      }
+
+      @include responsive(sm) {
+        padding: 20px 15px;
+      }
+    }
+  }
+
+  .mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--primary-blue);
+    color: white;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 97;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+
+    @include responsive(sm) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    &:hover {
+      background-color: #1565c0;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+      transform: scale(1.1);
+    }
+
+    &:active {
+      transform: scale(0.95);
     }
   }
 }

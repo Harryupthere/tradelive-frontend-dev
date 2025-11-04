@@ -2,8 +2,6 @@ import { Container } from "@mui/material";
 import Courses from "../../components/home/Courses";
 import Banner from "../../components/home/Banner";
 import "./home.scss";
-import image from "../../assets/images/bar-graph.png";
-import glob from "../../assets/images/glob.png";
 import Slider from "react-slick";
 import { useRef } from "react";
 import ProductCard, { Course } from "../../components/common/ProductCard";
@@ -71,7 +69,6 @@ const Home = () => {
         <section data-aos="fade-up">
         <div className="center-content">
           <div className="overlay-img">
-            <img src={image} alt="img" />
           </div>
           <h2 className="title">Our Belief</h2>
           <h2 className="gradient-text">Trading Knowledge Should Be Free.</h2>
@@ -90,7 +87,6 @@ const Home = () => {
           </div>
           <div className="left-content" data-aos="fade-right">
             <div className="globe-wrapper">
-              <img src={glob} alt="glob" className="glob" />
             </div>
             <h2 className="bottom-title">
               What <img src={`${base}TRADELIVE24-logo.png`} alt="logo" /> Is

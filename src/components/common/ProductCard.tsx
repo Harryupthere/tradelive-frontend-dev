@@ -2,7 +2,6 @@ import { Rating } from "@mui/material";
 import "./Productcard.scss";
 import { useNavigate } from "react-router-dom";
 const base = import.meta.env.VITE_BASE;
-import image from '../../assets/images/thumb1.jpg'
 export interface Course {
   id: number;
   title: string;
@@ -21,7 +20,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ course }) => {
   return (
     <div className="course-card" onClick={() => navigate(`${base}course-overview/${course.id}`)}>
       <div className="course-card-img">
-        <img src={course.preview_image || image} alt={course.title} />
+        <img src={course.preview_image} alt={course.title} />
       </div>
       <div className="card-content">
         <h3 className="title">{course.title}</h3>

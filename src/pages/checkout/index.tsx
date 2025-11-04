@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "./Checkout.scss";
+import "./checkout.scss";
 import { ArrowLeft, CreditCard, Gift, Info } from "lucide-react";
 import { allCountries } from "country-telephone-data";
 import { API_ENDPOINTS } from "../../constants/ApiEndPoints";

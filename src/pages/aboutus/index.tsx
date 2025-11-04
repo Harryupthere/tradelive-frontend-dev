@@ -1,6 +1,5 @@
 import { Target, Users, Shield, TrendingUp, Zap, Heart, BookOpen, Award } from 'lucide-react';
 import './about.scss';
-import forxImg from '../../assets/images/forex.jpg';
 const AboutUs = () => {
   return (
     <div className="about-us">
@@ -38,11 +37,9 @@ const AboutUs = () => {
               </p>
             </div>
             <div className="image-card">
-              <img
-                src={forxImg}
-                alt="Trading community"
-                className="content-image"
-              />
+              <div className="placeholder-image">
+                <Users size={64} />
+              </div>
             </div>
           </div>
         </div>
