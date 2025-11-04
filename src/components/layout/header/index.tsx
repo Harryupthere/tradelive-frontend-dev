@@ -111,7 +111,7 @@ const Header = () => {
       <header className={`header-wrapper ${isSticky ? "sticky" : ""}`}>
         <div className='container'>
           <div className='flex-container'>
-            <Link to={'/'} className='brand' onClick={closeMobileMenu}>
+            <Link to={`${base}`} className='brand' onClick={closeMobileMenu}>
               <img src={`${base}TRADELIVE24-logo.png`} alt="TradeLive Logo" />
             </Link>
 
