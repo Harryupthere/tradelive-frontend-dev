@@ -1,6 +1,9 @@
 @use '../../assets/scss/mixin.scss' as *;
 
 .home-wrapped {
+    width: 100%;
+    overflow-x: hidden;
+
     @include responsive(md) {
         padding-top: 50px;
     }
@@ -247,6 +250,7 @@
                 font-size: 22px;
                 max-width: 80%;
                 line-height: 35px;
+
                 @include responsive(xl) {
                     font-size: 18px;
                 }
@@ -262,6 +266,7 @@
                 align-items: center;
                 align-content: center;
                 gap: 15px;
+
                 @include responsive(xl) {
                     font-size: 18px;
                 }
