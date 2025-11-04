@@ -25,11 +25,13 @@
     max-width: 400px;
     border-radius: 20px;
   }
-  &__heading{
+
+  &__heading {
     font-size: 40px;
     font-weight: 700;
   }
-  &__tagline{
+
+  &__tagline {
     margin-bottom: 80px;
     margin-top: 10px;
     font-size: 1rem;
@@ -133,7 +135,6 @@
 
     @media (max-width: 768px) {
       max-width: none;
-      padding: 0 1rem;
     }
   }
 
@@ -155,17 +156,32 @@
     align-items: flex-start;
     margin-bottom: 2rem;
 
-    @media (max-width: 768px) {
+    .show-mobile {
       display: none;
+      max-width: 150px;
+      margin: 30px auto;
+      @media (max-width: 768px) {
+        display: block;
+
+      }
+    }
+
+    @media (max-width: 768px) {
+      justify-content: center;
+      flex-direction: column;
+      width: 100%;
+      align-items: center;
     }
   }
 
   &__mobile-header {
     display: none;
     margin-bottom: 2rem;
+    text-align: center;
 
     @media (max-width: 768px) {
       display: block;
+
     }
   }
 
@@ -175,6 +191,11 @@
     font-weight: 700;
     color: white;
     margin: 0 0 0.5rem 0;
+
+    @media (max-width: 768px) {
+      font-size: 2rem;
+      text-align: center;
+    }
   }
 
   &__subtitle,
@@ -182,6 +203,9 @@
     font-size: 1rem;
     color: rgba(255, 255, 255, 0.7);
     margin: 0;
+     @media (max-width: 768px) {
+      text-align: center;
+    }
   }
 
   &__new-user,
@@ -196,6 +220,7 @@
     text-decoration: none;
     font-weight: 400;
     cursor: pointer;
+
     &:hover {
       text-decoration: underline;
     }
@@ -211,13 +236,15 @@
     margin-bottom: 1.5rem;
   }
 
-  &__header-right{
+  &__header-right {
     text-align: center;
   }
-  &__otp-info{
+
+  &__otp-info {
     text-align: right;
     margin-top: 10px;
   }
+
   &__phone-input {
     display: flex;
     align-items: center;
@@ -243,17 +270,23 @@
       outline: none;
     }
   }
-&__label{
-  margin-bottom: 10px;
-  display: block;
-  margin-left: 5px;
-}
+
+  &__label {
+    margin-bottom: 10px;
+    display: block;
+    margin-left: 5px;
+  }
+
   &__country-code {
     padding: 1rem 1.5rem;
     color: rgba(255, 255, 255, 0.7);
     font-size: 1rem;
     border-right: 1px solid rgba(255, 255, 255, 0.1);
     width: 105px;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
   }
 
   &__phone-field {

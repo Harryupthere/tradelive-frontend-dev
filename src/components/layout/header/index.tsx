@@ -1,29 +1,55 @@
-import { useState, useEffect } from "react";
-import "./header.scss";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { getToken, getUser, removeToken, removeUser } from "../../../utils/tokenUtils";
-import Translator from "./Translator";
-
+import { useState, useEffect } from 'react'
+import './header.scss'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Menu, X } from 'lucide-react'
+import { getToken, getTokenKey, getUser } from '../../../utils/tokenUtils';
+import Translator from './Translator';
 const base = import.meta.env.VITE_BASE;
 
+
 const Header = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSticky, setIsSticky] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const [isSticky, setIsSticky] = useState(false);
-  const [user, setUser] = useState<any | null>(null);
-
+  const isActive = (path: string) => {
+    return location.pathname === path ? "active" : "";
+  };
   useEffect(() => {
     const handleScroll = () => {
-      setIsSticky(window.scrollY > 120);
+      if (window.scrollY > 120) {
+        setIsSticky(true);
+      } else {
+        setIsSticky(false);
+      }
     };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => { 
-    // initialise user from localStorage
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
+  const [user, setUser] = useState<any | null>(null);
+
+  useEffect(() => {
     setUser(getUser());
-    // reflect changes from other tabs
     const onStorage = (e: StorageEvent) => {
       if (e.key === getTokenKey() || e.key === null) {
         setUser(getUser());
@@ -32,19 +58,6 @@ const Header = () => {
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
   }, []);
-
-  // Helper to check active route
-  const isActive = (path: string) => {
-    return location.pathname === path ? "active" : "";
-  };
-
-  // const handleLogout = () => {
-  //   removeToken();
-  //   removeUser();
-  //   setUser(null);
-  //   navigate(`${base}login`);
-  // };
-
   const renderUserArea = () => {
     if (!getToken() || !user) {
       return (
@@ -94,44 +107,57 @@ const Header = () => {
   };
 
   return (
-    <header className={`header-wrapper ${isSticky ? "sticky" : ""}`}>
-      <div className="container">
-        <div className="flex-container">
-          <Link to={`${base}`} className="brand">
-            <img src={`${base}TRADELIVE24-logo.png`} alt="TradeLive Logo" />
-          </Link>
+    <>
+      <header className={`header-wrapper ${isSticky ? "sticky" : ""}`}>
+        <div className='container'>
+          <div className='flex-container'>
+            <Link to={'/'} className='brand' onClick={closeMobileMenu}>
+              <img src={`${base}TRADELIVE24-logo.png`} alt="TradeLive Logo" />
+            </Link>
 
-          <ul>
-            <li>
-              <Link to={`${base}`} className={isActive(`${base}`)}>
-                Home
-              </Link>
-            </li>
-                 <li>
-              <Link to={`${base}forum`} className={isActive(`${base}forum`)}>
-                Forum
-              </Link>
-            </li>
-            <li>
-              <Link to={`${base}contactus`} className={isActive(`${base}contactus`)}>Contact</Link>
-            </li>
-            <li>
-              <Link to={`${base}about-us`} className={isActive(`${base}about-us`)}>
-                About Us
-              </Link>
-            </li>
-          </ul>
-
-
-          <div className="right-drawer">
-            <Translator />
-            {renderUserArea()}
+            {/* Desktop Navigation */}
+            <ul className='desktop-nav'>
+              <li><Link to={`${base}`} className={isActive(`${base}`)}>Home</Link></li>
+              <li><Link to={`${base}courses`} className={isActive(`${base}courses`)}>Courses</Link></li>
+              <li><Link to={`${base}news`} className={isActive(`${base}news`)}>News</Link></li>
+              <li><Link to={`${base}contactus`} className={isActive(`${base}contactus`)}>Contact</Link></li>
+              <li><Link to={`${base}about-us`} className={isActive(`${base}about-us`)}>About Us</Link></li>
+            </ul>
+            <div className='desktop-nav right-drawer'>
+              <Translator />
+              {renderUserArea()}
+            </div>
+            <div className='right-drawer'>
+              {/* Mobile Menu Toggle */}
+              <button
+                type='button'
+                className='mobile-menu-toggle'
+                onClick={toggleMobileMenu}
+                aria-label="Toggle menu"
+              >
+                {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
           </div>
-
         </div>
-      </div>
-    </header>
-  );
-};
+      </header>
 
-export default Header;
+      {/* Mobile Navigation Overlay */}
+      <div className={`mobile-nav-overlay ${isMobileMenuOpen ? 'active' : ''}`} onClick={closeMobileMenu}>
+        <nav className={`mobile-nav ${isMobileMenuOpen ? 'active' : ''}`} onClick={(e) => e.stopPropagation()}>
+          <ul>
+            <li><Link to={`${base}`} onClick={closeMobileMenu}>Home</Link></li>
+            <li><Link to={`${base}courses`} onClick={closeMobileMenu}>Courses</Link></li>
+            <li><Link to={`${base}news`} onClick={closeMobileMenu}>News</Link></li>
+            <li><Link to={`${base}contactus`} onClick={closeMobileMenu}>Contact</Link></li>
+            <li><Link to={`${base}about-us`} onClick={closeMobileMenu}>About Us</Link></li>
+          </ul>
+            {/* <Translator /> */}
+          {renderUserArea()}
+        </nav>
+      </div>
+    </>
+  )
+}
+
+export default Header

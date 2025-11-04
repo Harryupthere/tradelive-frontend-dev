@@ -35,6 +35,7 @@ import PaymentFailure from "../pages/checkout/PaymentFailure";
 import ActivationCoupons from "../pages/activation-coupons/ActivationCoupons";
 import ProfilePage from "../pages/profile";
 import InstructorProfile from "../pages/instructors/InstructorProfile";
+import InstructorsPage from "../pages/instructor-page/InstructorsPage";
 const base = import.meta.env.VITE_BASE;
 
 
@@ -77,13 +78,12 @@ const Router = () => {
         { path: `${base}contactus`, element: <ContactUs /> },
 
         { path: `${base}about-us`, element: <AboutUs /> },
-        { path: `${base}profile`, element: <ProfilePage /> },
         { path: `${base}checkout`, element: <Checkout/> },
         { path: `${base}activation-coupons`, element: <ActivationCoupons /> },
 
         { path: `${base}instructor/:id`, element: <InstructorProfile /> },
 
-
+        { path: `${base}instructors`, element: <InstructorsPage /> },
 
       ],
     },
