@@ -48,6 +48,8 @@ export const API_ENDPOINTS = {
   compondCalculator:'compounding-calculator',
 
   drawdownCalculator:'drawdown-calculator',
+
+  instructor:'instructors',
 };
 
 
