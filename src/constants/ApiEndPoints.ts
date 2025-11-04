@@ -50,6 +50,8 @@ export const API_ENDPOINTS = {
   drawdownCalculator:'drawdown-calculator',
 
   instructor:'instructors',
+  instructors:'/instructor-scheduler',
+
 };
 
 
