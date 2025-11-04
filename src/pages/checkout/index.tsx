@@ -160,8 +160,8 @@ const Checkout: React.FC = () => {
     // coupon quantity bounds
     if (formData.subscriptionType === "Activation Coupon") {
       const q = Number(formData.couponQuantity);
-      if (q < 1 || q > 10) {
-        newErrors.couponQuantity = "Quantity must be between 1 and 10";
+      if (q < 1 || q > 50) {
+        newErrors.couponQuantity = "Quantity must be between 1 and 50";
       }
     }
 
