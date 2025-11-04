@@ -61,7 +61,7 @@ const Router = () => {
         // { path: `${base}coursesss`, element: <CoursesPage /> },
         { path: `${base}forum`, element: <ForumPage /> },
         { path: `${base}forum/:forumId`, element: <ForumTopicsPage /> },
-        { path: `${base}forum-calculators`, element: <ForexCalculators /> },
+       
         { path: `${base}currency-converter`, element: <CurrencyConverter /> },
         { path: `${base}position-size-calculator`, element: <PositionSizeCalculator /> },
         { path: `${base}pip-calculator`, element: <PipCalculator /> },

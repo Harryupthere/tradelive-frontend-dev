@@ -136,7 +136,6 @@ const ForexCalculators: React.FC = () => {
 
   return (
     <div className="forex-calculators">
-      <div className="forex-calculators__container">
         <div className="forex-calculators__header">
           <h1 className="forex-calculators__title">Forex Calculators</h1>
 
@@ -176,7 +175,6 @@ const ForexCalculators: React.FC = () => {
               </button>
             </div>
           ))}
-        </div>
       </div>
     </div>
   );
