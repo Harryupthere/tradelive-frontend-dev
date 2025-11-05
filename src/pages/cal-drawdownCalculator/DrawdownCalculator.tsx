@@ -104,7 +104,7 @@ const DrawdownCalculator: React.FC = () => {
         </div>
 
         <div className="calculator-main">
-          <div className="calculator-card">
+          {/* <div className="calculator-card"> */}
             <div className="values-section">
               <h2 className="section-title">
                 <Calculator size={24} />
@@ -218,7 +218,7 @@ const DrawdownCalculator: React.FC = () => {
                 </div>
               </div>
             )}
-          </div>
+          {/* </div> */}
         </div>
 
         <div className="info-section">
