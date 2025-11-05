@@ -4,9 +4,10 @@ import { Play } from "../../icon/icons";
 import { useEffect, useState } from "react";
 import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
 import { api } from "../../api/Service";
-import {  useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import {  successMsg } from "../../utils/customFn";
+import { successMsg } from "../../utils/customFn";
+import { getUser } from "../../utils/tokenUtils";
 
 const base = import.meta.env.VITE_BASE;
 
@@ -50,11 +51,16 @@ const CourseOverview = () => {
       if (enrollerd) {
         navigate(`${base}course/detail/${id}`);
       } else {
-        const payload = { product_id: parseInt(id) };
-        const res = await api.post(API_ENDPOINTS.enrollment, payload);
-        if (res.data.status) {
-          successMsg(res.data.data.message);
-          fetchCourses();
+
+        if (getUser()?.userType.id == 2 || courseDetail.type == 1) {
+          const payload = { product_id: parseInt(id) };
+          const res = await api.post(API_ENDPOINTS.enrollment, payload);
+          if (res.data.status) {
+            successMsg(res.data.data.message);
+            fetchCourses();
+          }
+        } else {
+          navigate(`${base}checkout`);
         }
       }
     } catch (error) {
@@ -89,7 +95,7 @@ const CourseOverview = () => {
                 type="button"
                 className="gradient-btn"
                 onClick={(e) => {
-                  handleEnroll(e,courseDetail.enrolled);
+                  handleEnroll(e, courseDetail.enrolled);
                 }}
               >
                 {courseDetail.enrolled ? "Open" : "Enroll Now"}
