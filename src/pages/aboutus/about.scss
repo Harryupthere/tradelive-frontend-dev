@@ -1,3 +1,5 @@
+
+@use '../../assets/scss/mixin.scss' as *;
 .about-us {
   color: #fff;
   min-height: 100vh;
@@ -5,7 +7,6 @@
   &__container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 0 20px;
   }
 
   &__hero {
@@ -65,7 +66,7 @@
     z-index: 1;
 
     @media (max-width: 768px) {
-      font-size: 36px;
+      font-size: 25px;
     }
   }
 &__hero-title-main {
@@ -101,6 +102,9 @@
   &__who-we-are {
     padding: 100px 20px;
     position: relative;
+    @include responsive(md) {
+      padding: 60px 20px;
+    }
   }
 
   &__section-header {
@@ -144,21 +148,33 @@
     padding: 100px 20px;
     background: linear-gradient(135deg, #18191d 0%, #030606 100%);
     position: relative;
+      @include responsive(md) {
+      padding: 60px 20px;
+    }
   }
 
   &__different {
     padding: 100px 20px;
     position: relative;
+      @include responsive(md) {
+      padding: 60px 20px;
+    }
   }
 
   &__philosophy {
     padding: 100px 20px;
     background: linear-gradient(135deg, #030606 0%, #18191d 100%);
+      @include responsive(md) {
+      padding: 60px 20px;
+    }
   }
 
   &__stats {
     padding: 80px 20px;
     background-color: #18191d;
+      @include responsive(md) {
+      padding: 40px 20px;
+    }
   }
 }
 
@@ -228,7 +244,7 @@
   background: #18191d;
   border: 2px solid rgba(213, 255, 46, 0.1);
   border-radius: 20px;
-  padding: 40px 32px;
+  padding: 20px 12px;
   text-align: center;
   transition: all 0.3s ease;
 
@@ -299,7 +315,7 @@
   background: #18191d;
   border: 2px solid rgba(213, 255, 46, 0.15);
   border-radius: 20px;
-  padding: 40px 32px;
+  padding: 20px 20px;
   transition: all 0.3s ease;
 
   &:hover {
@@ -335,6 +351,7 @@
     font-weight: 600;
     color: #ffffff;
     margin: 0;
+
   }
 
   &__text {
@@ -355,7 +372,9 @@
   padding: 60px 48px;
   position: relative;
   overflow: hidden;
-
+@include responsive(md) {
+    padding: 20px 20px;
+  }
   &::before {
     content: '';
     position: absolute;
@@ -378,7 +397,10 @@
     margin: 0 auto 32px;
     position: relative;
     z-index: 1;
-
+  @include responsive(md) {
+      width: 70px;
+    height: 70px;
+  }
     svg {
       width: 40px;
       height: 40px;
@@ -393,6 +415,9 @@
     margin: 0 0 32px 0;
     position: relative;
     z-index: 1;
+    @include responsive(md) {
+    font-size: 25px;
+  }
   }
 
   &__quote {
@@ -405,9 +430,9 @@
     position: relative;
     z-index: 1;
 
-    @media (max-width: 768px) {
-      font-size: 20px;
-    }
+     @include responsive(md) {
+    font-size: 18px;
+  }
   }
 
   &__text {
@@ -417,7 +442,10 @@
     margin: 0 0 20px 0;
     position: relative;
     z-index: 1;
-
+   @include responsive(md) {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
     .text-green {
       color: #d5ff2e;
       font-weight: 600;
@@ -445,7 +473,12 @@
   gap: 12px;
   transition: all 0.3s ease;
   box-shadow: 0 8px 24px rgba(213, 255, 46, 0.3);
-
+   @include responsive(sm) {
+    font-size: 16px;
+  padding: 10px 10px;
+    width: 100%;
+    justify-content: center;
+  }
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 16px 40px rgba(213, 255, 46, 0.4);
