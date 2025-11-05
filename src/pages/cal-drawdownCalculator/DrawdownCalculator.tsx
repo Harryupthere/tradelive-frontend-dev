@@ -94,7 +94,7 @@ const DrawdownCalculator: React.FC = () => {
 
   return (
     <div className="drawdown-calculator">
-      <div className="drawdown-calculator__container">
+      <div className="container">
         <div className="drawdown-calculator__header">
           <button className="back-button" onClick={handleBackToCalculators}>
             <ArrowLeft size={20} />

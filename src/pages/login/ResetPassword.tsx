@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Login-new.scss";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { errorMsg, successMsg } from "../../utils/customFn";
 import { api } from "../../api/Service";
@@ -18,18 +18,18 @@ const ResetPasswordPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState<string | null>(null);
 
-  useEffect(() => {
-    try {
-      const params = new URLSearchParams(window.location.search);
-      const t = params.get("token");
-      if(!t){
-        navigate(`${base}`)
-      }
-      setToken(t);
-    } catch (e) {
-      console.warn("Failed to parse token from URL", e);
-    }
-  }, []);
+  // useEffect(() => {
+  //   try {
+  //     const params = new URLSearchParams(window.location.search);
+  //     const t = params.get("token");
+  //     if(!t){
+  //       navigate(`${base}`)
+  //     }
+  //     setToken(t);
+  //   } catch (e) {
+  //     console.warn("Failed to parse token from URL", e);
+  //   }
+  // }, []);
 
   const {
     register,
@@ -64,13 +64,6 @@ const ResetPasswordPage: React.FC = () => {
 
   return (
     <div className="login-page">
-      <div className="login-page__promo">
-        <div className="login-page__video-container">
-          <video className="login-page__video" autoPlay muted loop poster="/test/signup-image.jpg">
-            <source src="/test/signup-video.mp4" type="video/mp4" />
-          </video>
-        </div>
-      </div>
 
       <div className="login-page__form-section">
         <div className="login-page__form-container">
@@ -90,7 +83,7 @@ const ResetPasswordPage: React.FC = () => {
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <div className="login-page__input-group">
               <div className="login-page__phone-input">
-                <span className="login-page__country-code">New Password</span>
+                <span className="login-page__country-code" style={{width:'180px'}}>New Password</span>
                 <input
                   {...register("newPassword", {
                     required: "Password is required",
@@ -106,7 +99,7 @@ const ResetPasswordPage: React.FC = () => {
 
             <div className="login-page__input-group">
               <div className="login-page__phone-input">
-                <span className="login-page__country-code">Confirm</span>
+                <span className="login-page__country-code" style={{width:'180px'}}>Confirm Password</span>
                 <input
                   {...register("confirmPassword", {
                     required: "Please confirm your password",
@@ -137,6 +130,21 @@ const ResetPasswordPage: React.FC = () => {
               </a>
             </p>
           </div>
+        </div>
+      </div>
+      
+      <div className="login-page__promo">
+        <div className="login-page__video-container">
+          <h2 className="login-page__heading">Learn.</h2>
+          <h2 className="login-page__heading">Adapt.</h2>
+          <h2 className="login-page__heading">React.</h2>
+          <div className="login-page__tagline">
+            {" "}
+            Built by traders, for traders
+          </div>
+          <Link to={`${base}`}>
+            <img src="/test/graph-logo.png" alt="logo" />
+          </Link>
         </div>
       </div>
     </div>

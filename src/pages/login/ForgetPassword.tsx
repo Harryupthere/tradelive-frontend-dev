@@ -49,13 +49,6 @@ const ForgetPasswordPage: React.FC = () => {
 
   return (
     <div className="login-page">
-      <div className="login-page__promo">
-        <div className="login-page__video-container">
-          <video className="login-page__video" autoPlay muted loop poster="/test/signup-image.jpg">
-            <source src="/test/signup-video.mp4" type="video/mp4" />
-          </video>
-        </div>
-      </div>
 
       <div className="login-page__form-section">
         <div className="login-page__form-container">
@@ -114,6 +107,20 @@ const ForgetPasswordPage: React.FC = () => {
           </div>
         </div>
       </div>
+       <div className="login-page__promo">
+              <div className="login-page__video-container">
+                <h2 className="login-page__heading">Learn.</h2>
+                <h2 className="login-page__heading">Adapt.</h2>
+                <h2 className="login-page__heading">React.</h2>
+                <div className="login-page__tagline">
+                  {" "}
+                  Built by traders, for traders
+                </div>
+                <Link to={`${base}`}>
+                  <img src="/test/graph-logo.png" alt="logo" />
+                </Link>
+              </div>
+            </div>
     </div>
   );
 };

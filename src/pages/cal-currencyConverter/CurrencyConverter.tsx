@@ -273,7 +273,7 @@ const CurrencyConverter: React.FC = () => {
 
   return (
     <div className="currency-converter">
-      <div className="currency-converter__container">
+      <div className="container">
         <div className="currency-converter__header">
           <button className="back-button" onClick={handleBackToCalculators}>
             <ArrowLeft size={20} />

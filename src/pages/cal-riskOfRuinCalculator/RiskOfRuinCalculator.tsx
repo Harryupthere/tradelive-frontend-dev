@@ -94,7 +94,7 @@ const RiskOfRuinCalculator: React.FC = () => {
 
   return (
     <div className="risk-of-ruin-calculator">
-      <div className="risk-of-ruin-calculator__container">
+      <div className="container">
         <div className="risk-of-ruin-calculator__header">
           <button className="back-button" onClick={handleBackToCalculators}>
             <ArrowLeft size={20} />
