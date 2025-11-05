@@ -26,6 +26,8 @@ interface CouponData {
   id: number;
   code: string;
   is_used: boolean;
+    is_expired: boolean;  // Add this line
+
   created_at: string;
   used_at: string | null;
   purchase: {
@@ -247,7 +249,11 @@ const CouponCard: React.FC<{
   return (
     <div
       className={`coupon-card ${
-        coupon.is_used ? "coupon-card--used" : "coupon-card--available"
+        coupon.is_used 
+          ? "coupon-card--used" 
+          : coupon.is_expired 
+            ? "coupon-card--expired" 
+            : "coupon-card--available"
       }`}
     >
       <div className="coupon-card__header">
@@ -256,6 +262,11 @@ const CouponCard: React.FC<{
             <div className="status-badge status-badge--used">
               <Check size={16} />
               Used
+            </div>
+          ) : coupon.is_expired ? (
+            <div className="status-badge status-badge--expired">
+              <X size={16} />
+              Expired
             </div>
           ) : (
             <div className="status-badge status-badge--available">
@@ -294,7 +305,7 @@ const CouponCard: React.FC<{
         )}
       </div>
 
-      {!coupon.is_used && (
+      {!coupon.is_used && !coupon.is_expired && (
         <div className="coupon-card__actions">
           {getUser().userType.id == 1 && (
             <button
@@ -330,11 +341,20 @@ const CouponCard: React.FC<{
         </div>
       )}
 
-      {coupon.is_used && (
+      {(coupon.is_used || coupon.is_expired) && (
         <div className="coupon-card__overlay">
-          <div className="used-stamp">
-            <Check size={32} />
-            <span>USED</span>
+          <div className={`${coupon.is_expired ? 'expired-stamp' : 'used-stamp'}`}>
+            {coupon.is_expired ? (
+              <>
+                <X size={32} />
+                <span>EXPIRED</span>
+              </>
+            ) : (
+              <>
+                <Check size={32} />
+                <span>USED</span>
+              </>
+            )}
           </div>
         </div>
       )}
@@ -474,24 +494,11 @@ const ActivationCoupons: React.FC = () => {
     }
   };
 
-  const availableCoupons = coupons.filter((coupon) => !coupon.is_used);
-  const usedCoupons = coupons.filter((coupon) => coupon.is_used);
+  const availableCoupons = coupons.filter(coupon => !coupon.is_used && !coupon.is_expired);
+  const usedCoupons = coupons.filter(coupon => coupon.is_used);
+  const expiredCoupons = coupons.filter(coupon => coupon.is_expired && !coupon.is_used);
 
-  if (loading) {
-    return (
-      <div className="activation-coupons">
-        <div className="activation-coupons__loading">
-          <div className="loading-animation">
-            <div className="loading-circle"></div>
-            <div className="loading-circle"></div>
-            <div className="loading-circle"></div>
-          </div>
-          <p>Loading your activation coupons...</p>
-        </div>
-      </div>
-    );
-  }
-
+  // Update the stats section
   return (
     <div className="activation-coupons">
       <div className="activation-coupons__container">
@@ -514,6 +521,10 @@ const ActivationCoupons: React.FC = () => {
             <div className="stat-card">
               <div className="stat-value">{usedCoupons.length}</div>
               <div className="stat-label">Used</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-value">{expiredCoupons.length}</div>
+              <div className="stat-label">Expired</div>
             </div>
             <div className="stat-card">
               <div className="stat-value">{coupons.length}</div>
@@ -561,6 +572,26 @@ const ActivationCoupons: React.FC = () => {
                 </h2>
                 <div className="coupons-grid">
                   {usedCoupons.map((coupon) => (
+                    <CouponCard
+                      key={coupon.id}
+                      coupon={coupon}
+                      onSelfActivate={handleSelfActivate}
+                      onFriendActivate={handleFriendActivate}
+                      loading={actionLoading}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {expiredCoupons.length > 0 && (
+              <section className="coupons-section">
+                <h2 className="section-title">
+                  <X size={24} />
+                  Expired Coupons
+                </h2>
+                <div className="coupons-grid">
+                  {expiredCoupons.map((coupon) => (
                     <CouponCard
                       key={coupon.id}
                       coupon={coupon}

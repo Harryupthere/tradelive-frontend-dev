@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, LineChart, Calculator, Info, TrendingUp } from 'lucide-react';
-import './PivotPointCalculator.scss';
+import '../cal-compoundingCalculator/CompoundingCalculator.scss';
 import { API_ENDPOINTS } from '../../constants/ApiEndPoints';
 import { api } from '../../api/Service';
 
@@ -185,24 +185,26 @@ const PivotPointCalculator: React.FC = () => {
   };
 
   return (
-    <div className="pivot-point-calculator">
-      <div className="pivot-point-calculator__container">
-        <div className="pivot-point-calculator__header">
+    <div className="compounding-calculator">
+      <div className="compounding-calculator__container">
+        <div className="compounding-calculator__header">
           <button className="back-button" onClick={handleBackToCalculators}>
             <ArrowLeft size={20} />
             Back to Calculators
           </button>
-          <h1 className="pivot-point-calculator__title">Pivot Point Calculator</h1>
+          <h1 className="compounding-calculator__title">Pivot Point Calculator</h1>
         </div>
+            
 
         <div className="calculator-main">
-          <div className="calculator-card">
-            <div className="values-section">
+            
+          {/* <div className="calculator-card"> */}
+            {/* <input type="number" value="forex" /> */}
+            {/* <div className="values-section"> */}
               <h2 className="section-title">
                 <Calculator size={24} />
                 Values
               </h2>
-              
               <div className="input-grid">
                 <div className="input-group">
                   <label htmlFor="high-price">High Price:</label>
@@ -261,7 +263,7 @@ const PivotPointCalculator: React.FC = () => {
                   Calculate
                 </button>
               </div>
-            </div>
+            {/* </div> */}
 
             {showResults && results && (
               <div className="results-section">
@@ -355,7 +357,7 @@ const PivotPointCalculator: React.FC = () => {
                 </div>
               </div>
             )}
-          </div>
+          {/* </div> */}
         </div>
 
         <div className="info-section">

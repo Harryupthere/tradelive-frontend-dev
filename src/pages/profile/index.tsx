@@ -8,7 +8,7 @@ import {
   Save,
   CreditCard as Edit3,
   ArrowUpCircle,
-  Notebook
+  Notebook,
 } from "lucide-react";
 import "./Profile.scss";
 import { useForm, SubmitHandler, get } from "react-hook-form";
@@ -52,7 +52,7 @@ const iso2ToFlag = (iso2: string) => {
 };
 
 const ProfilePage: React.FC = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -168,8 +168,14 @@ const ProfilePage: React.FC = () => {
         try {
           const storedUser = getUser() || {};
           // API might return a full user object (data.user) or just profile fields (data)
-          const apiUser = (res?.data?.data?.user) ? res.data.data.user : data;
-          const mergedUser = { ...storedUser, userType: (data as any).userType || apiUser?.userType || storedUser?.userType };
+          const apiUser = res?.data?.data?.user ? res.data.data.user : data;
+          const mergedUser = {
+            ...storedUser,
+            userType:
+              (data as any).userType ||
+              apiUser?.userType ||
+              storedUser?.userType,
+          };
           // persist to local storage and update redux
           persistUser(mergedUser as any);
           dispatch(setUserProfile(mergedUser as any));
@@ -187,7 +193,7 @@ const ProfilePage: React.FC = () => {
 
         const findCountry = (raw?: string) => {
           if (!raw) return null;
-          const v = String(raw).trim();
+          const v =String(raw).trim();
           // try name match
           let found = countriesLocal.find(
             (c) => c.name.toLowerCase() === v.toLowerCase()
@@ -207,8 +213,12 @@ const ProfilePage: React.FC = () => {
         };
 
         const matchedCountry = findCountry(data.country || data.country_code);
-        const countryValue = matchedCountry ? matchedCountry.name : data.country || "";
-        const countryCodeValue = matchedCountry ? matchedCountry.dialCode : data.country_code || "";
+        const countryValue = matchedCountry
+          ? matchedCountry.name
+          : data.country || "";
+        const countryCodeValue = matchedCountry
+          ? matchedCountry.dialCode
+          : data.country_code || "";
 
         reset({
           first_name: data.first_name || "",
@@ -264,12 +274,15 @@ const ProfilePage: React.FC = () => {
   const onSubmit: SubmitHandler<ProfileDto> = async (data) => {
     setUploading(true);
     try {
+    
       let finalProfileUrl = data.profile || previewSrc || "";
 
       if (selectedFile) {
         const uploaded = await uploadFileToS3(selectedFile);
         if (!uploaded) {
-          errorMsg("File upload failed. Please check CORS / presigned settings.");
+          errorMsg(
+            "File upload failed. Please check CORS / presigned settings."
+          );
           setUploading(false);
           return;
         }
@@ -373,22 +386,20 @@ const ProfilePage: React.FC = () => {
             Manage your account information and preferences
           </p>
         </div>
-        {getUser()?.userType.id == 1 &&
+        {getUser()?.userType.id == 1 && (
           <button
             className="profile-page__save-btn"
             onClick={() => navigate(`${base}checkout`)}
           >
-            <ArrowUpCircle size={16} />{" "}
-            Upgrade
+            <ArrowUpCircle size={16} /> Upgrade
           </button>
-        }
-         <button
-              className="profile-page__save-btn"
-              onClick={()=>navigate(`${base}activation-coupons`)}
-            >
-              <ArrowUpCircle size={16} />{" "}
-              Activation Coupons
-            </button>
+        )}
+        <button
+          className="profile-page__save-btn"
+          onClick={() => navigate(`${base}activation-coupons`)}
+        >
+          <ArrowUpCircle size={16} /> Activation Coupons
+        </button>
       </div>
 
       <div className="profile-page__section">
@@ -402,10 +413,7 @@ const ProfilePage: React.FC = () => {
           </button>
         </div>
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="profile-page__form"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="profile-page__form">
           <div className="profile-page__image-section">
             <div className="profile-page__image-container">
               {previewSrc ? (
@@ -539,8 +547,7 @@ const ProfilePage: React.FC = () => {
               className="profile-page__save-btn"
               disabled={uploading}
             >
-              <Save size={16} />{" "}
-              {uploading ? "Saving..." : "Save Changes"}
+              <Save size={16} /> {uploading ? "Saving..." : "Save Changes"}
             </button>
           )}
         </form>
@@ -572,7 +579,11 @@ const ProfilePage: React.FC = () => {
                   onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                   className="profile-page__password-toggle"
                 >
-                  {showCurrentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showCurrentPassword ? (
+                    <EyeOff size={16} />
+                  ) : (
+                    <Eye size={16} />
+                  )}
                 </button>
               </div>
               {pwdErrors.current_password && (
@@ -616,7 +627,8 @@ const ProfilePage: React.FC = () => {
                   type={showConfirmPassword ? "text" : "password"}
                   {...registerPwd("confirm_password", {
                     required: "Confirm password is required",
-                    validate: (v) => v === newPassword || "Passwords do not match",
+                    validate: (v) =>
+                      v === newPassword || "Passwords do not match",
                   })}
                   className="profile-page__input"
                   placeholder="Confirm new password"
@@ -626,7 +638,11 @@ const ProfilePage: React.FC = () => {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="profile-page__password-toggle"
                 >
-                  {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showConfirmPassword ? (
+                    <EyeOff size={16} />
+                  ) : (
+                    <Eye size={16} />
+                  )}
                 </button>
               </div>
               {pwdErrors.confirm_password && (
@@ -681,7 +697,9 @@ const ProfilePage: React.FC = () => {
                   </td>
                   <td>
                     <span
-                      className={`profile-page__status ${getStatusClass(t.status)}`}
+                      className={`profile-page__status ${getStatusClass(
+                        t.status
+                      )}`}
                     >
                       {t.status}
                     </span>
@@ -715,7 +733,9 @@ const ProfilePage: React.FC = () => {
                   <td className="profile-page__table-id">{a.id}</td>
                   <td>{a.timestamp}</td>
                   <td>
-                    <span className="profile-page__action-type">{a.action}</span>
+                    <span className="profile-page__action-type">
+                      {a.action}
+                    </span>
                   </td>
                   <td>{a.details}</td>
                   <td className="profile-page__ip-address">{a.ip_address}</td>

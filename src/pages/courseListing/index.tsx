@@ -3,7 +3,7 @@ import './courseListing.scss';
 import { Grid } from "@mui/material";
 import ProductCard, { Course } from "../../components/common/ProductCard";
 import { api } from "../../api/Service";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
 import CardShimmer from "../../components/common/cardShimmer";
 
@@ -11,25 +11,57 @@ const CourseListing = () => {
 
     const [course, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-    const fetchCourses = async () => {
+    const [searchTerm, setSearchTerm] = useState<string>('');
+    const debounceTimer = useRef<number | null>(null);
+    const DEBOUNCE_MS = 500;
+
+    const fetchCourses = async (search = '') => {
         setLoading(true);
         try {
-            const response = await api.get(`${API_ENDPOINTS?.courses}`);
+            const response = await api.get(`${API_ENDPOINTS?.courses}?search=${search}`);
             if (response?.status) {
-                const data = response?.data?.data?.data;
-                setCourses(data)
+                // adapt to your API shape
+                const data = response?.data?.data?.data ?? response?.data?.data ?? response?.data;
+                setCourses(Array.isArray(data) ? data : []);
             }
         } catch (error) {
-            console.log("Failed to fetch news", error);
-        }
-        finally {
+            console.log("Failed to fetch courses", error);
+        } finally {
             setLoading(false);
         }
     };
     console.log('course', course)
     useEffect(() => {
-        fetchCourses()
+        fetchCourses('')
     }, []);
+
+    // cleanup on unmount
+    useEffect(() => {
+        return () => {
+            if (debounceTimer.current) {
+                clearTimeout(debounceTimer.current);
+            }
+        };
+    }, []);
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSearchTerm(value);
+        if (debounceTimer.current) {
+            clearTimeout(debounceTimer.current);
+        }
+        debounceTimer.current = window.setTimeout(() => {
+            fetchCourses(value.trim());
+        }, DEBOUNCE_MS);
+    };
+
+    // optional immediate search when user clicks Search button
+    const handleSearchNow = () => {
+        if (debounceTimer.current) {
+            clearTimeout(debounceTimer.current);
+        }
+        fetchCourses(searchTerm.trim());
+    };
 
     return (
         <div className="course-listing-page">
@@ -43,8 +75,10 @@ const CourseListing = () => {
                         type="text"
                         placeholder="Search courses..."
                         className="search-bar__input"
+                        value={searchTerm}
+                        onChange={handleSearchChange}
                     />
-                    <button className="search-bar__btn">Search</button>
+                    <button className="search-bar__btn" onClick={handleSearchNow}>Search</button>
                 </div>
             </div>
 
