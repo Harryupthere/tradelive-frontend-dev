@@ -922,10 +922,9 @@ const Checkout: React.FC = () => {
                   </span>
                 </div>
               </div>
-
               <button
                 className="proceed-button"
-                disabled={!selectedSlot || meetingError}
+                disabled={instructorDetails ? !selectedSlot || meetingError : false}
                 onClick={handleProceed}
               >
                 Proceed to Payment

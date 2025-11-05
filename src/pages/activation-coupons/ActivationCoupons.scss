@@ -247,6 +247,14 @@
     }
   }
 
+  &--expired {
+    opacity: 0.7;
+    .status-badge--expired {
+      background-color: #ff4444;
+      color: white;
+    }
+  }
+
   &__header {
     display: flex;
     justify-content: space-between;
