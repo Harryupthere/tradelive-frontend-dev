@@ -6,6 +6,7 @@ import { api } from "../../api/Service";
 import { useEffect, useState, useRef } from "react";
 import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
 import CardShimmer from "../../components/common/cardShimmer";
+import NoData from "../../components/common/NoData";
 
 const CourseListing = () => {
 
@@ -90,11 +91,14 @@ const CourseListing = () => {
                             </Grid>
                         ))
                         :
+                        course?.length > 0 ?
                         course?.map((course) => (
                             <Grid size={{ md: 4, sm: 6 }} key={course.id}>
                                 <ProductCard course={course} />
                             </Grid>
-                        ))}
+                        ))
+                        :
+                        <NoData/>}
             </Grid>
 
             <div className="blurs_wrapper"><div className="blurs_object is-fluo"></div></div>
