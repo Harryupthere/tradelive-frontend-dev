@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "./Checkout.scss";
-import { ArrowLeft, CreditCard, Gift, Info } from "lucide-react";
+import { ArrowLeft, CreditCard, Gift, Info, LineChart } from "lucide-react";
 import { allCountries } from "country-telephone-data";
 import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
 import { api } from "../../api/Service";
@@ -39,7 +39,10 @@ interface CheckoutFormData {
   email: string;
   mobileNo: string;
   country: string;
-  subscriptionType: "Yearly Subscription" | "Activation Coupon";
+  subscriptionType:
+    | "Yearly Subscription"
+    | "Activation Coupon"
+    | "Instructor Meeting";
   paymentGateway: "stripe" | "boomfi" | string;
   couponQuantity: number;
 }
@@ -52,47 +55,178 @@ interface PricingDetails {
 }
 
 const Checkout: React.FC = () => {
+  // detect instructor meeting data from URL and set default subscription
+  const parseInstructorMeetingFromUrl = (): any | null => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const instructorMeetingRaw = params.get("instructorMeeting");
+      // treat "true" or "1" as enabled
+      const enabled =
+        instructorMeetingRaw &&
+        (instructorMeetingRaw.toLowerCase() === "true" ||
+          instructorMeetingRaw === "1");
+
+      if (!enabled) return null;
+
+      // Accept both correct and misspelled param names
+      const instructorId =
+        params.get("instructorId") ||
+        params.get("instrcutor_id") ||
+        params.get("instructor_id");
+      const availableId =
+        params.get("available_id") || params.get("availableId");
+
+      // If there's an instructorData json blob, try to parse it
+      let rawInstructorData: any = null;
+      if (params.has("instructorData")) {
+        const raw = params.get("instructorData") || "";
+        try {
+          rawInstructorData = JSON.parse(raw);
+        } catch {
+          rawInstructorData = raw;
+        }
+      }
+
+      return {
+        enabled: true,
+        instructorId: instructorId || null,
+        availableId: availableId || null,
+        raw: rawInstructorData,
+      };
+    } catch {
+      return null;
+    }
+  };
+
+  const instructorMeetingFromUrl = parseInstructorMeetingFromUrl();
+
   const [formData, setFormData] = useState<CheckoutFormData>({
     fullName: "",
     email: "",
     mobileNo: "",
     country: "",
-    subscriptionType: getUser()?.userType.id==1?"Yearly Subscription":"Activation Coupon",
+    subscriptionType:
+      instructorMeetingFromUrl && instructorMeetingFromUrl.enabled
+        ? "Instructor Meeting"
+        : getUser()?.userType.id == 1
+        ? "Yearly Subscription"
+        : "Activation Coupon",
     paymentGateway: "1",
     couponQuantity: 1,
   });
 
+  // store parsed instructor meeting data (if any)
+  const [instructorMeetingData, setInstructorMeetingData] = useState<any>(
+    instructorMeetingFromUrl
+  );
+  const [instructorDetails, setInstructorDetails] = useState<any | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<any | null>(null);
+  const [meetingLoading, setMeetingLoading] = useState<boolean>(false);
+  const [meetingError, setMeetingError] = useState<string | null>(null);
+
   const [paymentGateways, setPaymentGateways] = useState<Paymentgateways[]>([]);
+
+  // Fetch instructor and availability details when instructorMeeting is enabled
+  useEffect(() => {
+
+    const shouldFetch =
+      instructorMeetingData &&
+      instructorMeetingData.enabled &&
+      (instructorMeetingData.instructorId || instructorMeetingData.raw);
+    if (!shouldFetch) return;
+
+    const fetchMeetingDetails = async () => {
+      setMeetingLoading(true);
+      setMeetingError(null);
+      try {
+        // If raw instructor obj was provided in URL, prefer that
+        if (instructorMeetingData.raw) {
+          setInstructorDetails(instructorMeetingData.raw);
+        }
+
+        // If instructorId is available, call instructor API to get details (availabilities included)
+        const id = instructorMeetingData.instructorId;
+        if (id) {
+          // NOTE: assumes [`API_ENDPOINTS.instructor`](src/constants/ApiEndPoints.ts) exists and returns instructor with `availabilities`
+          const res = await api.get(`${API_ENDPOINTS.instructor}/${id}`);
+          if (res?.status) {
+            const payload = res.data?.data || res.data;
+            setInstructorDetails(payload);
+            // try to pick the available slot by availableId
+            const availId = instructorMeetingData.availableId;
+            if (availId && payload?.availabilities) {
+              const found = payload.availabilities.find(
+                (a: any) => String(a.id) === String(availId)
+              );
+              if (found) setSelectedSlot(found);
+              else {
+                setMeetingError("Selected availability slot not found");
+              }
+            }
+          } else {
+            setMeetingError("Unable to fetch instructor details");
+          }
+        }
+      } catch (err: any) {
+        console.error("fetchMeetingDetails error:", err);
+        setMeetingError("Error fetching instructor details");
+      } finally {
+        setMeetingLoading(false);
+      }
+    };
+
+    fetchMeetingDetails();
+  }, [instructorMeetingData]);
 
   // Initialize pricing with 0 fees, will update after API call
   const [pricing, setPricing] = useState<PricingDetails>({
-    basePrice: planPrice ? parseFloat(planPrice) : 12.0,
+    basePrice:  instructorMeetingFromUrl && instructorMeetingFromUrl.enabled ? 99.0 : planPrice ? parseFloat(planPrice) : 12.0,
     quantity: 1,
     fees: 0, // Initialize with 0
-    total: planPrice ? parseFloat(planPrice) : 12.0, // Initial total without fees
+    total: instructorMeetingFromUrl && instructorMeetingFromUrl.enabled ? 99.0 : planPrice ? parseFloat(planPrice) : 12.0, // Initial total without fees
   });
 
   // Add useEffect to update pricing when payment gateways load
   useEffect(() => {
     if (paymentGateways.length > 0) {
       // Update pricing with fees from first gateway
-      const firstGateway = getUser().userType.id==1?paymentGateways[0]:paymentGateways[1];
-      const basePrice = planPrice ? parseFloat(planPrice) : 12.0;
+      const shouldFetch =
+        instructorMeetingData &&
+        instructorMeetingData.enabled;
+      const firstGateway =
+        getUser().userType.id == 1 ? paymentGateways[0] : paymentGateways[1];
+      const basePrice = shouldFetch==1 || shouldFetch ?99.00:planPrice ? parseFloat(planPrice) : 12.0;
       const feesPercent = Number(firstGateway.fee_percentage || 0);
       const fees = (basePrice * feesPercent) / 100;
-      setPricing(prev => ({
+      console.log(basePrice,"????")
+      setPricing((prev) => ({
         ...prev,
         fees,
-        total: basePrice + fees
+        total: basePrice + fees,
       }));
     }
-  }, [paymentGateways]);
+  }, [paymentGateways,instructorMeetingData, instructorDetails]);
 
   // validation errors
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     callPaymentGateways();
+  }, []);
+
+  // if more complex parsing at mount is required, keep here
+  useEffect(() => {
+    if (!instructorMeetingData) {
+      const parsed = parseInstructorMeetingFromUrl();
+      if (parsed) {
+        setInstructorMeetingData(parsed);
+        // ensure formData subscription type is set
+        setFormData((prev) => ({
+          ...prev,
+          subscriptionType: "Instructor Meeting",
+        }));
+      }
+    }
   }, []);
 
   const callPaymentGateways = async () => {
@@ -187,10 +321,16 @@ const Checkout: React.FC = () => {
       basePrice = planPrice ? parseFloat(planPrice) : 12.0;
       quantity = 1;
       fees = basePrice * (feesPercentage / 100);
-    } else {
+    } else if(data.subscriptionType === "Activation Coupon") {
       basePrice = planPrice ? parseFloat(planPrice) : 12.0;
       quantity = data.couponQuantity || 1;
       fees = basePrice * quantity * (feesPercentage / 100);
+    }else if(data.subscriptionType === "Instructor Meeting") {
+      basePrice = instructorDetails?.meeting_price
+        ? parseFloat(instructorDetails.meeting_price)
+        : 99.00; // default meeting price
+      quantity = 1;
+      fees = basePrice * (feesPercentage / 100);
     }
 
     const total = basePrice * quantity + fees;
@@ -221,9 +361,15 @@ const Checkout: React.FC = () => {
     }
 
     // Process checkout
+    // include instructorMeetingData in metadata if present
     const metadata = {
       ...formData,
       ...pricing,
+      ...(instructorMeetingData
+        ? { instructorMeeting: instructorMeetingData }
+        : {}),
+      ...(instructorDetails ? { instructorDetails } : {}),
+      ...(selectedSlot ? { selectedSlot } : {}),
     };
     const payload = {
       transactionType: formData.subscriptionType,
@@ -233,7 +379,7 @@ const Checkout: React.FC = () => {
     if (formData.paymentGateway == 1) {
       const res = await api.post(API_ENDPOINTS.stripeCreateSession, payload);
 
-      if(res.data.status){
+      if (res.data.status) {
         // Redirect to Stripe Checkout
         window.location.href = res?.data?.data?.checkoutUrl;
       }
@@ -373,60 +519,209 @@ const Checkout: React.FC = () => {
               <h2 className="section-title">Subscription Options</h2>
 
               <div className="subscription-options">
-                {getUser().userType.id==1 &&
-                <div className="subscription-option">
-                  <input
-                    type="radio"
-                    id="Yearly Subscription"
-                    name="subscriptionType"
-                    checked={
-                      formData.subscriptionType === "Yearly Subscription"
-                    }
-                    onChange={() =>
-                      handleInputChange(
-                        "subscriptionType",
-                        "Yearly Subscription"
-                      )
-                    }
-                  />
-                  <label
-                    htmlFor="Yearly Subscription"
-                    className="subscription-label"
-                  >
-                    <div className="subscription-header">
-                      <CreditCard size={20} />
-                      <span>Yearly Subscription</span>
-                    </div>
-                    <div className="subscription-description">
-                      Full access to all calculators and premium features for 12
-                      months
-                    </div>
-                  </label>
-                </div>}
+                {/* If instructorMeeting data present in URL, show only Instructor Meeting option */}
+                {instructorMeetingData ? (
+                  <div className="subscription-option">
+                    <input
+                      type="radio"
+                      id="Instructor Meeting"
+                      name="subscriptionType"
+                      checked={
+                        formData.subscriptionType === "Instructor Meeting"
+                      }
+                      onChange={() =>
+                        handleInputChange(
+                          "subscriptionType",
+                          "Instructor Meeting"
+                        )
+                      }
+                    />
+                    <label
+                      htmlFor="Instructor Meeting"
+                      className="subscription-label"
+                    >
+                      <div className="subscription-header">
+                        <LineChart size={20} />
+                        <span>Instructor Meeting</span>
+                      </div>
+                      <div className="subscription-description">
+                        {meetingLoading ? (
+                          <div>Loading instructor details…</div>
+                        ) : meetingError ? (
+                          <div style={{ color: "#e74c3c" }}>{meetingError}</div>
+                        ) : instructorDetails ? (
+                          <div className="instructor-brief">
+                            <div
+                              style={{
+                                display: "flex",
+                                gap: 12,
+                                alignItems: "center",
+                              }}
+                            >
+                              {instructorDetails.profile_image && (
+                                <img
+                                  src={instructorDetails.profile_image}
+                                  alt={instructorDetails.name}
+                                  style={{
+                                    width: 56,
+                                    height: 56,
+                                    borderRadius: 8,
+                                    objectFit: "cover",
+                                  }}
+                                />
+                              )}
+                              <div>
+                                <div style={{ fontWeight: 700 }}>
+                                  {instructorDetails.name ||
+                                    instructorDetails.title ||
+                                    "Instructor"}
+                                </div>
+                                <div style={{ color: "#b0b0b0", fontSize: 13 }}>
+                                  {instructorDetails.designation ||
+                                    instructorDetails.email ||
+                                    ""}
+                                </div>
+                              </div>
+                            </div>
 
-                <div className="subscription-option">
-                  <input
-                    type="radio"
-                    id="Activation Coupon"
-                    name="subscriptionType"
-                    checked={formData.subscriptionType === "Activation Coupon"}
-                    onChange={() =>
-                      handleInputChange("subscriptionType", "Activation Coupon")
-                    }
-                  />
-                  <label
-                    htmlFor="Activation Coupon"
-                    className="subscription-label"
-                  >
-                    <div className="subscription-header">
-                      <Gift size={20} />
-                      <span>Activation Coupon Code</span>
+                            {selectedSlot ? (
+                              <div style={{ marginTop: 8 }}>
+                                <div>
+                                  <strong>Selected slot:</strong>
+                                </div>
+                                <div>
+                                  {new Date(
+                                    selectedSlot.available_date
+                                  ).toLocaleDateString()}{" "}
+                                  • {selectedSlot.start_time} -{" "}
+                                  {selectedSlot.end_time}
+                                </div>
+                              </div>
+                            ) : instructorDetails.availabilities &&
+                              instructorDetails.availabilities.length > 0 ? (
+                              <div style={{ marginTop: 8 }}>
+                                <div>
+                                  <strong>Available slots:</strong>
+                                </div>
+                                <ul style={{ margin: "6px 0 0 18px" }}>
+                                  {instructorDetails.availabilities
+                                    .slice(0, 5)
+                                    .map((a: any) => (
+                                      <li
+                                        key={a.id}
+                                        style={{ marginBottom: 4 }}
+                                      >
+                                        <button
+                                          type="button"
+                                          className="slot-select-btn"
+                                          onClick={() => setSelectedSlot(a)}
+                                          style={{
+                                            background: "transparent",
+                                            border: "none",
+                                            color: "#d5ff2e",
+                                            cursor: "pointer",
+                                            padding: 0,
+                                          }}
+                                        >
+                                          {new Date(
+                                            a.available_date
+                                          ).toLocaleDateString()}{" "}
+                                          • {a.start_time} - {a.end_time}
+                                        </button>
+                                      </li>
+                                    ))}
+                                </ul>
+                                {instructorDetails.availabilities.length >
+                                  5 && (
+                                  <div
+                                    style={{ fontSize: 12, color: "#b0b0b0" }}
+                                  >
+                                    View more in instructor profile
+                                  </div>
+                                )}
+                              </div>
+                            ) : (
+                              <div>No availability details available</div>
+                            )}
+                          </div>
+                        ) : // fallback to raw query info
+                        typeof instructorMeetingData.raw === "object" ? (
+                          <div>
+                            Instructor:{" "}
+                            {instructorMeetingData?.raw?.name ||
+                              instructorMeetingData?.raw?.instructor ||
+                              instructorMeetingData?.instructorId}
+                          </div>
+                        ) : (
+                          <div>Instructor meeting requested</div>
+                        )}
+                      </div>
+                    </label>
+                  </div>
+                ) : (
+                  <>
+                    {getUser().userType.id == 1 && (
+                      <div className="subscription-option">
+                        <input
+                          type="radio"
+                          id="Yearly Subscription"
+                          name="subscriptionType"
+                          checked={
+                            formData.subscriptionType === "Yearly Subscription"
+                          }
+                          onChange={() =>
+                            handleInputChange(
+                              "subscriptionType",
+                              "Yearly Subscription"
+                            )
+                          }
+                        />
+                        <label
+                          htmlFor="Yearly Subscription"
+                          className="subscription-label"
+                        >
+                          <div className="subscription-header">
+                            <CreditCard size={20} />
+                            <span>Yearly Subscription</span>
+                          </div>
+                          <div className="subscription-description">
+                            Full access to all calculators and premium features
+                            for 12 months
+                          </div>
+                        </label>
+                      </div>
+                    )}
+
+                    <div className="subscription-option">
+                      <input
+                        type="radio"
+                        id="Activation Coupon"
+                        name="subscriptionType"
+                        checked={
+                          formData.subscriptionType === "Activation Coupon"
+                        }
+                        onChange={() =>
+                          handleInputChange(
+                            "subscriptionType",
+                            "Activation Coupon"
+                          )
+                        }
+                      />
+                      <label
+                        htmlFor="Activation Coupon"
+                        className="subscription-label"
+                      >
+                        <div className="subscription-header">
+                          <Gift size={20} />
+                          <span>Activation Coupon Code</span>
+                        </div>
+                        <div className="subscription-description">
+                          Purchase activation coupons for flexible access
+                        </div>
+                      </label>
                     </div>
-                    <div className="subscription-description">
-                      Purchase activation coupons for flexible access
-                    </div>
-                  </label>
-                </div>
+                  </>
+                )}
               </div>
               {formData.subscriptionType === "Activation Coupon" && (
                 <div className="coupon-section">
@@ -460,12 +755,12 @@ const Checkout: React.FC = () => {
                   </div>
 
                   <div className="coupon-notes">
-                    <div className="note-item">
+                    {/* <div className="note-item">
                       <Info size={16} />
                       <span>
                         Each coupon provides 30 days of premium access
                       </span>
-                    </div>
+                    </div> */}
                     <div className="note-item">
                       <Info size={16} />
                       <span>
@@ -474,7 +769,11 @@ const Checkout: React.FC = () => {
                     </div>
                     <div className="note-item">
                       <Info size={16} />
-                      <span>Maximum 10 coupons per purchase</span>
+                      <span>Coupon is valid till 1 year</span>
+                    </div>
+                    <div className="note-item">
+                      <Info size={16} />
+                      <span>Maximum 50 coupons per purchase</span>
                     </div>
                   </div>
                 </div>
@@ -574,8 +873,11 @@ const Checkout: React.FC = () => {
                   <span className="summary-label">
                     {formData.subscriptionType === "Yearly Subscription"
                       ? "Yearly Subscription"
+                      : formData.subscriptionType === "Instructor Meeting"
+                      ? "Instructor Meeting"
                       : "Activation Coupons"}
                   </span>
+                 
                   <span className="summary-value">
                     ${pricing.basePrice.toFixed(2)}
                   </span>
@@ -621,7 +923,11 @@ const Checkout: React.FC = () => {
                 </div>
               </div>
 
-              <button className="proceed-button" onClick={handleProceed}>
+              <button
+                className="proceed-button"
+                disabled={!selectedSlot || meetingError}
+                onClick={handleProceed}
+              >
                 Proceed to Payment
               </button>
             </div>
