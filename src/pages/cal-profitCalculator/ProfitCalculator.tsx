@@ -93,7 +93,7 @@ const ProfitCalculator: React.FC = () => {
 
   return (
     <div className="profit-calculator">
-      <div className="calculator-container">
+      <div className="container">
         <div className="currency-converter__header">
           <button className="back-button" onClick={handleBackToCalculators}>
             <ArrowLeft size={20} />

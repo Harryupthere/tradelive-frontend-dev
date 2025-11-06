@@ -186,7 +186,7 @@ const PivotPointCalculator: React.FC = () => {
 
   return (
     <div className="compounding-calculator">
-      <div className="compounding-calculator__container">
+      <div className="container">
         <div className="compounding-calculator__header">
           <button className="back-button" onClick={handleBackToCalculators}>
             <ArrowLeft size={20} />

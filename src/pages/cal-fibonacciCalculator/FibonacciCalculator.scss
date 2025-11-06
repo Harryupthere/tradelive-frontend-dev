@@ -1,32 +1,6 @@
-.fibonacci-calculator {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+.fibonacci-calculator { 
+  padding: 50px 0;
 
-  .back-button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: transparent;
-    border: 1px solid rgba(196, 255, 0, 0.3);
-    color: #d5ff2e;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-bottom: 32px;
-
-    &:hover {
-      background: rgba(196, 255, 0, 0.1);
-      border-color: #d5ff2e;
-      transform: translateX(-4px);
-    }
-  }
-
-  .calculator-container {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
 
   .currency-converter__header {
     margin-bottom: 40px;
