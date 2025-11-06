@@ -83,4 +83,105 @@
     .description-section{
         line-height: 25px;
     }
+    .instructor-section {
+        margin-top: 36px;
+
+        .section-title {
+            font-size: 28px;
+            margin-bottom: 16px;
+            color: var(--fc-primary);
+        }
+
+        .instructor-card {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            background: rgba(30,30,30,0.8);
+            border: 1px solid rgba(196,255,0,0.08);
+            padding: 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+            &:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+                border-color: rgba(196,255,0,0.16);
+            }
+
+            &__image {
+                width: 120px;
+                height: 120px;
+                flex: 0 0 120px;
+                border-radius: 8px;
+                overflow: hidden;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    display: block;
+                }
+            }
+
+            &__content {
+                flex: 1 1 auto;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            &__name {
+                font-size: 20px;
+                font-weight: 700;
+                color: var(--fc-primary);
+                margin: 0;
+            }
+
+            &__designation {
+                font-size: 14px;
+                color: var(--fc-black2);
+                margin: 0;
+            }
+
+            &__bio {
+                color: var(--fc-black2);
+                font-size: 14px;
+                margin: 0;
+                max-height: 3.6em;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            &__button {
+                margin-top: 8px;
+                align-self: flex-start;
+                background: linear-gradient(135deg, #d5ff2e 0%, #a8e000 100%);
+                border: none;
+                color: #1a1a1a;
+                padding: 8px 14px;
+                border-radius: 8px;
+                font-weight: 700;
+                cursor: pointer;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .instructor-card {
+                flex-direction: column;
+                align-items: flex-start;
+
+                &__image {
+                    width: 100%;
+                    height: 200px;
+                    flex: none;
+                }
+
+                &__button {
+                    width: 100%;
+                    text-align: center;
+                }
+            }
+        }
+    }
 }

@@ -74,7 +74,7 @@ const InstructorsPage: React.FC = () => {
       <div className="instructors-page__container">
         {/* Header */}
         <div className="instructors-page__header">
-          <button onClick={handleBackClick} className="instructors-page__back-btn">
+          <button onClick={handleBackClick} className="back-button">
             <ArrowLeft size={20} />
             Back
           </button>

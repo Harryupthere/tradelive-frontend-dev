@@ -11,6 +11,7 @@ import {
   Zap,
   Crown,
   Star,
+  ArrowLeft
 } from "lucide-react";
 import "./ActivationCoupons.scss";
 import { api } from "../../api/Service";
@@ -20,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../utils/redux/typedHook";
 import { setUserProfile } from "../../utils/redux/slice";
 import { setUser as persistUser } from "../../utils/tokenUtils";
+
 const base = import.meta.env.VITE_BASE;
 
 interface CouponData {
@@ -363,6 +365,8 @@ const CouponCard: React.FC<{
 };
 
 const ActivationCoupons: React.FC = () => {
+    const navigate = useNavigate();
+  
   const [coupons, setCoupons] = useState<CouponData[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
@@ -497,6 +501,9 @@ const ActivationCoupons: React.FC = () => {
   const availableCoupons = coupons.filter(coupon => !coupon.is_used && !coupon.is_expired);
   const usedCoupons = coupons.filter(coupon => coupon.is_used);
   const expiredCoupons = coupons.filter(coupon => coupon.is_expired && !coupon.is_used);
+      const handleBackToCalculators = () => {
+    navigate(`${base}profile`);
+  };
 
   // Update the stats section
   return (
@@ -504,6 +511,10 @@ const ActivationCoupons: React.FC = () => {
       <div className="activation-coupons__container">
         <div className="activation-coupons__header">
           <div className="header-content">
+            <button className="back-button" onClick={handleBackToCalculators}>
+                        <ArrowLeft size={20} />
+                        Back to Calculators
+                      </button>
             <h1 className="page-title">
               <Gift size={32} />
               Activation Coupons

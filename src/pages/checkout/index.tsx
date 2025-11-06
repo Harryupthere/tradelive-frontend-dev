@@ -5,6 +5,7 @@ import { allCountries } from "country-telephone-data";
 import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
 import { api } from "../../api/Service";
 import { getUser } from "../../utils/tokenUtils";
+import { errorMsg } from "../../utils/customFn";
 
 const base = import.meta.env.VITE_BASE;
 const planPrice = import.meta.env.VITE_PLAN_PRICE;
@@ -348,6 +349,7 @@ const Checkout: React.FC = () => {
   };
 
   const handleProceed = async () => {
+    try{
     if (!validateForm()) {
       // focus first error field (optional)
       const firstErrorField = Object.keys(errors)[0];
@@ -386,6 +388,10 @@ const Checkout: React.FC = () => {
     } else {
       const res = await api.post(API_ENDPOINTS.stripeCreateSession, payload);
     }
+  }catch(error){
+    console.log(error);
+    errorMsg(error.message?error.message:"Something went wrong during checkout process. or already booked")
+  }
   };
   return (
     <div className="checkout-page">

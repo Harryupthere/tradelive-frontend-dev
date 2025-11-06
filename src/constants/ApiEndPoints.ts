@@ -24,6 +24,7 @@ export const API_ENDPOINTS = {
   paymentgateways:'/payment-gateways',
   stripeCreateSession:'/billing/stripe-session',
   checkPaymentStatus:'/billing/status',
+  transactions:'/billing',
   getActivationCoupons:'/coupons',
   friendActivationCoupon:'/coupons/redeem-for',
   selfActivationCoupon:'/coupons/redeem',
