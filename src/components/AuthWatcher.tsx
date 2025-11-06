@@ -33,26 +33,26 @@ const AuthWatcher = () => {
     const exp = payload?.exp;
     if (!exp) {
       // invalid token -> logout immediately
-      dispatch(logout());
-      window.location.assign(`${base}login`);
+      //dispatch(logout());
+      //window.location.assign(`${base}login`);
       return;
     }
 
     const expiresAt = exp * 1000;
     const now = Date.now();
-
+console.log(expiresAt,now)
     if (expiresAt <= now) {
       // token already expired
-      dispatch(logout());
-      window.location.assign(`${base}login`);
+      //dispatch(logout());
+      //window.location.assign(`${base}login`);
       return;
     }
 
     // schedule auto-logout at expiry (+ small buffer)
     const msUntilExpire = expiresAt - now + 1000;
     timeoutRef.current = window.setTimeout(() => {
-      dispatch(logout());
-      window.location.assign(`${base}login`);
+     // dispatch(logout());
+     // window.location.assign(`${base}login`);
     }, msUntilExpire) as unknown as number;
 
     return () => {
