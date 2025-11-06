@@ -12,7 +12,14 @@ import { SignupPayload, signupService } from "../../api/authServices";
 import { errorMsg, successMsg } from "../../utils/customFn";
 import TelegramSignup from "./telegram";
 import { useGoogleLogin } from "@react-oauth/google";
-import { getUser } from "../../utils/tokenUtils";
+import {
+  setToken as persistToken,
+  setUser as persistUser,
+  getUser,
+} from "../../utils/tokenUtils";
+
+import { setCredentials } from "../../utils/redux/slice";
+import { useAppDispatch } from "../../utils/redux/typedHook";
 const base = import.meta.env.VITE_BASE;
 
 type FormValues = {
@@ -27,6 +34,8 @@ type FormValues = {
 const SignupPage: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+  
   useEffect(() => {
     if (getUser()?.email) {
       navigate(`${base}`);
@@ -146,7 +155,24 @@ const SignupPage: React.FC = () => {
 
         const ress = await signupService(payload);
         if (ress?.status) {
-          login(ress?.data?.data?.access_token);
+           const token = ress?.data?.data?.access_token;
+                  // if backend also returns user object, adapt the path accordingly.
+                  const user =
+                    ress?.data?.data?.user || ress?.data?.data?.profile || null;
+          
+                  // maintain existing context login if you still use it
+                  login(token);
+          
+                  // persist token + user and set in redux
+                  if (token) {
+                    persistToken(token);
+                  }
+                  if (user) {
+                    persistUser(user);
+                  }
+          
+                  // dispatch to redux
+                  dispatch(setCredentials({ token, user }));
           successMsg(ress.message);
           navigate(`${base}`);
         } else {

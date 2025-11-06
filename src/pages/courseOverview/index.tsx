@@ -117,6 +117,42 @@ const CourseOverview = () => {
             __html: decodeHtml(courseDetail?.description || ""),
           }}
         />
+        {/* Instructor card section */}
+        {courseDetail?.instructors && (
+          <div className="instructor-section">
+            <h2 className="section-title">Instructor</h2>
+            <div
+              className="instructor-card"
+              onClick={() => navigate(`${base}instructor/${courseDetail.instructors[0].id}`)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') navigate(`${base}instructor/${courseDetail.instructors[0].id}`);
+              }}
+            >
+              <div className="instructor-card__image">
+            
+                <img
+                  src={courseDetail.instructors[0].profile_image || '/'}
+                  alt={courseDetail.instructors[0].name}
+                  onError={(ev: any) => {
+                    ev.currentTarget.src = 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400';
+                  }}
+                />
+              </div>
+              <div className="instructor-card__content">
+                <h3 className="instructor-card__name">{courseDetail.instructors[0].name}</h3>
+                {courseDetail.instructors[0].designation && (
+                  <p className="instructor-card__designation">{courseDetail.instructors[0].designation}</p>
+                )}
+                {courseDetail.instructors[0].bio && (
+                  <p className="instructor-card__bio">{courseDetail.instructors[0].bio}</p>
+                )}
+                <button className="instructor-card__button">View Profile</button>
+              </div>
+            </div>
+          </div>
+        )}
       </Container>
     </div>
   );

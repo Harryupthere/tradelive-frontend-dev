@@ -9,6 +9,7 @@ import {
   CreditCard as Edit3,
   ArrowUpCircle,
   Notebook,
+  ChevronDown
 } from "lucide-react";
 import "./Profile.scss";
 import { useForm, SubmitHandler, get } from "react-hook-form";
@@ -62,34 +63,35 @@ const ProfilePage: React.FC = () => {
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewSrc, setPreviewSrc] = useState<string | null>(null);
-
+  const [meetings, setMeetings] = useState([]);
+  const [transactions, setTransactions] = useState([]);
   // static sample sections remain unchanged
-  const transactions = [
-    {
-      id: "TXN001",
-      date: "2025-01-15",
-      type: "Subscription",
-      amount: 299,
-      status: "Completed",
-      description: "Pro Member Annual Subscription",
-    },
-    {
-      id: "TXN002",
-      date: "2025-01-10",
-      type: "Course Purchase",
-      amount: 199,
-      status: "Completed",
-      description: "Advanced Trading Strategies",
-    },
-    {
-      id: "TXN003",
-      date: "2025-01-05",
-      type: "Refund",
-      amount: -99,
-      status: "Processed",
-      description: "Course Refund - Basic Trading",
-    },
-  ];
+  // const transactions = [
+  //   {
+  //     id: "TXN001",
+  //     date: "2025-01-15",
+  //     type: "Subscription",
+  //     amount: 299,
+  //     status: "Completed",
+  //     description: "Pro Member Annual Subscription",
+  //   },
+  //   {
+  //     id: "TXN002",
+  //     date: "2025-01-10",
+  //     type: "Course Purchase",
+  //     amount: 199,
+  //     status: "Completed",
+  //     description: "Advanced Trading Strategies",
+  //   },
+  //   {
+  //     id: "TXN003",
+  //     date: "2025-01-05",
+  //     type: "Refund",
+  //     amount: -99,
+  //     status: "Processed",
+  //     description: "Course Refund - Basic Trading",
+  //   },
+  // ];
   const userActions = [
     {
       id: "ACT001",
@@ -193,7 +195,7 @@ const ProfilePage: React.FC = () => {
 
         const findCountry = (raw?: string) => {
           if (!raw) return null;
-          const v =String(raw).trim();
+          const v = String(raw).trim();
           // try name match
           let found = countriesLocal.find(
             (c) => c.name.toLowerCase() === v.toLowerCase()
@@ -240,9 +242,36 @@ const ProfilePage: React.FC = () => {
     };
 
     fetchProfile();
+    fetchMeetings();
+    fetchTransactions();
   }, [reset]);
 
-  // S3 presigned upload helper
+  const fetchMeetings = async () => {
+    try {
+      const res = await api.get(API_ENDPOINTS.instructors);
+      if (res.data.status) {
+        setMeetings(res.data.data.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+const fetchTransactions=async()=>{
+    try{
+      const res = await api.get(API_ENDPOINTS.transactions);
+      if(res.data.status){
+        // Add showMetadata property to each transaction
+        const transactionsWithMetadata = res.data.data.data.map(t => ({
+          ...t,
+          showMetadata: false
+        }));
+        setTransactions(transactionsWithMetadata);
+      }
+    }catch(error){
+      console.log(error)
+    }
+  }  // S3 presigned upload helper
   const uploadFileToS3 = async (file: File) => {
     try {
       // 1. request presigned url
@@ -274,7 +303,6 @@ const ProfilePage: React.FC = () => {
   const onSubmit: SubmitHandler<ProfileDto> = async (data) => {
     setUploading(true);
     try {
-    
       let finalProfileUrl = data.profile || previewSrc || "";
 
       if (selectedFile) {
@@ -357,6 +385,8 @@ const ProfilePage: React.FC = () => {
 
   const getStatusClass = (status: string) => {
     switch (status.toLowerCase()) {
+      case "scheduled":
+        return "status-completed";
       case "completed":
         return "status-completed";
       case "processed":
@@ -377,6 +407,9 @@ const ProfilePage: React.FC = () => {
     dialCode: c.dialCode,
   }));
 
+  const handleInstructor = async (id) => {
+    navigate(`${base}instructor/${id}`);
+  };
   return (
     <div className="profile-page">
       <div className="profile-page__title-section">
@@ -676,43 +709,123 @@ const ProfilePage: React.FC = () => {
                 <th>Date</th>
                 <th>Type</th>
                 <th>Amount</th>
+                <th>Payment Gateway</th>
+
                 <th>Status</th>
                 <th>Description</th>
               </tr>
             </thead>
             <tbody>
-              {transactions.map((t) => (
-                <tr key={t.id}>
-                  <td className="profile-page__table-id">{t.id}</td>
-                  <td>{t.date}</td>
-                  <td>{t.type}</td>
-                  <td
-                    className={
-                      t.amount < 0
-                        ? "profile-page__amount--negative"
-                        : "profile-page__amount--positive"
-                    }
-                  >
-                    ₹{Math.abs(t.amount)}
-                  </td>
-                  <td>
-                    <span
-                      className={`profile-page__status ${getStatusClass(
-                        t.status
-                      )}`}
+              {transactions.map((t) => {
+                // Parse metadata if it's a string
+                let metadata: Record<string, any> = {};
+                try {
+                  metadata =
+                    typeof t.metadata === "string"
+                      ? JSON.parse(t.metadata)
+                      : t.metadata || {};
+                } catch (e) {
+                  console.error("Failed to parse metadata:", e);
+                  metadata = {};
+                }
+
+                // only show these keys (case-insensitive)
+                const allowed = ["baseprice", "fees", "quantity"];
+                const entriesToShow = Object.entries(metadata).filter(
+                  ([k]) => allowed.includes(k.replace(/\W/g, "").toLowerCase())
+                );
+
+                // Get transaction ID display
+                const txId = t.transaction_id?.toString() || "";
+                const displayId = txId
+                  ? `${txId.substring(0, 5)}...${txId.substring(
+                      txId.length - 5
+                    )}`
+                  : "";
+
+                return (
+                  <tr key={t.id}>
+                    <td className="profile-page__table-id">{displayId}</td>
+                    <td>{new Date(t.created_at).toLocaleString()}</td>
+                    <td>{t.transaction_type}</td>
+                    <td
+                      className={
+                        t.amount < 0
+                          ? "profile-page__amount--negative"
+                          : "profile-page__amount--positive"
+                      }
                     >
-                      {t.status}
-                    </span>
-                  </td>
-                  <td>{t.description}</td>
-                </tr>
-              ))}
+                      ${Math.abs(t.amount)}
+                    </td>
+                    <td>{t.payment_gateway}</td>
+                    <td>
+                      <span
+                        className={`profile-page__status ${getStatusClass(
+                          t.status
+                        )}`}
+                      >
+                        {t.status}
+                      </span>
+                    </td>
+                    <td className="metadata-cell">
+                      {entriesToShow.length > 0 ? (
+                        <>
+                          <button
+                            className={`toggle-btn ${t.showMetadata ? "active" : ""}`}
+                            onClick={() => {
+                              setTransactions((prev) =>
+                                prev.map((trans) =>
+                                  trans.id === t.id
+                                    ? { ...trans, showMetadata: !trans.showMetadata }
+                                    : trans
+                                )
+                              );
+                            }}
+                          >
+                            <span>Details</span>
+                            <ChevronDown size={14} />
+                          </button>
+                          <div className={`metadata-content ${t.showMetadata ? "open" : ""}`}>
+                            <div className="metadata-list">
+                              {entriesToShow.map(([key, value]) => {
+                                const normalized = key.replace(/\W/g, "").toLowerCase();
+                                const label =
+                                  normalized === "baseprice"
+                                    ? "Base Price"
+                                    : normalized === "fees"
+                                    ? "Fees"
+                                    : normalized === "quantity"
+                                    ? "Quantity"
+                                    : key;
+
+                                const displayValue =
+                                  normalized === "baseprice" || normalized === "fees"
+                                    ? `$${value}`
+                                    : value;
+
+                                return (
+                                  <div key={key} className="metadata-item">
+                                    <span className="label">{label}:</span>
+                                    <span className="value">{displayValue}</span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        "No details available"
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
       </div>
 
-      <div className="profile-page__section">
+      {/* <div className="profile-page__section">
         <div className="profile-page__section-header">
           <h2>Recent Activity</h2>
         </div>
@@ -739,6 +852,51 @@ const ProfilePage: React.FC = () => {
                   </td>
                   <td>{a.details}</td>
                   <td className="profile-page__ip-address">{a.ip_address}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div> */}
+
+      <div className="profile-page__section">
+        <div className="profile-page__section-header">
+          <h2>Instructor meetings</h2>
+        </div>
+        <div className="profile-page__table-container">
+          <table className="profile-page__table">
+            <thead>
+              <tr>
+                <th>Sr No.</th>
+                <th>Instructor Name</th>
+                <th>Instructor Designation</th>
+                <th>Instructor Email</th>
+                <th>Meeting Date & time</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {meetings.map((a, index) => (
+                <tr key={a.id}>
+                  <td className="profile-page__table-id">{index + 1}</td>
+                  <td
+                    onClick={() => {
+                      handleInstructor(a.instructor.id);
+                    }}
+                  >
+                    {a.instructor.name}
+                  </td>
+                  <td>{a.instructor.designation}</td>
+                  <td>{a.instructor.email}</td>
+                  <td>
+                    {a.availability.available_date} {a.availability.start_time}
+                  </td>
+                  <td>
+                    <span className="profile-page__action-type">
+                      {new Date(a.availability.available_date) < new Date()?"completed":a.meeting_status}
+                      
+                    </span>
+                  </td>
                 </tr>
               ))}
             </tbody>

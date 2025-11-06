@@ -10,10 +10,10 @@ const mainMenuItems = [
   { path: `${base}news`, icon: Newspaper, label: 'News', exact: true },
   { path: `${base}forum-calculators`, icon: Calculator, label: 'FX Calculators', exact: true },
   { path: `${base}instructors`, icon: School, label: 'Mentor Hub', exact: true },
-  { path: `#/`, icon: FolderEdit, label: 'Market Feed', exact: true },
-  { path: `#/`, icon: Users2Icon, label: 'Community/Discissions', exact: true },
-  { path: `#/`, icon: ArrowUpRightSquareIcon, label: 'Trade Journal', exact: true },
-  { path: `#/`, icon: BookPlus, label: 'Resources', exact: true },
+  // { path: `#/`, icon: FolderEdit, label: 'Market Feed', exact: true },
+  // { path: `#/`, icon: Users2Icon, label: 'Community/Discissions', exact: true },
+  // { path: `#/`, icon: ArrowUpRightSquareIcon, label: 'Trade Journal', exact: true },
+  // { path: `#/`, icon: BookPlus, label: 'Resources', exact: true },
 
 ];
 function DashboardSidebar({ sidebarOpen, closeSidebar }) {
