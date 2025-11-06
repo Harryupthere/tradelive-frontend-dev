@@ -208,7 +208,7 @@ const PipCalculator: React.FC = () => {
 
     return (
       <div className="pip-calculator">
-        <div className="pip-calculator__container">
+        <div className="container">
           <div className="pip-calculator__header">
             <button className="back-button" onClick={handleBackToCalculators}>
               <ArrowLeft size={20} />
@@ -347,7 +347,7 @@ const PipCalculator: React.FC = () => {
 
   return (
     <div className="pip-calculator">
-      <div className="pip-calculator__container">
+      <div className="container">
         <div className="pip-calculator__header">
           <button className="back-button" onClick={handleBackToCalculators}>
             <ArrowLeft size={20} />
