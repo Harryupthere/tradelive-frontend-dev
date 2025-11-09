@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Pagination from "../../components/common/Pagination";
 import {
   ArrowLeft,
   User,
@@ -65,6 +66,18 @@ const ProfilePage: React.FC = () => {
   const [previewSrc, setPreviewSrc] = useState<string | null>(null);
   const [meetings, setMeetings] = useState([]);
   const [transactions, setTransactions] = useState([]);
+  const [meetingsPagination, setMeetingsPagination] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    total_pages: 0
+  });
+  const [transactionsPagination, setTransactionsPagination] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    total_pages: 0
+  });
   // static sample sections remain unchanged
   // const transactions = [
   //   {
@@ -242,33 +255,46 @@ const ProfilePage: React.FC = () => {
     };
 
     fetchProfile();
-    fetchMeetings();
-    fetchTransactions();
+    fetchMeetings(1);
+    fetchTransactions(1);
   }, [reset]);
 
-  const fetchMeetings = async () => {
+  const fetchMeetings = async (page = 1) => {
     try {
-      const res = await api.get(API_ENDPOINTS.instructors);
+      const res = await api.get(`${API_ENDPOINTS.instructors}?page=${page}&limit=${meetingsPagination.limit}`);
       if (res.data.status) {
         setMeetings(res.data.data.data);
+        console.log(res.data.data)
+        setMeetingsPagination({
+          ...meetingsPagination,
+          page,
+          total: res.data.data.pagination.total || 0,
+          total_pages: res.data.data.pagination.total_pages || Math.ceil((res.data.data.pagination.total || 0) / meetingsPagination.limit)
+        });
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-const fetchTransactions=async()=>{
-    try{
-      const res = await api.get(API_ENDPOINTS.transactions);
-      if(res.data.status){
+  const fetchTransactions = async (page = 1) => {
+    try {
+      const res = await api.get(`${API_ENDPOINTS.transactions}?page=${page}&limit=${transactionsPagination.limit}`);
+      if (res.data.status) {
         // Add showMetadata property to each transaction
         const transactionsWithMetadata = res.data.data.data.map(t => ({
           ...t,
           showMetadata: false
         }));
         setTransactions(transactionsWithMetadata);
+        setTransactionsPagination({
+          ...transactionsPagination,
+          page,
+          total: res.data.data.pagination.total || 0,
+          total_pages: res.data.data.pagination.total_pages || Math.ceil((res.data.data.pagination.total || 0) / transactionsPagination.limit)
+        });
       }
-    }catch(error){
+    } catch (error) {
       console.log(error)
     }
   }  // S3 presigned upload helper
@@ -410,6 +436,14 @@ const fetchTransactions=async()=>{
   const handleInstructor = async (id) => {
     navigate(`${base}instructor/${id}`);
   };
+  const handleTransactionPageChange = (page: number) => {
+    fetchTransactions(page);
+  };
+
+  const handleMeetingPageChange = (page: number) => {
+    fetchMeetings(page);
+  };
+
   return (
     <div className="profile-page">
       <div className="profile-page__title-section">
@@ -822,6 +856,13 @@ const fetchTransactions=async()=>{
               })}
             </tbody>
           </table>
+          {transactions.length > 0 && transactionsPagination.total_pages > 1 && (
+            <Pagination
+              currentPage={transactionsPagination.page}
+              totalPages={transactionsPagination.total_pages}
+              onPageChange={handleTransactionPageChange}
+            />
+          )}
         </div>
       </div>
 
@@ -856,8 +897,16 @@ const fetchTransactions=async()=>{
               ))}
             </tbody>
           </table>
+          {transactions.length > 0 && transactionsPagination.total_pages > 1 && (
+            <Pagination
+              currentPage={transactionsPagination.page}
+              totalPages={transactionsPagination.total_pages}
+              onPageChange={handleTransactionPageChange}
+            />
+          )}
         </div>
-      </div> */}
+      </div>
+      */}
 
       <div className="profile-page__section">
         <div className="profile-page__section-header">
@@ -901,6 +950,13 @@ const fetchTransactions=async()=>{
               ))}
             </tbody>
           </table>
+          {meetings.length > 0 && meetingsPagination.total_pages > 1 && (
+            <Pagination
+              currentPage={meetingsPagination.page}
+              totalPages={meetingsPagination.total_pages}
+              onPageChange={handleMeetingPageChange}
+            />
+          )}
         </div>
       </div>
     </div>

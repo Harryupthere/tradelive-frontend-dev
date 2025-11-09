@@ -53,6 +53,8 @@ export const API_ENDPOINTS = {
   instructor:'instructors',
   instructors:'/instructor-scheduler',
 
+
+  updateLectureProgress:'enrollments/progress'
 };
 
 

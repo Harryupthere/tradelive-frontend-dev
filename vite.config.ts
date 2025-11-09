@@ -7,7 +7,7 @@ export default defineConfig({
   base: '/test/',   // <-- add this
   server: {
     host: true,
-    port: 5173,
+    port: 5174,
   },
 
   optimizeDeps: {

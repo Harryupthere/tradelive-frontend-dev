@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { successMsg } from "../../utils/customFn";
 import { getUser } from "../../utils/tokenUtils";
+import { ArrowLeft } from "lucide-react";
 
 const base = import.meta.env.VITE_BASE;
 
@@ -67,11 +68,21 @@ const CourseOverview = () => {
       console.log(error);
     }
   };
+      const handleBackToCalculators = () => {
+    navigate(`${base}courses`);
+  };
   return (
     <div className="course-overview">
       <Container>
         <Grid container spacing={3}>
           <Grid size={{ lg: 7, sm: 12 }}>
+            <div className="course-detail-page__header">
+          <button className="back-button" onClick={handleBackToCalculators}>
+            <ArrowLeft size={20} />
+            Back to Courses
+          </button>
+          {/* <h1 className="course-detail-page__title">{courseData.title}</h1> */}
+        </div>
             <div className="course-content">
               <div className="title">{courseDetail?.title}</div>
               <p className="description">{courseDetail?.subtitle}</p>
@@ -118,7 +129,7 @@ const CourseOverview = () => {
           }}
         />
         {/* Instructor card section */}
-        {courseDetail?.instructors && (
+        {courseDetail?.instructors?.length > 0 && (
           <div className="instructor-section">
             <h2 className="section-title">Instructor</h2>
             <div

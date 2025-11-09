@@ -1,0 +1,91 @@
+@use '../../assets/scss/mixin.scss' as *;
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  
+  &__pages {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  &__btn {
+    background: transparent;
+    border: 1px solid rgba(213, 255, 46, 0.3);
+    color: #d5ff2e;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+
+    &:hover:not(:disabled) {
+      background: rgba(213, 255, 46, 0.1);
+      border-color: #d5ff2e;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &__page {
+    min-width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid rgba(213, 255, 46, 0.3);
+    color: #d5ff2e;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+
+    &:hover:not(:disabled) {
+      background: rgba(213, 255, 46, 0.1);
+      border-color: #d5ff2e;
+    }
+
+    &--active {
+      background: #d5ff2e;
+      border-color: #d5ff2e;
+      color: #000;
+    }
+
+    &--dots {
+      border: none;
+      cursor: default;
+
+      &:hover {
+        background: transparent;
+      }
+    }
+
+    &:disabled {
+      cursor: default;
+    }
+  }
+
+  @include responsive(sm) {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+
+    &__btn {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+    }
+
+    &__page {
+      min-width: 32px;
+      height: 32px;
+      font-size: 0.8rem;
+    }
+  }
+}

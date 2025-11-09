@@ -397,6 +397,23 @@
     }
   }
 
+  // Watched tag for completed lectures
+  .lecture-watched-tag {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: var(--bg-green);
+    color: var(--white-text);
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    z-index: 6;
+    text-transform: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+    pointer-events: none; // don't block clicks on the lecture item
+  }
+
   .lecture-content {
     flex: 1;
     min-width: 0;
