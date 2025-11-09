@@ -11,6 +11,8 @@ export const API_ENDPOINTS = {
   //courses
   courses:'/products',
   courseOverview:'/products',
+  courseOverviewFeedback:'/product-feedback',
+
   courseDetails:'/courses',
 
 
