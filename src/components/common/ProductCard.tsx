@@ -9,6 +9,9 @@ export interface Course {
   enrollments: string;
   rating: number;
   preview_image: string;
+  // optional type field - backend may use `type` or `course_type`
+  type?: string;
+ // course_type?: string;
 }
 
 interface ProductCardProps {
@@ -20,6 +23,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ course }) => {
   const navigate = useNavigate()
   return (
     <div className="course-card" onClick={() => navigate(`${base}course-overview/${course.id}`)}>
+      {/* Tag showing course type (top-right) */}
+      {(course.type || course.type) && (
+        <div className="course-card__tag">
+          {course.type ==1?"Free":"Prime" || course.type==1?"Free":"Prime"}
+        </div>
+      )}
       <div className="course-card-img">
         <img src={course.preview_image || image} alt={course.title} />
       </div>
