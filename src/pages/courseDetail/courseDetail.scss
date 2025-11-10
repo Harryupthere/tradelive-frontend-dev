@@ -14,27 +14,6 @@
   }
 }
 
-.course-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 400px;
-  gap: 2rem;
-  height: calc(100vh - 4rem);
-  overflow: auto;
-
-  @media (max-width: 1200px) {
-    grid-template-columns: 1fr 350px;
-    gap: 1.5rem;
-  }
-
-  @media (max-width: 968px) {
-    grid-template-columns: 1fr;
-    height: auto;
-    gap: 1rem;
-  }
-}
-
 // Video Section
 .video-section {
   display: flex;
@@ -399,9 +378,6 @@
 
   // Watched tag for completed lectures
   .lecture-watched-tag {
-    position: absolute;
-    top: 8px;
-    right: 10px;
     background: var(--bg-green);
     color: var(--white-text);
     padding: 4px 8px;
@@ -447,7 +423,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-
+    justify-content: end;
     .now-playing {
       .playing-indicator {
         display: flex;

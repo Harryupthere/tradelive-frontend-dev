@@ -49,6 +49,17 @@ body {
   position: relative;
   display: flex;
 }
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-track {
+  background-color:#000 ;
+}
 
 .gradient-title {
   margin-bottom: 30px;
@@ -88,10 +99,6 @@ button[type='button'] {
   }
   @include responsive(xl) {
     max-width: 1140px;
-  }
-
-  @include responsive(lg) {
-    max-width: 960px;
   }
 
   @include responsive(md) {
@@ -192,4 +199,12 @@ section {
     border-color: #d5ff2e;
     transform: translateX(-4px);
   }
+}
+.input-group{
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-primary);
+    color: var(--fc-primary);
+    padding:8px 10px;
+    font-size: 14px;
 }
