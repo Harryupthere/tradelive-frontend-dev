@@ -15,7 +15,7 @@
       padding: 1rem;
     }
   }
-
+  
   // Header
   &__header {
     display: flex;
@@ -624,6 +624,29 @@
     &__image-upload {
       width: 30px;
       height: 30px;
+    }
+  }
+}
+
+.profile-modal{ 
+  .modal-title{
+    margin-bottom: 15px;
+    display: block;
+  }
+  .form-row{
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .blocked-type{
+    flex-direction: column;
+    justify-content: start;
+    align-items: flex-start;
+    gap: 10px;
+    input{
+      width: 100%;
     }
   }
 }

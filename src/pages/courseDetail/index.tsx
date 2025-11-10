@@ -14,7 +14,7 @@ import { Navigate, useParams } from "react-router-dom";
 import { api } from "../../api/Service";
 import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
 import { useNavigate } from "react-router-dom";
-import { duration } from "@mui/material";
+import { duration, Grid } from "@mui/material";
 
 const base = import.meta.env.VITE_BASE;
 
@@ -461,6 +461,8 @@ const CourseDetail: React.FC = () => {
   };
   return (
     <div className="course-detail-page">
+      <div className="container">
+        {/* Video Player Section */}
        <div className="course-detail-page__header">
           <button className="back-button" onClick={handleBackToCalculators}>
             <ArrowLeft size={20} />
@@ -468,8 +470,8 @@ const CourseDetail: React.FC = () => {
           </button>
           {/* <h1 className="course-detail-page__title">{courseData.title}</h1> */}
         </div>
-      <div className="course-container">
-        {/* Video Player Section */}
+        <Grid container spacing={2}>
+          <Grid size={{lg:8,sm:12}}>
         <div className="video-section">
           <div className="video-player">
             {currentLecture ? (
@@ -522,7 +524,9 @@ const CourseDetail: React.FC = () => {
             </div>
           )}
         </div>
+</Grid>
 
+          <Grid size={{lg:4,sm:12}}>
         {/* Course Sidebar */}
         <div className="course-sidebar">
           {/* Course Header */}
@@ -586,9 +590,7 @@ const CourseDetail: React.FC = () => {
                   }`}
                   onClick={() => handleLectureClick(lecture, index)}
                 >
-                  {lecture.isCompleted && (
-                    <div className="lecture-watched-tag">Watched</div>
-                  )}
+                 
                   <div className="lecture-number">
                     {lecture.isCompleted ? (
                       <CheckCircle size={20} />
@@ -607,7 +609,11 @@ const CourseDetail: React.FC = () => {
                     </div>}
                   </div>
 
-                  <div className="lecture-actions">
+                  <div>
+                     {lecture.isCompleted && (
+                    <div className="lecture-watched-tag">Watched</div>
+                  )}
+                  <div  className="lecture-actions">
                     {currentLecture?.id === lecture.id && (
                       <div className="now-playing">
                         <div className="playing-indicator">
@@ -617,17 +623,21 @@ const CourseDetail: React.FC = () => {
                         </div>
                       </div>
                     )}
+                    
                     {!lecture.isLocked && (
                       <button className="play-btn">
                         <Play size={16} />
                       </button>
                     )}
                   </div>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         </div>
+        </Grid>
+        </Grid>
         <div className="blurs_wrapper">
           <div className="blurs_object is-fluo"></div>
         </div>

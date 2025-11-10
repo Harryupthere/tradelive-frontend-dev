@@ -83,7 +83,7 @@ const CourseListing = () => {
                 </div>
             </div>
 
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
                 {loading
                         ? Array.from(new Array(4)).map((_, index) => (
                             <Grid  size={{ md: 4, sm: 6 }}  key={index}>

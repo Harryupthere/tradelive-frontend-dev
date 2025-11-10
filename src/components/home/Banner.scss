@@ -4,11 +4,15 @@
   align-items: center;
   justify-content: space-between;
   gap: 50px;
-  overflow: hidden;
+  // overflow: hidden;
   padding-bottom: 40px;
-  min-height: 90vh
+  min-height: 90vh;
+  .blurs_wrapper{
+      @include responsive(xs) {
+          top: 0;
+      }
+  }
 }
-
 .content-section {
   flex: 1;
   max-width: 40%;

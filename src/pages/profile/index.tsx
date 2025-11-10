@@ -36,6 +36,8 @@ const style = {
   p: 2,
   backgroundColor: "var(--bg-modal)",
   borderRadius: "8px",
+  maxHeight: "90vh",
+  overflowY: "auto",
 };
 type ProfileDto = {
   first_name: string;
@@ -414,7 +416,7 @@ const ProfilePage: React.FC = () => {
       console.error("Add trade journal failed", err);
       errorMsg(err?.response?.data?.message || "Failed to add trade journal");
     }
-      setTradeJournalUploading(false);
+    setTradeJournalUploading(false);
   };
   const fetchMeetings = async (page = 1) => {
     try {
@@ -460,7 +462,7 @@ const ProfilePage: React.FC = () => {
             res.data.data.pagination.total_pages ||
             Math.ceil(
               (res.data.data.pagination.total || 0) /
-                transactionsPagination.limit
+              transactionsPagination.limit
             ),
         });
       }
@@ -666,6 +668,7 @@ const ProfilePage: React.FC = () => {
                 <label className="profile-page__image-upload">
                   <Camera size={16} />
                   <input
+                    className="input-group"
                     type="file"
                     accept="image/*"
                     onChange={handleImageSelect}
@@ -680,6 +683,7 @@ const ProfilePage: React.FC = () => {
             <div className="profile-page__form-group">
               <label>First Name</label>
               <input
+                className="input-group"
                 type="text"
                 {...register("first_name", {
                   required: "First name is required",
@@ -697,6 +701,7 @@ const ProfilePage: React.FC = () => {
             <div className="profile-page__form-group">
               <label>Last Name</label>
               <input
+                className="input-group"
                 type="text"
                 {...register("last_name", {
                   required: "Last name is required",
@@ -714,6 +719,7 @@ const ProfilePage: React.FC = () => {
             <div className="profile-page__form-group">
               <label>Email</label>
               <input
+                className="input-group"
                 type="email"
                 {...register("email")}
                 disabled
@@ -756,6 +762,7 @@ const ProfilePage: React.FC = () => {
                   ))}
                 </select>
                 <input
+                  className="input-group"
                   type="tel"
                   {...register("phone_number")}
                   disabled={!isEditing}
@@ -767,6 +774,7 @@ const ProfilePage: React.FC = () => {
             <div className="profile-page__form-group">
               <label>Telegram ID</label>
               <input
+                className="input-group"
                 type="text"
                 {...register("telegram_id")}
                 disabled={!isEditing}
@@ -802,6 +810,7 @@ const ProfilePage: React.FC = () => {
               <label>Current Password</label>
               <div className="profile-page__password-input">
                 <input
+                  className="input-group"
                   type={showCurrentPassword ? "text" : "password"}
                   {...registerPwd("current_password", {
                     required: "Current password is required",
@@ -832,6 +841,7 @@ const ProfilePage: React.FC = () => {
               <label>New Password</label>
               <div className="profile-page__password-input">
                 <input
+                  className="input-group"
                   type={showNewPassword ? "text" : "password"}
                   {...registerPwd("new_password", {
                     required: "New password is required",
@@ -859,6 +869,7 @@ const ProfilePage: React.FC = () => {
               <label>Confirm New Password</label>
               <div className="profile-page__password-input">
                 <input
+                  className="input-group"
                   type={showConfirmPassword ? "text" : "password"}
                   {...registerPwd("confirm_password", {
                     required: "Confirm password is required",
@@ -941,8 +952,8 @@ const ProfilePage: React.FC = () => {
                 const txId = t.transaction_id?.toString() || "";
                 const displayId = txId
                   ? `${txId.substring(0, 5)}...${txId.substring(
-                      txId.length - 5
-                    )}`
+                    txId.length - 5
+                  )}`
                   : "";
 
                 return (
@@ -973,17 +984,16 @@ const ProfilePage: React.FC = () => {
                       {entriesToShow.length > 0 ? (
                         <>
                           <button
-                            className={`toggle-btn ${
-                              t.showMetadata ? "active" : ""
-                            }`}
+                            className={`toggle-btn ${t.showMetadata ? "active" : ""
+                              }`}
                             onClick={() => {
                               setTransactions((prev) =>
                                 prev.map((trans) =>
                                   trans.id === t.id
                                     ? {
-                                        ...trans,
-                                        showMetadata: !trans.showMetadata,
-                                      }
+                                      ...trans,
+                                      showMetadata: !trans.showMetadata,
+                                    }
                                     : trans
                                 )
                               );
@@ -993,9 +1003,8 @@ const ProfilePage: React.FC = () => {
                             <ChevronDown size={14} />
                           </button>
                           <div
-                            className={`metadata-content ${
-                              t.showMetadata ? "open" : ""
-                            }`}
+                            className={`metadata-content ${t.showMetadata ? "open" : ""
+                              }`}
                           >
                             <div className="metadata-list">
                               {entriesToShow.map(([key, value]) => {
@@ -1006,14 +1015,14 @@ const ProfilePage: React.FC = () => {
                                   normalized === "baseprice"
                                     ? "Base Price"
                                     : normalized === "fees"
-                                    ? "Fees"
-                                    : normalized === "quantity"
-                                    ? "Quantity"
-                                    : key;
+                                      ? "Fees"
+                                      : normalized === "quantity"
+                                        ? "Quantity"
+                                        : key;
 
                                 const displayValue =
                                   normalized === "baseprice" ||
-                                  normalized === "fees"
+                                    normalized === "fees"
                                     ? `$${value}`
                                     : value;
 
@@ -1147,14 +1156,14 @@ const ProfilePage: React.FC = () => {
       <div className="profile-page__section">
         <div className="profile-page__section-header">
           <h2>Trade Journals</h2>
-             <button
-                          className="profile-page__save-btn"
-                         onClick={() => addTradeJournal()}
-                        >
-                          Add Trade Journal
-                        </button>
+          <button
+            className="profile-page__save-btn"
+            onClick={() => addTradeJournal()}
+          >
+            Add Trade Journal
+          </button>
         </div>
-      
+
         <div className="profile-page__table-container">
           <table className="profile-page__table">
             <thead>
@@ -1245,10 +1254,10 @@ const ProfilePage: React.FC = () => {
       <Modal
         open={tradejounralOpen}
         onClose={closeTradeJournal}
-        className="forum-modal"
+        className="profile-modal"
       >
         <Box sx={style}>
-          <h2>Your Trade Journl</h2>
+          <h2 className="modal-title">Your Trade Journl</h2>
 
           <div className="forum-modal-quoted">
             <p>
@@ -1258,23 +1267,28 @@ const ProfilePage: React.FC = () => {
           <div className="trade-journal-view">
             <div className="form-row">
               <label>Symbol</label>
-              <input type="text" value={currentTradeJournal?.symbol || ''} readOnly />
+              <input
+                className="input-group" type="text" value={currentTradeJournal?.symbol || ''} readOnly />
             </div>
             <div className="form-row">
               <label>Lot Size</label>
-              <input type="text" value={currentTradeJournal?.lot_size || ''} readOnly />
+              <input
+                className="input-group" type="text" value={currentTradeJournal?.lot_size || ''} readOnly />
             </div>
             <div className="form-row">
               <label>Take Profit</label>
-              <input type="text" value={currentTradeJournal?.take_profit || ''} readOnly />
+              <input
+                className="input-group" type="text" value={currentTradeJournal?.take_profit || ''} readOnly />
             </div>
             <div className="form-row">
               <label>Stop Loss</label>
-              <input type="text" value={currentTradeJournal?.stop_loss || ''} readOnly />
+              <input
+                className="input-group" type="text" value={currentTradeJournal?.stop_loss || ''} readOnly />
             </div>
             <div className="form-row">
               <label>Trade Date</label>
-              <input type="text" value={currentTradeJournal?.trade_date ? new Date(currentTradeJournal.trade_date).toLocaleString() : ''} readOnly />
+              <input
+                className="input-group" type="text" value={currentTradeJournal?.trade_date ? new Date(currentTradeJournal.trade_date).toLocaleString() : ''} readOnly />
             </div>
             <div className="form-row">
               <label>Picture</label>
@@ -1284,9 +1298,10 @@ const ProfilePage: React.FC = () => {
                 <span>—</span>
               )}
             </div>
-            <div className="form-row">
+            <div className="form-row blocked-type">
               <label>Reason</label>
-              <textarea value={currentTradeJournal?.reason || ''} readOnly rows={5} style={{ width: '100%' }} />
+              <textarea
+                className="input-group" value={currentTradeJournal?.reason || ''} readOnly rows={5} style={{ width: '100%' }} />
             </div>
             <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 12 }}>
               <button className="border-btn" onClick={closeTradeJournal}>Close</button>
@@ -1297,10 +1312,10 @@ const ProfilePage: React.FC = () => {
       <Modal
         open={addTradejournralModalOpen}
         onClose={closeAddTradeJournal}
-        className="forum-modal"
+        className="profile-modal"
       >
-        <Box sx={style}>
-          <h2>Add trade Journal</h2>
+        <Box sx={style} >
+          <h2 className="modal-title">Add trade Journal</h2>
 
           <div className="forum-modal-quoted">
             <p>
@@ -1311,6 +1326,7 @@ const ProfilePage: React.FC = () => {
             <div className="form-row">
               <label>Symbol</label>
               <input
+                className="input-group"
                 type="text"
                 value={tradeJournalFormData.symbol}
                 onChange={(e) => setTradeJournalFormData({ ...tradeJournalFormData, symbol: e.target.value })}
@@ -1320,6 +1336,7 @@ const ProfilePage: React.FC = () => {
             <div className="form-row">
               <label>Lot Size</label>
               <input
+                className="input-group"
                 type="text"
                 value={tradeJournalFormData.lot_size}
                 onChange={(e) => setTradeJournalFormData({ ...tradeJournalFormData, lot_size: e.target.value })}
@@ -1329,6 +1346,7 @@ const ProfilePage: React.FC = () => {
             <div className="form-row">
               <label>Take Profit</label>
               <input
+                className="input-group"
                 type="text"
                 value={tradeJournalFormData.take_profit}
                 onChange={(e) => setTradeJournalFormData({ ...tradeJournalFormData, take_profit: e.target.value })}
@@ -1338,6 +1356,7 @@ const ProfilePage: React.FC = () => {
             <div className="form-row">
               <label>Stop Loss</label>
               <input
+                className="input-group"
                 type="text"
                 value={tradeJournalFormData.stop_loss}
                 onChange={(e) => setTradeJournalFormData({ ...tradeJournalFormData, stop_loss: e.target.value })}
@@ -1347,53 +1366,55 @@ const ProfilePage: React.FC = () => {
             <div className="form-row">
               <label>Trade Date</label>
               <input
+                className="input-group"
                 type="datetime-local"
                 value={tradeJournalFormData.trade_date}
                 onChange={(e) => setTradeJournalFormData({ ...tradeJournalFormData, trade_date: e.target.value })}
               />
             </div>
-            <div className="form-row">
+            <div className="form-row blocked-type">
               <label>Picture URL</label>
-              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const f = e.target.files?.[0] || null;
-                    if (!f) return;
-                    const allowed = ['image/png','image/jpeg','image/jpg','image/webp'];
-                    const maxSize = 5 * 1024 * 1024; // 5MB
-                    if (!allowed.includes(f.type)) {
-                      errorMsg('Only jpg, png or webp images are allowed');
-                      return;
-                    }
-                    if (f.size > maxSize) {
-                      errorMsg('Image must be smaller than 5MB');
-                      return;
-                    }
-                    setTradeJournalFile(f);
-                    const reader = new FileReader();
-                    reader.onload = () => setTradeJournalPreview(reader.result as string);
-                    reader.readAsDataURL(f);
-                  }}
-                />
-                <input
-                  type="text"
-                  value={tradeJournalFormData.picture}
-                  onChange={(e) => setTradeJournalFormData({ ...tradeJournalFormData, picture: e.target.value })}
-                  placeholder="Or paste image URL"
-                  style={{ flex: 1 }}
-                />
-              </div>
+              <input
+                className="input-group"
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const f = e.target.files?.[0] || null;
+                  if (!f) return;
+                  const allowed = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
+                  const maxSize = 5 * 1024 * 1024; // 5MB
+                  if (!allowed.includes(f.type)) {
+                    errorMsg('Only jpg, png or webp images are allowed');
+                    return;
+                  }
+                  if (f.size > maxSize) {
+                    errorMsg('Image must be smaller than 5MB');
+                    return;
+                  }
+                  setTradeJournalFile(f);
+                  const reader = new FileReader();
+                  reader.onload = () => setTradeJournalPreview(reader.result as string);
+                  reader.readAsDataURL(f);
+                }}
+              />
+              <input
+                className="input-group"
+                type="text"
+                value={tradeJournalFormData.picture}
+                onChange={(e) => setTradeJournalFormData({ ...tradeJournalFormData, picture: e.target.value })}
+                placeholder="Or paste image URL"
+                style={{ flex: 1 }}
+              />
               {tradeJournalPreview && (
                 <div style={{ marginTop: 8 }}>
                   <img src={tradeJournalPreview} alt="preview" style={{ width: 120, height: 80, objectFit: 'cover', borderRadius: 6 }} />
                 </div>
               )}
             </div>
-            <div className="form-row">
+            <div className="form-row blocked-type">
               <label>Reason</label>
               <textarea
+                className="input-group"
                 value={tradeJournalFormData.reason}
                 onChange={(e) => setTradeJournalFormData({ ...tradeJournalFormData, reason: e.target.value })}
                 placeholder="Type your reason..."
