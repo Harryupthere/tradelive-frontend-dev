@@ -54,9 +54,14 @@ export const API_ENDPOINTS = {
 
   instructor:'instructors',
   instructors:'/instructor-scheduler',
+  tradeJournal:'/trade-journal',
 
 
-  updateLectureProgress:'enrollments/progress'
+
+  updateLectureProgress:'enrollments/progress',
+
+  contactUs:'contact-us'
+
 };
 
 

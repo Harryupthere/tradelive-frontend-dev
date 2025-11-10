@@ -9,9 +9,22 @@ import { useNavigate } from "react-router-dom";
 import { successMsg } from "../../utils/customFn";
 import { getUser } from "../../utils/tokenUtils";
 import { ArrowLeft, Heart } from "lucide-react";
+import { Box, IconButton, Modal, Typography } from "@mui/material";
 
 const base = import.meta.env.VITE_BASE;
-
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 500,
+  bgcolor: "background.paper",
+  border: "none",
+  boxShadow: 24,
+  p: 2,
+  backgroundColor: "var(--bg-modal)",
+  borderRadius: "8px",
+};
 const CourseOverview = () => {
   const navigate = useNavigate();
 
@@ -26,7 +39,8 @@ const CourseOverview = () => {
   const [courseFeedback, setCourseFeedback] = useState([]);
   const [addCommentPopUp, setAddCommentPopUp] = useState(false);
   const [userCommented, setUserCommented] = useState(false);
-
+  const [comment, setComment] = useState("");
+  const [ratingValue, setRatingValue] = useState<number | null>(null);
   const formatDate = (iso?: string) => {
     if (!iso) return "";
     try {
@@ -106,7 +120,6 @@ const CourseOverview = () => {
   const fetchCoursesFeedbacks = async () => {
     try {
       const response = await api.get(`${API_ENDPOINTS?.courseOverviewFeedback}/${id}`);
-      console.log('response feedback', response)
       if (response?.data?.status) {
         const data = response?.data?.data;
         setCourseFeedback(data);
@@ -175,6 +188,35 @@ const CourseOverview = () => {
   const closeAddComment = () => {
     setAddCommentPopUp(false);
   };
+
+  const addCommentApi = async () => {
+    try {
+      // require rating
+      if (!ratingValue || ratingValue < 1 || ratingValue > 5) {
+        successMsg("Please select a rating between 1 and 5");
+        return;
+      }
+      if (!comment || comment.trim().length === 0) {
+        successMsg("Please enter a comment before sending");
+        return;
+      }
+      const payload = {
+        product_id: parseInt(id),
+        comment: comment,
+        rating: ratingValue,
+      };
+      const res = await api.post(API_ENDPOINTS.courseOverviewFeedback, payload);
+      if (res.data.status) {
+        successMsg("Comment added successfully");
+        setComment("");
+        setRatingValue(null);
+        closeAddComment();
+        fetchCoursesFeedbacks();
+      }
+    } catch (error) {
+      console.log("Failed to add comment", error);
+    }
+  }
   return (
     <div className="course-overview">
       <Container>
@@ -188,18 +230,6 @@ const CourseOverview = () => {
           {/* <h1 className="course-detail-page__title">{courseData.title}</h1> */}
         </div>
         {/* Add Comment popup (UI placeholder) */}
-        {addCommentPopUp && (
-          <div className="add-comment-modal">
-            <div className="add-comment-modal__backdrop" onClick={closeAddComment} />
-            <div className="add-comment-modal__panel">
-              <h3>Add your feedback</h3>
-              <p className="muted">(UI only) Add comment form goes here. Rating (1-5) required to submit.</p>
-              <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-                <button className="border-btn" onClick={closeAddComment}>Close</button>
-              </div>
-            </div>
-          </div>
-        )}
             <div className="course-content">
               <div className="title">{courseDetail?.title}</div>
               <p className="description">{courseDetail?.subtitle}</p>
@@ -250,7 +280,7 @@ const CourseOverview = () => {
         <div className="feedback-section">
           <div className="feedback-header">
             <h3 className="section-title">Recent Feedback</h3>
-           {courseDetail.enrolled   && <button type="button" className="add-comment-btn" onClick={()=>openAddComment()}>Add Comment</button>}
+           {courseDetail.enrolled  && !userCommented && <button type="button" className="add-comment-btn" onClick={()=>openAddComment()}>Add Comment</button>}
           </div>
           <div className="feedback-list">
             {getFeedbackArray().length === 0 && (
@@ -331,6 +361,67 @@ const CourseOverview = () => {
           </div>
         )}
       </Container>
+            <Modal open={addCommentPopUp} onClose={closeAddComment} className="forum-modal">
+              <Box sx={style}>
+                <h2>
+                  Add Comment
+                  
+                </h2>
+               
+                  <div className="forum-modal-quoted">
+                    <p>
+                      <b>Comment:</b> 
+                    </p>
+                  </div>
+               
+                <textarea
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="Type your comment..."
+                  rows={5}
+                  style={{ width: "100%", marginBottom: 12 }}
+                />
+                <div style={{ marginBottom: 12 }}>
+                  <label style={{ display: 'block', marginBottom: 6, fontWeight: 600 }}>Rating</label>
+                  <Rating
+                    name="add-comment-rating"
+                    value={ratingValue}
+                    onChange={(_, v) => setRatingValue(v)}
+                    precision={1}
+                    size="medium"
+                    sx={{
+                      '& .MuiRating-iconFilled': { color: '#FFD700' },
+                      '& .MuiRating-iconHover': { color: '#FFD700' }
+                    }}
+                  />
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 8,
+                    justifyContent: "flex-end",
+                    alignItems: "center",
+                  }}
+                >
+                  <button
+                    onClick={closeAddComment}
+                    
+                    className="cancel-btn"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="gradient-btn"
+                    onClick={() => {
+                      addCommentApi();
+                    }}
+                    disabled={!ratingValue || comment.trim().length === 0}
+                  >
+                    Send
+                  </button>
+                </div>
+              </Box>
+            </Modal>
     </div>
   );
 };
