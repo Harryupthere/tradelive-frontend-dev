@@ -4,7 +4,9 @@ import { createClient } from '@supabase/supabase-js';
 import './contactus.scss';
 import { Grid } from '@mui/material';
 
-
+import { api } from '../../api/Service';
+import { API_ENDPOINTS } from '../../constants/ApiEndPoints';
+import { successMsg } from '../../utils/customFn';
 const ContactUs = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -20,11 +22,43 @@ const ContactUs = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+
+  
+  const submit = async (payload: any) => {
+    try {
+      const res = await api.post(API_ENDPOINTS.contactUs, payload);
+      return res;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
- 
-
-    
+    setStatus('loading');
+    setErrorMessage('');
+    try {
+      const payload = { ...formData };
+      const res = await submit(payload);
+      // backend may respond with { data: { status: true, data: { message: '...' } } }
+      const ok = res?.data?.status ?? res?.status === 200;
+      console.log(res.data)
+      if (ok) {
+        setStatus('success');
+        successMsg(res?.data?.data?.message || 'Message sent successfully');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+        // reset success state after a short delay
+        setTimeout(() => setStatus('idle'), 3500);
+      } else {
+        setStatus('error');
+        const errMsg = res?.data?.message || 'Failed to send message';
+        setErrorMessage(errMsg);
+      }
+    } catch (error: any) {
+      console.error('Contact form submit failed', error);
+      setStatus('error');
+      setErrorMessage(error?.message || 'Network error');
+    }
   };
 
   return (
