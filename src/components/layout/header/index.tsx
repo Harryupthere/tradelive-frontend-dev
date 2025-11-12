@@ -76,7 +76,7 @@ const Header = () => {
         <button
           type="button"
           className="user-btn"
-          onClick={() => navigate(`${base}profile`)}
+          onClick={() => navigate(`${base}dashboard`)}
           title={`${user.first_name || ""} ${user.last_name || ""}`}
         >
           {avatarSrc ? (
@@ -86,7 +86,7 @@ const Header = () => {
               {(user.first_name || "U").charAt(0).toUpperCase()}
             </div>
           )}
-          <span className="user-name">{user.first_name || user.email || "User"}</span>
+          <span className="user-name">{user.first_name || user.email || "User"}'s Dashboard</span>
         </button>
 
         {userTypeImage ? (

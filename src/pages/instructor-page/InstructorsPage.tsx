@@ -73,14 +73,14 @@ const InstructorsPage: React.FC = () => {
     <div className="instructors-page">
       <div className="instructors-page__container">
         {/* Header */}
-        <div className="instructors-page__header">
+        {/* <div className="instructors-page__header">
           <button onClick={handleBackClick} className="back-button">
             <ArrowLeft size={20} />
             Back
           </button>
           
           
-        </div>
+        </div> */}
 
         {/* Title Section */}
         <div className="instructors-page__title-section">
