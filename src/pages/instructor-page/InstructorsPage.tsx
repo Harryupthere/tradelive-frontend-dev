@@ -59,7 +59,7 @@ const InstructorsPage: React.FC = () => {
   if (loading) {
     return (
       <div className="instructors-page">
-        <div className="instructors-page__container">
+        <div className="container">
           <div className="instructors-page__loading">
             <div className="instructors-page__spinner"></div>
             <p>Loading instructors...</p>
@@ -71,7 +71,6 @@ const InstructorsPage: React.FC = () => {
 
   return (
     <div className="instructors-page">
-      <div className="instructors-page__container">
         {/* Header */}
         {/* <div className="instructors-page__header">
           <button onClick={handleBackClick} className="back-button">
@@ -164,7 +163,6 @@ const InstructorsPage: React.FC = () => {
           </div>
         )}
       </div>
-    </div>
   );
 };
 

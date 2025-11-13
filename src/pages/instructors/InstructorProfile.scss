@@ -719,8 +719,8 @@
   background: rgba(30, 30, 30, 0.8);
   border: 1px solid rgba(196, 255, 0, 0.1);
   border-radius: 24px;
-  padding: 48px;
-  margin-bottom: 48px;
+  padding: 25px;
+  margin-bottom: 30px;
   backdrop-filter: blur(10px);
   position: relative;
   overflow: hidden;
@@ -794,11 +794,11 @@
   &__info {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 16px;
   }
 
   &__name {
-    font-size: 48px;
+    font-size: 40px;
     font-weight: 700;
     background: linear-gradient(135deg, #ffffff 0%, #c4ff00 100%);
     -webkit-background-clip: text;
@@ -910,9 +910,9 @@
 .instructor-bio {
   background: rgba(30, 30, 30, 0.8);
   border: 1px solid rgba(196, 255, 0, 0.1);
-  border-radius: 24px;
-  padding: 40px;
-  margin-bottom: 48px;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
   backdrop-filter: blur(10px);
 
   .bio-text {
@@ -927,7 +927,7 @@
   font-size: 32px;
   font-weight: 700;
   color: #ffffff;
-  margin-bottom: 32px;
+  margin-bottom: 10px;
   text-align: center;
 
   @media (max-width: 768px) {

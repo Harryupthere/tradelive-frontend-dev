@@ -2,18 +2,10 @@
   min-height: 100vh;
 //   background: #000;
   color: white;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
-
-  &__container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-
-    @media (max-width: 768px) {
-      padding: 1rem;
+@media (max-width: 768px) {
+    padding: 50px 0;
     }
-  }
 
   // Header
   &__header {
@@ -90,11 +82,14 @@
   }
 
   &__title {
-    font-size: 3rem;
+        font-size: 48px;
     font-weight: 700;
-    color: white;
-    margin: 0 0 0.5rem 0;
-    line-height: 1.2;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #ffffff 0%, #d5ff2e 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
 
     @media (max-width: 768px) {
       font-size: 2.5rem;
@@ -106,7 +101,7 @@
   }
 
   &__subtitle {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     color: rgba(255, 255, 255, 0.7);
     margin: 0 0 2rem 0;
   }
@@ -169,12 +164,12 @@
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 16px;
-    padding: 2rem;
+    padding: 1.5rem;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
 
     &:hover {
       border-color: rgba(213, 255, 46, 0.3);

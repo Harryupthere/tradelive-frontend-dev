@@ -409,7 +409,7 @@
 
     th {
       background: rgba(255, 255, 255, 0.05);
-      padding: 1rem;
+      padding: 0.8rem;
       text-align: left;
       font-weight: 600;
       color: #d5ff2e;
@@ -417,6 +417,7 @@
       font-size: 0.9rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
+      white-space: nowrap;
     }
 
     .metadata-cell {
