@@ -268,7 +268,7 @@ const CurrencyConverter: React.FC = () => {
 
 
     const handleBackToCalculators = () => {
-    navigate(`${base}forum-calculators`);
+    navigate(`${base}forax-calculators`);
   };
 
   return (

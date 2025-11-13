@@ -32,6 +32,7 @@ import PaymentSuccess from "../pages/checkout/PaymentSuccess";
 import PaymentFailure from "../pages/checkout/PaymentFailure";
 import ActivationCoupons from "../pages/activation-coupons/ActivationCoupons";
 import InstructorProfile from "../pages/instructors/InstructorProfile";
+import PrivacyPolicy from "../pages/term-and-condition/privacyPolicy";
 const base = import.meta.env.VITE_BASE;
 
 const Router = () => {
@@ -80,10 +81,12 @@ const Router = () => {
         { path: `${base}profit-calculator`, element: <ProfitCalculator /> },
         { path: `${base}rebate-calculator`, element: <RebateCalculator /> },
         { path: `${base}terms-and-condition`, element: <TermsConditions /> },
+        { path: `${base}privacy-policy`, element: <PrivacyPolicy /> },
+
         { path: `${base}contactus`, element: <ContactUs /> },
         { path: `${base}about-us`, element: <AboutUs /> },
         { path: `${base}checkout`, element: <Checkout /> },
-        { path: `${base}activation-coupons`, element: <ActivationCoupons /> },
+        // { path: `${base}activation-coupons`, element: <ActivationCoupons /> },
         { path: `${base}instructor/:id`, element: <InstructorProfile /> },
       ],
     },

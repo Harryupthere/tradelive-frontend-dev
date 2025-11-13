@@ -87,7 +87,7 @@ const RebateCalculator: React.FC = () => {
   };
 
   const handleBackToCalculators = () => {
-    // navigate(`${base}forum-calculators`);
+    // navigate(`${base}forax-calculators`);
     window.history.back();
   };
 

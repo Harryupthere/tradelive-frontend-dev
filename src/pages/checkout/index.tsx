@@ -46,6 +46,7 @@ interface CheckoutFormData {
     | "Instructor Meeting";
   paymentGateway: "stripe" | "boomfi" | string;
   couponQuantity: number;
+  meetingReason?: string;
 }
 
 interface PricingDetails {
@@ -57,9 +58,25 @@ interface PricingDetails {
 
 const Checkout: React.FC = () => {
   // detect instructor meeting data from URL and set default subscription
+  const [activationCoupnOpen, setActivationCoupnOpen] =
+    useState<boolean>(false);
+
+  const fetchActivationCoupon = () => {
+    const params = new URLSearchParams(window.location.search);
+
+    const activationCouponRaw = params.get("activationCoupon");
+    if (
+      activationCouponRaw &&
+      (activationCouponRaw.toLowerCase() === "true" ||
+        activationCouponRaw === "1")
+    ) {
+      return true;
+    }
+  };
   const parseInstructorMeetingFromUrl = (): any | null => {
     try {
       const params = new URLSearchParams(window.location.search);
+
       const instructorMeetingRaw = params.get("instructorMeeting");
       // treat "true" or "1" as enabled
       const enabled =
@@ -100,6 +117,7 @@ const Checkout: React.FC = () => {
   };
 
   const instructorMeetingFromUrl = parseInstructorMeetingFromUrl();
+  const activationCouponFromUrl = fetchActivationCoupon();
 
   const [formData, setFormData] = useState<CheckoutFormData>({
     fullName: "",
@@ -109,11 +127,12 @@ const Checkout: React.FC = () => {
     subscriptionType:
       instructorMeetingFromUrl && instructorMeetingFromUrl.enabled
         ? "Instructor Meeting"
-        : getUser()?.userType.id == 1
+        : getUser()?.userType.id == 1 && !activationCouponFromUrl
         ? "Yearly Subscription"
         : "Activation Coupon",
     paymentGateway: "1",
     couponQuantity: 1,
+    meetingReason: "",
   });
 
   // store parsed instructor meeting data (if any)
@@ -129,7 +148,6 @@ const Checkout: React.FC = () => {
 
   // Fetch instructor and availability details when instructorMeeting is enabled
   useEffect(() => {
-
     const shouldFetch =
       instructorMeetingData &&
       instructorMeetingData.enabled &&
@@ -181,10 +199,20 @@ const Checkout: React.FC = () => {
 
   // Initialize pricing with 0 fees, will update after API call
   const [pricing, setPricing] = useState<PricingDetails>({
-    basePrice:  instructorMeetingFromUrl && instructorMeetingFromUrl.enabled ? 99.0 : planPrice ? parseFloat(planPrice) : 12.0,
+    basePrice:
+      instructorMeetingFromUrl && instructorMeetingFromUrl.enabled
+        ? 99.0
+        : planPrice
+        ? parseFloat(planPrice)
+        : 12.0,
     quantity: 1,
     fees: 0, // Initialize with 0
-    total: instructorMeetingFromUrl && instructorMeetingFromUrl.enabled ? 99.0 : planPrice ? parseFloat(planPrice) : 12.0, // Initial total without fees
+    total:
+      instructorMeetingFromUrl && instructorMeetingFromUrl.enabled
+        ? 99.0
+        : planPrice
+        ? parseFloat(planPrice)
+        : 12.0, // Initial total without fees
   });
 
   // Add useEffect to update pricing when payment gateways load
@@ -192,21 +220,25 @@ const Checkout: React.FC = () => {
     if (paymentGateways.length > 0) {
       // Update pricing with fees from first gateway
       const shouldFetch =
-        instructorMeetingData &&
-        instructorMeetingData.enabled;
+        instructorMeetingData && instructorMeetingData.enabled;
       const firstGateway =
         getUser().userType.id == 1 ? paymentGateways[0] : paymentGateways[1];
-      const basePrice = shouldFetch==1 || shouldFetch ?99.00:planPrice ? parseFloat(planPrice) : 12.0;
+      const basePrice =
+        shouldFetch == 1 || shouldFetch
+          ? 99.0
+          : planPrice
+          ? parseFloat(planPrice)
+          : 12.0;
       const feesPercent = Number(firstGateway.fee_percentage || 0);
       const fees = (basePrice * feesPercent) / 100;
-      console.log(basePrice,"????")
+      console.log(basePrice, "????");
       setPricing((prev) => ({
         ...prev,
         fees,
         total: basePrice + fees,
       }));
     }
-  }, [paymentGateways,instructorMeetingData, instructorDetails]);
+  }, [paymentGateways, instructorMeetingData, instructorDetails]);
 
   // validation errors
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -300,6 +332,14 @@ const Checkout: React.FC = () => {
       }
     }
 
+    // If booking an instructor meeting, require a brief reason
+    if (formData.subscriptionType === "Instructor Meeting") {
+      if (!formData.meetingReason || !String(formData.meetingReason).trim()) {
+        newErrors.meetingReason =
+          "Please provide a brief reason for the meeting";
+      }
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -322,14 +362,14 @@ const Checkout: React.FC = () => {
       basePrice = planPrice ? parseFloat(planPrice) : 12.0;
       quantity = 1;
       fees = basePrice * (feesPercentage / 100);
-    } else if(data.subscriptionType === "Activation Coupon") {
+    } else if (data.subscriptionType === "Activation Coupon") {
       basePrice = planPrice ? parseFloat(planPrice) : 12.0;
       quantity = data.couponQuantity || 1;
       fees = basePrice * quantity * (feesPercentage / 100);
-    }else if(data.subscriptionType === "Instructor Meeting") {
+    } else if (data.subscriptionType === "Instructor Meeting") {
       basePrice = instructorDetails?.meeting_price
         ? parseFloat(instructorDetails.meeting_price)
-        : 99.00; // default meeting price
+        : 99.0; // default meeting price
       quantity = 1;
       fees = basePrice * (feesPercentage / 100);
     }
@@ -349,49 +389,53 @@ const Checkout: React.FC = () => {
   };
 
   const handleProceed = async () => {
-    try{
-    if (!validateForm()) {
-      // focus first error field (optional)
-      const firstErrorField = Object.keys(errors)[0];
-      if (firstErrorField) {
-        const el = document.querySelector(
-          `[name="${firstErrorField}"], #${firstErrorField}`
-        ) as HTMLElement | null;
-        el?.focus();
+    try {
+      if (!validateForm()) {
+        // focus first error field (optional)
+        const firstErrorField = Object.keys(errors)[0];
+        if (firstErrorField) {
+          const el = document.querySelector(
+            `[name="${firstErrorField}"], #${firstErrorField}`
+          ) as HTMLElement | null;
+          el?.focus();
+        }
+        return;
       }
-      return;
-    }
 
-    // Process checkout
-    // include instructorMeetingData in metadata if present
-    const metadata = {
-      ...formData,
-      ...pricing,
-      ...(instructorMeetingData
-        ? { instructorMeeting: instructorMeetingData }
-        : {}),
-      ...(instructorDetails ? { instructorDetails } : {}),
-      ...(selectedSlot ? { selectedSlot } : {}),
-    };
-    const payload = {
-      transactionType: formData.subscriptionType,
-      amount: pricing.total,
-      metadata,
-    };
-    if (formData.paymentGateway == 1) {
-      const res = await api.post(API_ENDPOINTS.stripeCreateSession, payload);
+      // Process checkout
+      // include instructorMeetingData in metadata if present
+      const metadata = {
+        ...formData,
+        ...pricing,
+        ...(instructorMeetingData
+          ? { instructorMeeting: instructorMeetingData }
+          : {}),
+        ...(instructorDetails ? { instructorDetails } : {}),
+        ...(selectedSlot ? { selectedSlot } : {}),
+      };
+      const payload = {
+        transactionType: formData.subscriptionType,
+        amount: pricing.total,
+        metadata,
+      };
+      if (formData.paymentGateway == 1) {
+        const res = await api.post(API_ENDPOINTS.stripeCreateSession, payload);
 
-      if (res.data.status) {
-        // Redirect to Stripe Checkout
-        window.location.href = res?.data?.data?.checkoutUrl;
+        if (res.data.status) {
+          // Redirect to Stripe Checkout
+          window.location.href = res?.data?.data?.checkoutUrl;
+        }
+      } else {
+        const res = await api.post(API_ENDPOINTS.stripeCreateSession, payload);
       }
-    } else {
-      const res = await api.post(API_ENDPOINTS.stripeCreateSession, payload);
+    } catch (error) {
+      console.log(error);
+      errorMsg(
+        error.message
+          ? error.message
+          : "Something went wrong during checkout process. or already booked"
+      );
     }
-  }catch(error){
-    console.log(error);
-    errorMsg(error.message?error.message:"Something went wrong during checkout process. or already booked")
-  }
   };
   return (
     <div className="checkout-page">
@@ -519,6 +563,60 @@ const Checkout: React.FC = () => {
                   </div>
                 )}
               </div>
+
+                  {formData.subscriptionType ===
+                                            "Instructor Meeting" && (
+                                            <div style={{ marginTop: 12 }}>
+                                              <label
+                                                style={{
+                                                  display: "block",
+                                                  marginBottom: 6,
+                                                  fontWeight: 600,
+                                                }}
+                                              >
+                                                Reason for meeting
+                                              </label>
+                                              <textarea
+                                                rows={4}
+                                                value={formData.meetingReason}
+                                                onChange={(e) =>
+                                                  handleInputChange(
+                                                    "meetingReason",
+                                                    e.target.value
+                                                  )
+                                                }
+                                                placeholder="Briefly describe what you'd like to discuss with the mentor (issues, goals, topics)..."
+                                                style={{
+                                                  width: "100%",
+                                                  padding: 8,
+                                                  borderRadius: 6,
+                                                  border: "1px solid #ddd",
+                                                }}
+                                              />
+                                              {errors.meetingReason && (
+                                                <div
+                                                  style={{
+                                                    color: "#e74c3c",
+                                                    fontSize: 12,
+                                                    marginTop: 6,
+                                                  }}
+                                                >
+                                                  {errors.meetingReason}
+                                                </div>
+                                              )}
+                                              <div
+                                                style={{
+                                                  fontSize: 12,
+                                                  color: "#888",
+                                                  marginTop: 6,
+                                                }}
+                                              >
+                                                This will be sent to the
+                                                instructor along with your
+                                                booking.
+                                              </div>
+                                            </div>
+                                          )}
             </div>
 
             <div className="checkout-card">
@@ -629,6 +727,7 @@ const Checkout: React.FC = () => {
                                             padding: 0,
                                           }}
                                         >
+                                      
                                           {new Date(
                                             a.available_date
                                           ).toLocaleDateString()}{" "}
@@ -883,7 +982,7 @@ const Checkout: React.FC = () => {
                       ? "Instructor Meeting"
                       : "Activation Coupons"}
                   </span>
-                 
+
                   <span className="summary-value">
                     ${pricing.basePrice.toFixed(2)}
                   </span>
@@ -930,7 +1029,9 @@ const Checkout: React.FC = () => {
               </div>
               <button
                 className="proceed-button"
-                disabled={instructorDetails ? !selectedSlot || meetingError : false}
+                disabled={
+                  instructorDetails ? !selectedSlot || meetingError : false
+                }
                 onClick={handleProceed}
               >
                 Proceed to Payment

@@ -7,6 +7,8 @@ import InstructorsPage from "../pages/instructor-page/InstructorsPage";
 import ChatDiscussion from "../pages/ChatDiscussion/ChatDiscussion";
 import Dashboard from "../pages/dashboard/Index";
 import TradeJournal from '../pages/tradeJournal/Index'
+import Resources from "../pages/Resouces";
+import ActivationCoupons from "../pages/activation-coupons/ActivationCoupons";
 const base = import.meta.env.VITE_BASE;
 
 export const RoutesArray = [
@@ -16,11 +18,14 @@ export const RoutesArray = [
       { path: `${base}profile`, element: <ProfilePage /> },
       { path: `${base}courses`, element: <CourseListing /> },
       { path: `${base}news`, element: <NewsListing /> },
-      { path: `${base}forum-calculators`, element: <ForexCalculators /> },
+      { path: `${base}forax-calculators`, element: <ForexCalculators /> },
       { path: `${base}dashboard`, element: <Dashboard /> },
       { path: `${base}instructors`, element: <InstructorsPage /> },
       { path: `${base}chat-discussions`, element: <ChatDiscussion /> },
       { path: `${base}trade-journal`, element: <TradeJournal /> },
+      { path: `${base}resources`, element: <Resources /> },
+        { path: `${base}activation-coupons`, element: <ActivationCoupons /> },
+
 
     ],
   },

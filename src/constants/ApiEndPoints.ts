@@ -60,7 +60,12 @@ export const API_ENDPOINTS = {
 
   updateLectureProgress:'enrollments/progress',
 
-  contactUs:'contact-us'
+  contactUs:'contact-us',
+  chatMessages:'/chat/messages/1',
+
+  resources:'/resources',
+
+  dashboard:'/dashboard/user',
 
 };
 

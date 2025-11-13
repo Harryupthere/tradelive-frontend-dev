@@ -1,7 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, Send, MessageCircle, User, Smile, Paperclip, MoreVertical } from 'lucide-react';
-import './ChatDiscussion.scss';
-
+import React, { useState, useEffect, useRef } from "react";
+import {
+  ArrowLeft,
+  Send,
+  MessageCircle,
+  User,
+  Smile,
+  Paperclip,
+  MoreVertical,
+} from "lucide-react";
+import "./ChatDiscussion.scss";
+import { io, Socket } from "socket.io-client";
+import { getUser } from "../../utils/tokenUtils";
+import { api } from "../../api/Service";
+import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
+const apiUrl = import.meta.env.VITE_WS_URL;
 interface Message {
   id: string;
   user_id: string;
@@ -11,124 +23,131 @@ interface Message {
   timestamp: string;
   is_own: boolean;
 }
-
 const ChatDiscussion: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const socketRef = useRef<Socket | null>(null);
+  const user = getUser() || { id: null };
 
   // Sample messages data
   const sampleMessages: Message[] = [
-    {
-      id: '1',
-      user_id: '101',
-      user_name: 'John Smith',
-      profile_image: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150',
-      message: 'Hey everyone! Just finished the advanced trading course. Really helpful insights on risk management.',
-      timestamp: '2025-01-15T10:30:00Z',
-      is_own: false
-    },
-    {
-      id: '2',
-      user_id: '102',
-      user_name: 'Sarah Johnson',
-      profile_image: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150',
-      message: 'That course is amazing! The section on portfolio diversification changed my whole approach.',
-      timestamp: '2025-01-15T10:32:00Z',
-      is_own: false
-    },
-    {
-      id: '3',
-      user_id: '103',
-      user_name: 'You',
-      profile_image: 'https://images.pexels.com/photos/1674752/pexels-photo-1674752.jpeg?auto=compress&cs=tinysrgb&w=150',
-      message: 'I agree! The practical examples really helped me understand the concepts better.',
-      timestamp: '2025-01-15T10:35:00Z',
-      is_own: true
-    },
-    {
-      id: '4',
-      user_id: '104',
-      user_name: 'Michael Chen',
-      profile_image: 'https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=150',
-      message: 'Has anyone tried implementing the strategies from the technical analysis module?',
-      timestamp: '2025-01-15T10:40:00Z',
-      is_own: false
-    },
-    {
-      id: '5',
-      user_id: '105',
-      user_name: 'Emily Davis',
-      profile_image: 'https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=150',
-      message: 'Yes! I started using the moving average crossover strategy and it\'s working well so far.',
-      timestamp: '2025-01-15T10:42:00Z',
-      is_own: false
-    },
-    {
-      id: '6',
-      user_id: '103',
-      user_name: 'You',
-      profile_image: 'https://images.pexels.com/photos/1674752/pexels-photo-1674752.jpeg?auto=compress&cs=tinysrgb&w=150',
-      message: 'That\'s great to hear! I\'m still working through the options trading section.',
-      timestamp: '2025-01-15T10:45:00Z',
-      is_own: true
-    }
+    //  {
+    //   id: '1',
+    //   user_id: '101',
+    //   user_name: 'John Smith',
+    //   profile_image: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150',
+    //   message: 'Hey everyone! Just finished the advanced trading course. Really helpful insights on risk management.',
+    //   timestamp: '2025-01-15T10:30:00Z',
+    //   is_own: false
+    // },
   ];
 
-  useEffect(() => {
-    // Simulate loading messages
-    const timer = setTimeout(() => {
-      setMessages(sampleMessages);
-      setIsLoading(false);
-    }, 1000);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     setMessages(sampleMessages);
+  //     setIsLoading(false);
+  //   }, 1000);
 
-    return () => clearTimeout(timer);
-  }, []);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  useEffect(() => {
+    // Connect to your NestJS WebSocket Gateway
+    socketRef.current = io(apiUrl, {
+      transports: ["websocket"],
+    });
 
-  const handleBackClick = () => {
-    window.history.back();
+    // Join the chat room (room_id = 1)
+    socketRef.current.emit("joinRoom", { roomId: 1 });
+
+    socketRef.current.on("joinedRoom", () => {
+      console.log("Joined room 1");
+    });
+
+    // Listen for new messages
+    socketRef.current.on("newMessage", (msg) => {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: msg.id,
+          user_id: msg.sender?.id || "admin",
+          user_name:
+            msg.sender_type === "admin" ? "Admin" : msg.sender.first_name,
+          profile_image:
+            msg.sender_type === "admin"
+              ? "https://cdn-icons-png.flaticon.com/512/2206/2206368.png"
+              : msg.sender?.profile || "",
+          message: msg.message,
+          timestamp: msg.created_at,
+          is_own: msg.sender?.id === user.id,
+        },
+      ]);
+    });
+
+    return () => {
+      socketRef.current?.disconnect();
+    };
+  }, []);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
 
-    const message: Message = {
-      id: Date.now().toString(),
-      user_id: '103',
-      user_name: 'You',
-      profile_image: 'https://images.pexels.com/photos/1674752/pexels-photo-1674752.jpeg?auto=compress&cs=tinysrgb&w=150',
+    socketRef.current?.emit("sendMessage", {
+      roomId: 1,
+      senderId: user.id,
+      senderType: "user",
       message: newMessage.trim(),
-      timestamp: new Date().toISOString(),
-      is_own: true
-    };
+    });
 
-    setMessages(prev => [...prev, message]);
-    setNewMessage('');
-    
-    // Simulate typing indicator for other users
-    setIsTyping(true);
-    setTimeout(() => {
-      setIsTyping(false);
-    }, 2000);
+    setNewMessage("");
   };
 
+  useEffect(() => {
+    async function loadMessages() {
+      const resposne = await api.get(API_ENDPOINTS.chatMessages);
+      let data = [];
+      if (resposne.data.status) {
+        data = resposne.data.data;
+      }
+      const formatted = data.map((msg: any) => ({
+        id: msg.id,
+        user_id: msg.sender?.id || "admin",
+        user_name:
+          msg.sender_type === "admin" ? "Admin" : msg.sender.first_name,
+        profile_image:
+          msg.sender_type === "admin"
+            ? "https://cdn-icons-png.flaticon.com/512/2206/2206368.png"
+            : msg.sender?.profile || "",
+        message: msg.message,
+        timestamp: msg.created_at,
+        is_own: msg.sender?.id === user.id,
+      }));
+
+      setMessages(formatted);
+      setIsLoading(false);
+    }
+
+    loadMessages();
+  }, []);
+
   const formatTime = (timestamp: string) => {
-    return new Date(timestamp).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
+    return new Date(timestamp).toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
     });
   };
 
@@ -139,13 +158,13 @@ const ChatDiscussion: React.FC = () => {
     yesterday.setDate(yesterday.getDate() - 1);
 
     if (date.toDateString() === today.toDateString()) {
-      return 'Today';
+      return "Today";
     } else if (date.toDateString() === yesterday.toDateString()) {
-      return 'Yesterday';
+      return "Yesterday";
     } else {
-      return date.toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric'
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
       });
     }
   };
@@ -168,24 +187,14 @@ const ChatDiscussion: React.FC = () => {
       <div className="chat-discussion__container">
         {/* Header */}
         <div className="chat-discussion__header">
-         
-          
           <div className="chat-discussion__header-info">
-            {/* <div className="chat-discussion__logo">
-              <div className="chat-discussion__logo-icon">
-                <MessageCircle size={24} />
-              </div>
-              <span className="chat-discussion__logo-text">FINGRAD</span>
-            </div> */}
             <div className="chat-discussion__chat-info">
               <h1 className="chat-discussion__title">Chat & Discussion</h1>
-              <p className="chat-discussion__subtitle">Community Trading Discussion</p>
+              <p className="chat-discussion__subtitle">
+                Community Trading Discussion
+              </p>
             </div>
           </div>
-{/* 
-          <button className="chat-discussion__menu-btn">
-            <MoreVertical size={20} />
-          </button> */}
         </div>
 
         {/* Chat Container */}
@@ -194,9 +203,11 @@ const ChatDiscussion: React.FC = () => {
           <div className="chat-discussion__messages">
             <div className="chat-discussion__messages-list">
               {messages.map((message, index) => {
-                const showDate = index === 0 || 
-                  formatDate(messages[index - 1].timestamp) !== formatDate(message.timestamp);
-                
+                const showDate =
+                  index === 0 ||
+                  formatDate(messages[index - 1].timestamp) !==
+                    formatDate(message.timestamp);
+
                 return (
                   <div key={message.id}>
                     {showDate && (
@@ -204,17 +215,25 @@ const ChatDiscussion: React.FC = () => {
                         <span>{formatDate(message.timestamp)}</span>
                       </div>
                     )}
-                    
-                    <div className={`chat-discussion__message ${message.is_own ? 'chat-discussion__message--own' : 'chat-discussion__message--other'}`}>
+
+                    <div
+                      className={`chat-discussion__message ${
+                        message.is_own
+                          ? "chat-discussion__message--own"
+                          : "chat-discussion__message--other"
+                      }`}
+                    >
                       {!message.is_own && (
                         <div className="chat-discussion__message-avatar">
-                          <img 
-                            src={message.profile_image} 
+                          <img
+                            src={message.profile_image}
                             alt={message.user_name}
                             onError={(e) => {
                               const target = e.target as HTMLImageElement;
-                              target.style.display = 'none';
-                              target.nextElementSibling?.classList.remove('chat-discussion__avatar-fallback--hidden');
+                              target.style.display = "none";
+                              target.nextElementSibling?.classList.remove(
+                                "chat-discussion__avatar-fallback--hidden"
+                              );
                             }}
                           />
                           <div className="chat-discussion__avatar-fallback chat-discussion__avatar-fallback--hidden">
@@ -222,44 +241,31 @@ const ChatDiscussion: React.FC = () => {
                           </div>
                         </div>
                       )}
-                      
+
                       <div className="chat-discussion__message-content">
                         {!message.is_own && (
                           <div className="chat-discussion__message-header">
-                            <span className="chat-discussion__message-name">{message.user_name}</span>
+                            <span className="chat-discussion__message-name">
+                              {message.user_name}
+                            </span>
                           </div>
                         )}
-                        
+
                         <div className="chat-discussion__message-bubble">
-                          <p className="chat-discussion__message-text">{message.message}</p>
+                          <p className="chat-discussion__message-text">
+                            {message.message}
+                          </p>
                         </div>
-                        
+
                         <div className="chat-discussion__message-time">
                           {formatTime(message.timestamp)}
                         </div>
                       </div>
-
-                      {message.is_own && (
-                        <div className="chat-discussion__message-avatar">
-                          <img 
-                            src={message.profile_image} 
-                            alt={message.user_name}
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.style.display = 'none';
-                              target.nextElementSibling?.classList.remove('chat-discussion__avatar-fallback--hidden');
-                            }}
-                          />
-                          <div className="chat-discussion__avatar-fallback chat-discussion__avatar-fallback--hidden">
-                            <User size={20} />
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </div>
                 );
               })}
-              
+
               {isTyping && (
                 <div className="chat-discussion__typing-indicator">
                   <div className="chat-discussion__typing-avatar">
@@ -274,19 +280,22 @@ const ChatDiscussion: React.FC = () => {
                   </div>
                 </div>
               )}
-              
+
               <div ref={messagesEndRef} />
             </div>
           </div>
 
           {/* Message Input */}
           <div className="chat-discussion__input-container">
-            <form onSubmit={handleSendMessage} className="chat-discussion__input-form">
+            <form
+              onSubmit={handleSendMessage}
+              className="chat-discussion__input-form"
+            >
               <div className="chat-discussion__input-wrapper">
                 {/* <button type="button" className="chat-discussion__attachment-btn">
                   <Paperclip size={20} />
                 </button> */}
-                
+
                 <input
                   ref={inputRef}
                   type="text"
@@ -295,13 +304,13 @@ const ChatDiscussion: React.FC = () => {
                   placeholder="Type your message..."
                   className="chat-discussion__message-input"
                 />
-                
+
                 {/* <button type="button" className="chat-discussion__emoji-btn">
                   <Smile size={20} />
                 </button> */}
-                
-                <button 
-                  type="submit" 
+
+                <button
+                  type="submit"
                   className="chat-discussion__send-btn"
                   disabled={!newMessage.trim()}
                 >

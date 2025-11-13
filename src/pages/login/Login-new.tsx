@@ -30,6 +30,7 @@ const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  const [submitError, setSubmitError] = useState("");
   useEffect(() => {
     if (getUser()?.email) {
       navigate(`${base}`);
@@ -46,9 +47,7 @@ const LoginPage: React.FC = () => {
   const onSubmit: SubmitHandler<LoginPayload> = async (data) => {
     setLoading(true);
     try {
-
       data.login_type = 1;
-
 
       const res = await loginService(data);
       if (res?.status) {
@@ -69,14 +68,18 @@ const LoginPage: React.FC = () => {
 
         // dispatch to redux
         dispatch(setCredentials({ token, user }));
-
-        successMsg(res.message);
-        navigate(`${base}`);
+        setSubmitError("");
+        //   successMsg(res.message);
+        navigate(`${base}dashboard`);
       } else {
-        errorMsg(res?.message || "Login failed");
+        setSubmitError(res?.message || "Login failed");
+
+        // errorMsg(res?.message || "Login failed");
       }
     } catch (err: any) {
-      errorMsg(err?.response?.data?.message || "Login failed");
+      setSubmitError(err?.response?.data?.message || "Login failed");
+
+      // errorMsg(err?.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -100,7 +103,6 @@ const LoginPage: React.FC = () => {
           login_type: 2,
         } as any;
 
-
         const ress = await loginService(payload);
         const token = ress?.data?.data?.access_token;
         // if backend also returns user object, adapt the path accordingly.
@@ -121,8 +123,8 @@ const LoginPage: React.FC = () => {
         // dispatch to redux
         dispatch(setCredentials({ token, user }));
 
-        successMsg(ress.message);
-        navigate(`${base}`);
+        //  successMsg(ress.message);
+        navigate(`${base}dashboard`);
       } catch (err: any) {
         errorMsg(err?.response?.data?.message || "Google login failed");
       } finally {
@@ -194,6 +196,9 @@ const LoginPage: React.FC = () => {
               </div>
               {errors.password && (
                 <p className="login-page__error">{errors.password.message}</p>
+              )}
+              {submitError && (
+                <p className="login-page__error">{submitError}</p>
               )}
 
               <p className="login-page__otp-info">

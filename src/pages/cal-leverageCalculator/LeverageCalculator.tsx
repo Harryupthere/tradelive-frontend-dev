@@ -80,7 +80,7 @@ const LeverageCalculator: React.FC = () => {
   };
 
   const handleBackToCalculators = () => {
-    navigate(`${base}forum-calculators`);
+    navigate(`${base}forax-calculators`);
   };
 
   const getRiskWarning = () => {

@@ -78,7 +78,7 @@ const DrawdownCalculator: React.FC = () => {
   };
 
   const handleBackToCalculators = () => {
-    navigate(`${base}forum-calculators`);
+    navigate(`${base}forax-calculators`);
   };
 
   const formatCurrency = (value: number): string => {
