@@ -58,7 +58,7 @@
                 gap: 10px;
             }
 
-            @include responsive(sm) {
+            @include responsive(md) {
                 display: none !important;
             }
 
