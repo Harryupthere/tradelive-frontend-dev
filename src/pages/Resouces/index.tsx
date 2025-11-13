@@ -1,36 +1,38 @@
 import { Search } from "lucide-react";
 import { Grid } from "@mui/material";
-import NewsCards, { News } from "../../components/common/NewaCard";
 import { api } from "../../api/Service";
 import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
 import { useEffect, useState, useRef } from "react";
 import CardShimmer from "../../components/common/cardShimmer";
 import NoData from "../../components/common/NoData";
+import ResourceCard, { Resource } from "../../components/common/ResourceCard";
 
-const NewsListing = () => {
-    const [news, setNews] = useState<News[]>([]);
+const Resources = () => {
+    const [resources, setResources] = useState<Resource[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState<string>('');
+    const [pageNumber,setPageNumber] = useState<number>(1);
+    const [limits,setLimits] = useState<number>(10);
     const debounceTimer = useRef<number | null>(null);
     const DEBOUNCE_MS = 500;
 
-    const fetchNews = async (search = '') => {
+    const fetchResources = async (search = '',page=1,limit=10) => {
         setLoading(true);
         try {
-            const response = await api.get(`${API_ENDPOINTS?.getNews}?search=${search}`);
+            const response = await api.get(`${API_ENDPOINTS?.resources}?page=${page}&limit=${limit}&search=${search}`);
             if (response?.status) {
-                const data = response?.data?.data?.data?.news;
-                setNews(Array.isArray(data) ? data : []);
+                const data = response?.data?.data?.data;
+                setResources(Array.isArray(data) ? data : []);
             }
         } catch (error) {
-            console.log("Failed to fetch news", error);
+            console.log("Failed to fetch resources", error);
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchNews('');
+        fetchResources('');
     }, []);
 
     // cleanup on unmount
@@ -49,7 +51,7 @@ const NewsListing = () => {
             clearTimeout(debounceTimer.current);
         }
         debounceTimer.current = window.setTimeout(() => {
-            fetchNews(value.trim());
+            fetchResources(value.trim());
         }, DEBOUNCE_MS);
     };
 
@@ -58,19 +60,19 @@ const NewsListing = () => {
         if (debounceTimer.current) {
             clearTimeout(debounceTimer.current);
         }
-        fetchNews(searchTerm.trim());
+        fetchResources(searchTerm.trim());
     }
     return (
         <div className="course-listing-page">
                 <div className="gradient-title" style={{ textAlign: 'center' }}>
-                    <p>News Catalog</p>
+                    <p>Resources Catalog</p>
                 </div>
                 <div className="search-bar">
                     <div className="search-bar__wrapper">
                         <Search className="search-bar__icon" size={20} />
                         <input
                             type="text"
-                            placeholder="Search news..."
+                            placeholder="Search resources..."
                             className="search-bar__input"
                             value={searchTerm}
                             onChange={handleSearchChange}
@@ -87,10 +89,10 @@ const NewsListing = () => {
                             </Grid>
                         ))
                         :
-                        news?.length > 0 ?
-                        news?.map((item) => (
+                        resources?.length > 0 ?
+                        resources?.map((item) => (
                             <Grid size={{  md: 4, sm: 6 }} key={item.id}>
-                                <NewsCards news={item} />
+                                <ResourceCard resource={item} />
                             </Grid>
                         ))
                         :
@@ -102,5 +104,5 @@ const NewsListing = () => {
     );
 };
 
-export default NewsListing;
+export default Resources;
 

@@ -15,35 +15,38 @@ import {
 } from "lucide-react";
 import "./Dashboard.scss";
 import { useNavigate } from "react-router-dom";
-
+import { api } from "../../api/Service";
+import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
+import { getUser } from "../../utils/tokenUtils";
+const base = import.meta.env.VITE_BASE;
 interface UserData {
   name: string;
   profile_image: string;
-  joining_date: string;
+  joiningDate: string;
   membership_type: string;
-  enrolled_courses: number;
-  news_viewed: number;
-  activation_coupons: number;
-  trade_journal: number;
-  last_course_viewed: string;
-  last_news_viewed: string;
-  last_calculator_used: string;
+  enrolledCourses: number;
+  newsViewed: number;
+  couponCount: number;
+  journalCount: number;
+  lastCourse: {};
+  lastNews: {};
+  lastCalculator: {};
 }
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState<UserData>({
-    name: "John Doe",
-    profile_image: "",
-    joining_date: "2024-01-15",
-    membership_type: "Pro Member",
-    enrolled_courses: 12,
-    news_viewed: 45,
-    activation_coupons: 3,
-    trade_journal: 28,
-    last_course_viewed: "Advanced Trading Strategies",
-    last_news_viewed: "Market Analysis Update",
-    last_calculator_used: "Risk Calculator",
+    name: getUser()?.first_name || "",
+    profile_image: getUser()?.profile_image || "",
+    joiningDate: "",
+    membership_type: getUser()?.userType.id == `1` ? "Premium" : "Lite",
+    enrolledCourses: 0,
+    newsViewed: 0,
+    couponCount: 0,
+    journalCount: 0,
+    lastCourse: {},
+    lastNews: {},
+    lastCalculator: {},
   });
 
   const [isLoading, setIsLoading] = useState(true);
@@ -65,10 +68,65 @@ const Dashboard: React.FC = () => {
     });
   };
 
+  // returns human readable relative time like '2 hours ago', '3 days ago'
+  const timeAgo = (dateString?: string | null) => {
+    if (!dateString) return "-";
+    try {
+      const then = new Date(dateString).getTime();
+      if (isNaN(then)) return "-";
+      const diff = Date.now() - then; // ms
+      const seconds = Math.floor(diff / 1000);
+      const minutes = Math.floor(seconds / 60);
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(hours / 24);
+      const weeks = Math.floor(days / 7);
+      const months = Math.floor(days / 30);
+      const years = Math.floor(days / 365);
+
+      if (seconds < 60) return `${seconds} sec${seconds !== 1 ? "s" : ""} ago`;
+      if (minutes < 60) return `${minutes} min${minutes !== 1 ? "s" : ""} ago`;
+      if (hours < 24) return `${hours} hour${hours !== 1 ? "s" : ""} ago`;
+      if (days < 7) return `${days} day${days !== 1 ? "s" : ""} ago`;
+      if (weeks < 5) return `${weeks} week${weeks !== 1 ? "s" : ""} ago`;
+      if (months < 12) return `${months} month${months !== 1 ? "s" : ""} ago`;
+      return `${years} year${years !== 1 ? "s" : ""} ago`;
+    } catch (e) {
+      return "-";
+    }
+  };
+
+  useEffect(() => {
+    // You can add any side effects or data fetching here if needed
+    callDashboardApi();
+  }, []);
+
+  const callDashboardApi = async () => {
+    try {
+      const res = await api.get(API_ENDPOINTS.dashboard);
+      if (res.data.status) {
+        setUserData({
+          name: getUser()?.first_name || "",
+          profile_image: getUser()?.profile_image || "",
+          joiningDate: res.data.data.data.joiningDate,
+          membership_type: getUser()?.userType.id == `1` ? "Premium" : "Lite",
+          enrolledCourses: res.data.data.data.enrolledCourses,
+          newsViewed: res.data.data.data.newsViewed,
+          couponCount: res.data.data.data.couponCount,
+          journalCount: res.data.data.data.journalCount,
+          lastCourse: res.data.data.data.lastCourse,
+          lastNews: res.data.data.data.lastNews,
+          lastCalculator: res.data.data.data.lastCalculator,
+        });
+      }
+    } catch (error) {
+      console.log("Error fetching dashboard data", error);
+    }
+  };
+
   const statisticsCards = [
     {
       title: "Joining Date",
-      value: formatDate(userData.joining_date),
+      value: formatDate(userData.joiningDate),
       icon: Calendar,
       color: "blue",
       description: "Member since",
@@ -82,28 +140,28 @@ const Dashboard: React.FC = () => {
     },
     {
       title: "Activation Coupons",
-      value: userData.activation_coupons.toString(),
+      value: userData.couponCount.toString(),
       icon: Gift,
       color: "purple",
       description: "Available coupons",
     },
     {
       title: "Enrolled Courses",
-      value: userData.enrolled_courses.toString(),
+      value: userData.enrolledCourses.toString(),
       icon: BookOpen,
       color: "orange",
       description: "Active enrollments",
     },
     {
       title: "News Viewed",
-      value: userData.news_viewed.toString(),
+      value: userData.newsViewed.toString(),
       icon: Newspaper,
       color: "cyan",
       description: "Articles read",
     },
     {
       title: "Trade Journal",
-      value: userData.trade_journal.toString(),
+      value: userData.journalCount.toString(),
       icon: TrendingUp,
       color: "pink",
       description: "Journal entries",
@@ -113,26 +171,47 @@ const Dashboard: React.FC = () => {
   const recentActions = [
     {
       title: "Last Course Viewed",
-      value: userData.last_course_viewed,
+      value:
+        userData.lastCourse != null
+          ? userData.lastCourse?.course?.name
+          : "No Course viewed. Please click here to view latest courses",
       icon: Eye,
-      description: "2 hours ago",
+      description:
+        userData.lastCourse != null
+          ? timeAgo(userData.lastCourse?.created_at)
+          : null,
+      pageName: "courses",
     },
     {
       title: "Last News Views",
-      value: userData.last_news_viewed,
+      value:
+        userData.lastNews != null
+          ? userData.lastNews?.news?.title
+          : "No News viewed. Please click here to view latest news",
       icon: Activity,
-      description: "5 hours ago",
+      description:
+        userData.lastNews != null
+          ? timeAgo(userData.lastNews?.created_at)
+          : null,
+      pageName: "news",
     },
     {
       title: "Last Calculator Used",
-      value: userData.last_calculator_used,
+      value:
+        userData.lastCalculator != null
+          ? userData.lastCalculator?.calculator?.name
+          : "No Calculator used. Please click here to use latest calculators",
       icon: Calculator,
-      description: "1 day ago",
+      description:
+        userData.lastCalculator != null
+          ? timeAgo(userData.lastCalculator?.created_at)
+          : null,
+      pageName: "forax-calculators",
     },
   ];
 
   const handlepageChange = async (pageName) => {
-    navigate(`${base}pageName`);
+    navigate(`${base}${pageName}`);
   };
 
   if (isLoading) {
@@ -225,6 +304,7 @@ const Dashboard: React.FC = () => {
                 key={action.title}
                 className="dashboard__action-card"
                 style={{ animationDelay: `${(index + 6) * 0.1}s` }}
+                
               >
                 <div className="dashboard__action-icon">
                   <action.icon size={28} />
@@ -233,11 +313,17 @@ const Dashboard: React.FC = () => {
                   <h3 className="dashboard__action-title">{action.title}</h3>
                   <div className="dashboard__action-value">{action.value}</div>
                   <div className="dashboard__action-time">
-                    <Clock size={14} />
-                    <span>{action.description}</span>
+                    {action.description && (
+                      <>
+                        <Clock size={14} />
+                        <span>{action.description}</span>
+                      </>
+                    )}
                   </div>
                 </div>
-                <div className="dashboard__action-arrow">
+                <div className="dashboard__action-arrow" onClick={() => {
+                  handlepageChange(action.pageName);
+                }}>
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path
                       d="M6 12L10 8L6 4"

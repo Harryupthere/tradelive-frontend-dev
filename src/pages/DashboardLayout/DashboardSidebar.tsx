@@ -10,6 +10,7 @@ import {
   School,
   Users2Icon,
   UserCheck,
+  TicketPlus
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { removeToken, removeUser } from "../../utils/tokenUtils";
@@ -24,11 +25,10 @@ const mainMenuItems = [
     exact: true,
   },
 
-  { path: `${base}profile`, icon: Home, label: "Profile", exact: true },
   { path: `${base}courses`, icon: Notebook, label: "Courses", exact: true },
   { path: `${base}news`, icon: Newspaper, label: "News", exact: true },
   {
-    path: `${base}forum-calculators`,
+    path: `${base}forax-calculators`,
     icon: Calculator,
     label: "FX Calculators",
     exact: true,
@@ -51,8 +51,11 @@ const mainMenuItems = [
     label: "Trade Journal",
     exact: true,
   },
-  { path: `#/`, icon: BookPlus, label: "Resources", exact: true },
-  { path: `#/`, icon: FolderEdit, label: "Market Feed", exact: true },
+  { path: `${base}resources`, icon: BookPlus, label: "Resources", exact: true },
+  { path: `${base}activation-coupons`, icon: TicketPlus, label: "Activation Coupons", exact: true },
+  { path: `${base}profile`, icon: Home, label: "Profile", exact: true },
+
+//   { path: `#/`, icon: FolderEdit, label: "Market Feed", exact: true },
 ];
 function DashboardSidebar({ sidebarOpen, closeSidebar }) {
   const location = useLocation();

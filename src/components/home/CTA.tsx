@@ -19,7 +19,7 @@ const CTA = () => {
         "TradeLive24 is an all-in-one trading education and community hub where traders can learn, share strategies, and discuss the markets.",
     },
     {
-      question: "Why do you charge $9.99/year?",
+      question: "Why do you charge $12.0/year?",
       answer:
         "The fee covers hosting, live market data, moderation, and platform improvements. There’s no personal profit — it’s purely to sustain the platform.",
     },

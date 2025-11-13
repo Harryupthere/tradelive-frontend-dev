@@ -11,7 +11,8 @@ import {
   Zap,
   Crown,
   Star,
-  ArrowLeft
+  ArrowLeft,
+  TicketPlus
 } from "lucide-react";
 import "./ActivationCoupons.scss";
 import { api } from "../../api/Service";
@@ -511,10 +512,10 @@ const ActivationCoupons: React.FC = () => {
       <div className="activation-coupons__container">
         <div className="activation-coupons__header">
           <div className="header-content">
-            <button className="back-button" onClick={handleBackToCalculators}>
+            {/* <button className="back-button" onClick={handleBackToCalculators}>
                         <ArrowLeft size={20} />
                         Back to Calculators
-                      </button>
+                      </button> */}
             <h1 className="page-title">
               <Gift size={32} />
               Activation Coupons
@@ -523,6 +524,8 @@ const ActivationCoupons: React.FC = () => {
               Manage your premium activation coupons and share them with friends
             </p>
           </div>
+
+
 
           <div className="stats-summary">
             <div className="stat-card">
@@ -543,7 +546,10 @@ const ActivationCoupons: React.FC = () => {
             </div>
           </div>
         </div>
-
+ <button className="purchase-button" >
+                        <TicketPlus size={20} />
+                        Purchase
+                      </button> 
         {coupons.length === 0 ? (
           <div className="empty-state">
             <Gift size={64} />
