@@ -39,7 +39,7 @@ const Dashboard: React.FC = () => {
     name: getUser()?.first_name || "",
     profile_image: getUser()?.profile_image || "",
     joiningDate: "",
-    membership_type: getUser()?.userType.id == `1` ? "Premium" : "Lite",
+    membership_type: getUser()?.userType.id == 2 ? "Premium" : "Lite",
     enrolledCourses: 0,
     newsViewed: 0,
     couponCount: 0,
