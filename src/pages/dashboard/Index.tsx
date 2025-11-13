@@ -108,7 +108,7 @@ const Dashboard: React.FC = () => {
           name: getUser()?.first_name || "",
           profile_image: getUser()?.profile_image || "",
           joiningDate: res.data.data.data.joiningDate,
-          membership_type: getUser()?.userType.id == `1` ? "Premium" : "Lite",
+          membership_type: getUser()?.userType.id == 2 ? "Premium" : "Lite",
           enrolledCourses: res.data.data.data.enrolledCourses,
           newsViewed: res.data.data.data.newsViewed,
           couponCount: res.data.data.data.couponCount,
