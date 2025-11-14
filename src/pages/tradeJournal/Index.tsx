@@ -1,29 +1,31 @@
-import { setUser as persistUser } from "../../utils/tokenUtils";
-import { Box, IconButton, Modal, Typography } from "@mui/material";
+import { Box, Modal, useMediaQuery } from "@mui/material";
 import { api } from "../../api/Service";
 import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
 import { successMsg, errorMsg } from "../../utils/customFn";
-import { useNavigate } from "react-router-dom";
-import React, { useEffect, useState } from "react";
 import Pagination from "../../components/common/Pagination";
 import '../profile/Profile.scss'
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 500,
-  bgcolor: "background.paper",
-  border: "none",
-  boxShadow: 24,
-  p: 2,
-  backgroundColor: "var(--bg-modal)",
-  borderRadius: "8px",
-  maxHeight: "90vh",
-  overflowY: "auto",
-};
+import { useEffect, useState } from "react";
+import NoData from "../../components/common/NoData";
+
 
 const TradeJournal: React.FC = () => {
+  const isMobile = useMediaQuery('(max-width:768px)');
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: isMobile ? '95%' : 500,
+    bgcolor: "background.paper",
+    border: "none",
+    boxShadow: 24,
+    p: 2,
+    backgroundColor: "var(--bg-modal)",
+    borderRadius: "8px",
+    maxHeight: "90vh",
+    overflowY: "auto",
+  };
+  
   const [tradeJournalsPagination, setTradeJournalsPagination] = useState({
     page: 1,
     limit: 10,
@@ -32,8 +34,7 @@ const TradeJournal: React.FC = () => {
   });
   const [tradeJournals, setTradeJournals] = useState([]);
 
-  const [addTradejournralModalOpen, setAddTradejournalModalOpen] =
-    useState(false);
+  const [addTradejournralModalOpen, setAddTradejournalModalOpen] = useState(false);
   const [tradejounralOpen, setTradejounralOpen] = useState(false);
   const [currentTradeJournal, setCurrentTradeJournal] = useState<any>(null);
   const [tradeJournalFormData, setTradeJournalFormData] = useState({
@@ -203,7 +204,7 @@ const TradeJournal: React.FC = () => {
 
   return (
     <div className="profile-page">
-      <div className="profile-page__section">
+      <div className="">
         <div className="profile-page__section-header">
           <h2>Trade Journals</h2>
           <button
@@ -231,62 +232,66 @@ const TradeJournal: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {tradeJournals.map((t: any, index) => (
-                <tr key={t.id}>
-                  <td className="profile-page__table-id">{index + 1}</td>
-                  <td>{t.symbol}</td>
-                  <td>{t.lot_size}</td>
-                  <td>{t.take_profit}</td>
-                  <td>{t.stop_loss}</td>
-                  <td>{new Date(t.trade_date).toLocaleString()}</td>
-                  <td>
-                    {t.picture ? (
-                      <img
-                        src={t.picture}
-                        alt={t.symbol}
-                        style={{
-                          width: 64,
-                          height: 40,
-                          objectFit: "cover",
-                          borderRadius: 4,
-                        }}
-                        onError={(e: any) => {
-                          e.currentTarget.src = "/fallback-image.png";
-                        }}
-                      />
-                    ) : (
-                      "—"
-                    )}
-                  </td>
-                  <td>{t.reason || "—"}</td>
-                  <td>
-                    {t.created_at
-                      ? new Date(t.created_at).toLocaleString()
-                      : "—"}
-                  </td>
-                  <td>
-                    {String(t.is_deleted) === "0" ? (
-                      <>
-                        {" "}
-                        <button
-                          className="profile-page__save-btn"
-                          onClick={() => deleteTradeJournal(t.id)}
-                        >
-                          Delete
-                        </button>
-                        <button
-                          className="profile-page__save-btn"
-                          onClick={() => openTradeJournal(t)}
-                        >
-                          Open
-                        </button>
-                      </>
-                    ) : (
-                      <span className="muted">Deleted</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
+              {tradeJournals?.length > 0 ?
+                tradeJournals?.map((t: any, index) => (
+                  <tr key={t.id}>
+                    <td className="profile-page__table-id">{index + 1}</td>
+                    <td>{t.symbol}</td>
+                    <td>{t.lot_size}</td>
+                    <td>{t.take_profit}</td>
+                    <td>{t.stop_loss}</td>
+                    <td>{new Date(t.trade_date).toLocaleString()}</td>
+                    <td>
+                      {t.picture ? (
+                        <img
+                          src={t.picture}
+                          alt={t.symbol}
+                          style={{
+                            width: 64,
+                            height: 40,
+                            objectFit: "cover",
+                            borderRadius: 4,
+                          }}
+                          onError={(e: any) => {
+                            e.currentTarget.src = "/fallback-image.png";
+                          }}
+                        />
+                      ) : (
+                        "—"
+                      )}
+                    </td>
+                    <td>{t.reason || "—"}</td>
+                    <td>
+                      {t.created_at
+                        ? new Date(t.created_at).toLocaleString()
+                        : "—"}
+                    </td>
+                    <td>
+                      {String(t.is_deleted) === "0" ? (
+                        <>
+                          {" "}
+                          <button
+                            className="profile-page__delete-btn"
+                            onClick={() => deleteTradeJournal(t.id)}
+                          >
+                            Delete
+                          </button>
+                          <button
+                            className="profile-page__save-trd-btn"
+                            onClick={() => openTradeJournal(t)}
+                          >
+                            Open
+                          </button>
+                        </>
+                      ) : (
+                        <span className="muted">Deleted</span>
+                      )}
+                    </td>
+                  </tr>
+                ))
+                :
+                <NoData col={10} />
+              }
             </tbody>
           </table>
           {tradeJournals.length > 0 &&

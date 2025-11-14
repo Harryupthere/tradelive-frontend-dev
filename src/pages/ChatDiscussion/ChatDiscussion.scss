@@ -2,22 +2,15 @@
   min-height: 100vh;
  // background: #000;
   color: white;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
   display: flex;
   flex-direction: column;
-
-  &__container {
-    max-width: 1200px;
-    margin: 0 auto;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    padding: 0;
-
-    @media (max-width: 768px) {
-      height: 100vh;
+  @media (max-width: 768px) {
+    padding: 50px 0;
     }
+  &__container {
+    height: 100vh;
+ 
   }
 
   // Loading State
@@ -54,7 +47,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.5rem 2rem;
+    padding: 0.5rem 2rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(255, 255, 255, 0.02);
     backdrop-filter: blur(10px);
@@ -202,6 +195,7 @@
     flex-direction: column;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.01);
+    height: calc(100vh - 230px); // Adjust based on header height
   }
 
   // Messages Area
@@ -283,7 +277,7 @@
     &--own {
       flex-direction: row-reverse;
       align-self: flex-end;
-      max-width: 70%;
+      max-width: 100%;
 
       .chat-discussion__message-content {
         align-items: flex-end;
@@ -293,6 +287,7 @@
         background: linear-gradient(135deg, #d5ff2e 0%, #b8e000 100%);
         color: #000;
         border-radius: 20px 20px 4px 20px;
+            word-break: break-all;
       }
 
       .chat-discussion__message-time {
@@ -313,6 +308,7 @@
         color: white;
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 20px 20px 20px 4px;
+            word-break: break-all;
       }
     }
 
@@ -495,7 +491,6 @@
     background: rgba(255, 255, 255, 0.02);
     backdrop-filter: blur(10px);
     flex-shrink: 0;
-
     @media (max-width: 768px) {
       padding: 1rem;
     }
