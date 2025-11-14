@@ -510,6 +510,10 @@ const ActivationCoupons: React.FC = () => {
   return (
     <div className="activation-coupons">
       <div className="activation-coupons__container">
+         <button className="purchase-button" onClick={()=>navigate(`${base}checkout?activationCoupon=true`)}>
+                        <TicketPlus size={20} />
+                        Purchase
+                      </button> 
         <div className="activation-coupons__header">
           <div className="header-content">
             {/* <button className="back-button" onClick={handleBackToCalculators}>
@@ -546,10 +550,7 @@ const ActivationCoupons: React.FC = () => {
             </div>
           </div>
         </div>
- <button className="purchase-button" >
-                        <TicketPlus size={20} />
-                        Purchase
-                      </button> 
+
         {coupons.length === 0 ? (
           <div className="empty-state">
             <Gift size={64} />

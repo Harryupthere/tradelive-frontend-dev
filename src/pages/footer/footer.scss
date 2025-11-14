@@ -12,27 +12,27 @@ footer {
         padding: 42px 0;
         border-bottom: 1px solid rgba(255, 255, 255, .1019607843);
         gap: 50px;
-        @include responsive(md) {
+        @include responsive(sm) {
                       flex-direction: column;
                     }
         .left-side {
-            width: 40%;
+            width: 50%;
   @include responsive(sm) {
                 width: 100%;
             }
             .content {
-                width: 65%;
+                width: 90%;
                 color: var(--white-color);
                 font-weight: 300;
                 font-size: 16px;
-                line-height: 25px;
+                line-height: 22px;
             }
         }
 
         .right-side {
             display: flex;
             column-gap: 50px;
-            width: 60%;
+            width: 50%;
             @include responsive(sm) {
                 width: 100%;
             }

@@ -346,6 +346,7 @@ import "./InstructorProfile.scss";
 import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
 import { api } from "../../api/Service";
 import { useNavigate, useParams } from "react-router-dom";
+import { Grid } from "@mui/material";
 const base = import.meta.env.VITE_BASE;
 interface Product {
   id: string;
@@ -602,7 +603,9 @@ const InstructorProfile: React.FC = () => {
                 }%)`,
               }}
             >
+              <Grid container spacing={2}>
               {instructor.products.map((product) => (
+                <Grid size={{lg:3,md:4,sm:12}} key={product.id}>
                 <div
                   key={product.id}
                   className="course-card"
@@ -645,7 +648,9 @@ const InstructorProfile: React.FC = () => {
                     <button className="course-card__button">View Course</button>
                   </div>
                 </div>
+                </Grid>
               ))}
+              </Grid>
             </div>
           </div>
         </div>

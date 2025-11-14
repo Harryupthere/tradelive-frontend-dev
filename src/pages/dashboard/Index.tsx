@@ -229,19 +229,9 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="dashboard">
-      <div className="dashboard__container">
         {/* Header Section */}
         <div className="dashboard__header">
           <div className="dashboard__profile-section">
-            <div className="dashboard__profile-image">
-              {userData.profile_image ? (
-                <img src={userData.profile_image} alt={userData.name} />
-              ) : (
-                <div className="dashboard__profile-placeholder">
-                  <User size={40} />
-                </div>
-              )}
-            </div>
             <div className="dashboard__welcome">
               <h1 className="dashboard__welcome-title">
                 Welcome {userData.name}
@@ -376,7 +366,6 @@ const Dashboard: React.FC = () => {
             </button>
           </div>
         </div>
-      </div>
     </div>
   );
 };
