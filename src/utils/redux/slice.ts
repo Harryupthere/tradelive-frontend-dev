@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getToken, getUser, removeToken, removeUser, setToken, setUser } from "../tokenUtils";
+import { getToken, getUser, removeToken, removeUser, setToken, setUser,removeRefreshToken } from "../tokenUtils";
 import type { User } from "../types";
 
 type AuthState = {
@@ -35,6 +35,7 @@ const authSlice = createSlice({
       state.status = "logged_out";
       removeToken();
       removeUser();
+    //  removeRefreshToken();
     },
   },
 });

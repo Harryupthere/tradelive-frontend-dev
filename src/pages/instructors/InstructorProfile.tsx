@@ -445,7 +445,6 @@ const InstructorProfile: React.FC = () => {
   };
 
   const handleBookSlot = (availabilityId: string) => {
-    console.log("Booking slot:", availabilityId);
     // Handle booking logic here
     navigate(`${base}checkout?instructorMeeting=true&instructor_id=${id}&available_id=${availabilityId}`)
   };

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import "./ProfitCalculator.scss";
 import { ArrowLeft } from "lucide-react";
-
+import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
+import { api } from "../../api/Service";
 const base = import.meta.env.VITE_BASE;
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -90,6 +91,22 @@ const ProfitCalculator: React.FC = () => {
     // navigate(`${base}forax-calculators`);
     window.history.back();
   };
+
+             useEffect(() => { addRecentActivity(); }, []);
+              
+                  const addRecentActivity = async () => {
+                  try {
+                    const payload = {
+                      action_id:3,
+                      table_name: "calculator",
+                      table_id: 0,
+                      meta: {route: `profit-calculator`}
+                      }
+                    await api.post(API_ENDPOINTS.recentActivity, payload);
+                  } catch (error) {
+                    console.log("Failed to add recent activity", error);
+                  }
+                }
 
   return (
     <div className="profit-calculator">

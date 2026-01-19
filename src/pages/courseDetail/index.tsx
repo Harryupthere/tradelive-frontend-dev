@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRef } from "react";
 import {
   Play,
   Clock,
@@ -15,6 +16,7 @@ import { api } from "../../api/Service";
 import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
 import { useNavigate } from "react-router-dom";
 import { duration, Grid } from "@mui/material";
+import { getToken, getTokenKey, getUser } from "../../utils/tokenUtils";
 
 const base = import.meta.env.VITE_BASE;
 
@@ -72,317 +74,75 @@ interface CourseData {
   progressPercentage?: number;
 }
 
-// const CourseDetail: React.FC = () => {
-//   const { id } = useParams();
-
-//     const [currentLecture, setCurrentLecture] = useState<Lecture | null>(null);
-//     const [isPlaying, setIsPlaying] = useState(false);
-
-//   //  const [courseData, setCourseData] = useState<CourseData | null>(null);
-
-//     // Mock course data
-//     const courseData: CourseData = {
-//         id: '1',
-//         title: 'Complete React Development Course',
-//         instructor: 'John Smith',
-//         rating: 4.8,
-//         totalStudents: 12543,
-//         totalDuration: '12h 30m',
-//         description: 'Master React from basics to advanced concepts. Build real-world projects and learn modern React patterns, hooks, context, and state management.',
-//         thumbnail: 'https://images.pexels.com/photos/11035539/pexels-photo-11035539.jpeg?auto=compress&cs=tinysrgb&w=800&h=450&fit=crop',
-//         lectures: [
-//             {
-//                 id: '1',
-//                 title: 'Introduction to React',
-//                 duration: '15:30',
-//                 videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-//                 isCompleted: true,
-//                 isLocked: false,
-//                 description: 'Learn the basics of React and understand component-based architecture.'
-//             },
-//             {
-//                 id: '2',
-//                 title: 'JSX and Components',
-//                 duration: '22:45',
-//                 videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-//                 isCompleted: true,
-//                 isLocked: false,
-//                 description: 'Deep dive into JSX syntax and creating reusable components.'
-//             },
-//             {
-//                 id: '3',
-//                 title: 'Props and State',
-//                 duration: '28:15',
-//                 videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-//                 isCompleted: false,
-//                 isLocked: false,
-//                 description: 'Understanding props for data passing and state for component data management.'
-//             },
-//             {
-//                 id: '4',
-//                 title: 'Event Handling',
-//                 duration: '18:20',
-//                 videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
-//                 isCompleted: false,
-//                 isLocked: false,
-//                 description: 'Learn how to handle user interactions and events in React.'
-//             },
-//             {
-//                 id: '5',
-//                 title: 'React Hooks - useState',
-//                 duration: '25:10',
-//                 videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
-//                 isCompleted: false,
-//                 isLocked: false,
-//                 description: 'Master the useState hook for managing component state.'
-//             },
-//             {
-//                 id: '6',
-//                 title: 'React Hooks - useEffect',
-//                 duration: '32:40',
-//                 videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
-//                 isCompleted: false,
-//                 isLocked: true,
-//                 description: 'Learn useEffect for side effects and lifecycle management.'
-//             },
-//             {
-//                 id: '7',
-//                 title: 'Context API',
-//                 duration: '27:55',
-//                 videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
-//                 isCompleted: false,
-//                 isLocked: true,
-//                 description: 'Understand React Context for global state management.'
-//             },
-//             {
-//                 id: '8',
-//                 title: 'Custom Hooks',
-//                 duration: '24:30',
-//                 videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
-//                 isCompleted: false,
-//                 isLocked: true,
-//                 description: 'Create reusable logic with custom React hooks.'
-//             }
-//         ]
-//     };
-
-//     React.useEffect(() => {
-//         // Set first unlocked lecture as default
-//         const firstLecture = courseData.lectures.find(lecture => !lecture.isLocked);
-//         if (firstLecture) {
-//             setCurrentLecture(firstLecture);
-//         }
-//         courseOverviewApiCall()
-//     }, []);
-
-//     const courseOverviewApiCall=async()=>{
-//         const res=await api.get(`${API_ENDPOINTS.courseDetails}/${id}`);
-//         console.log(res.data.data)
-//         if(res.status){
-//             setCourseData(res.data.data.data)
-//         }
-//     }
-
-//     const handleLectureClick = (lecture: Lecture) => {
-//         if (!lecture.isLocked) {
-//             setCurrentLecture(lecture);
-//             setIsPlaying(false);
-//         }
-//     };
-
-//     const handlePlayPause = () => {
-//         setIsPlaying(!isPlaying);
-//     };
-
-//     const completedLectures = courseData.lectures.filter(l => l.isCompleted).length;
-//     const progressPercentage = (completedLectures / courseData.lectures.length) * 100;
-
-//     return (
-//         <div className="course-detail-page">
-//             <div className="course-container">
-//                 {/* Video Player Section */}
-//                 <div className="video-section">
-//                     <div className="video-player">
-//                         {currentLecture ? (
-//                             <div className="video-wrapper">
-//                                 <video
-//                                     key={currentLecture.id}
-//                                     controls
-//                                     poster={courseData.thumbnail}
-//                                     className="main-video"
-//                                 >
-//                                     <source src={currentLecture.videoUrl} type="video/mp4" />
-//                                     Your browser does not support the video tag.
-//                                 </video>
-//                                 <div className="video-overlay">
-//                                     <button
-//                                         className="play-button"
-//                                         onClick={handlePlayPause}
-//                                     >
-//                                         <Play size={24} />
-//                                     </button>
-//                                 </div>
-//                             </div>
-//                         ) : (
-//                             <div className="video-placeholder">
-//                                 <img src={courseData.thumbnail} alt={courseData.title} />
-//                                 <div className="placeholder-overlay">
-//                                     <Play size={48} />
-//                                     <p>Select a lecture to start learning</p>
-//                                 </div>
-//                             </div>
-//                         )}
-//                     </div>
-
-//                     {/* Current Lecture Info */}
-//                     {currentLecture && (
-//                         <div className="current-lecture-info">
-//                             <h2>{currentLecture.title}</h2>
-//                             <p>{currentLecture.description}</p>
-//                             <div className="lecture-meta">
-//                                 <span className="duration">
-//                                     <Clock size={16} />
-//                                     {currentLecture.duration}
-//                                 </span>
-//                             </div>
-//                         </div>
-//                     )}
-//                 </div>
-
-//                 {/* Course Sidebar */}
-//                 <div className="course-sidebar">
-//                     {/* Course Header */}
-//                     <div className="course-header">
-//                         <h1>{courseData.title}</h1>
-//                         <div className="course-meta">
-//                             <div className="instructor">
-//                                 <User size={16} />
-//                                 <span>{courseData.instructor}</span>
-//                             </div>
-//                             <div className="rating">
-//                                 <Star size={16} />
-//                                 <span>{courseData.rating}</span>
-//                             </div>
-//                             <div className="students">
-//                                 <BookOpen size={16} />
-//                                 <span>{courseData.totalStudents.toLocaleString()} students</span>
-//                             </div>
-//                         </div>
-//                         <p className="course-description">{courseData.description}</p>
-//                     </div>
-
-//                     {/* Progress Bar */}
-//                     <div className="progress-section">
-//                         <div className="progress-header">
-//                             <span>Course Progress</span>
-//                             <span>{completedLectures}/{courseData.lectures.length} completed</span>
-//                         </div>
-//                         <div className="progress-bar">
-//                             <div
-//                                 className="progress-fill"
-//                                 style={{ width: `${progressPercentage}%` }}
-//                             />
-//                         </div>
-//                     </div>
-
-//                     {/* Lectures List */}
-//                     <div className="lectures-section">
-//                         <h3>Course Content</h3>
-//                         <div className="lectures-list">
-//                             {courseData.lectures.map((lecture, index) => (
-//                                 <div
-//                                     key={lecture.id}
-//                                     className={`lecture-item ${currentLecture?.id === lecture.id ? 'active' : ''
-//                                         } ${lecture.isLocked ? 'locked' : ''} ${lecture.isCompleted ? 'completed' : ''
-//                                         }`}
-//                                     onClick={() => handleLectureClick(lecture)}
-//                                 >
-//                                     <div className="lecture-number">
-//                                         {lecture.isCompleted ? (
-//                                             <CheckCircle size={20} />
-//                                         ) : lecture.isLocked ? (
-//                                             <Lock size={20} />
-//                                         ) : (
-//                                             <span>{index + 1}</span>
-//                                         )}
-//                                     </div>
-
-//                                     <div className="lecture-content">
-//                                         <h4>{lecture.title}</h4>
-//                                         <div className="lecture-duration">
-//                                             <Clock size={14} />
-//                                             <span>{lecture.duration}</span>
-//                                         </div>
-//                                     </div>
-
-//                                     <div className="lecture-actions">
-//                                         {currentLecture?.id === lecture.id && (
-//                                             <div className="now-playing">
-//                                                 <div className="playing-indicator">
-//                                                     <span></span>
-//                                                     <span></span>
-//                                                     <span></span>
-//                                                 </div>
-//                                             </div>
-//                                         )}
-//                                         {!lecture.isLocked && (
-//                                             <button className="play-btn">
-//                                                 <Play size={16} />
-//                                             </button>
-//                                         )}
-//                                     </div>
-//                                 </div>
-//                             ))}
-//                         </div>
-//                     </div>
-//                 </div>
-//                 <div className="blurs_wrapper"><div className="blurs_object is-fluo"></div></div>
-//             </div>
-//         </div>
-//     );
-// };
-
 const CourseDetail: React.FC = () => {
+  const userDetails = getUser();
   const { id } = useParams();
+
+  const videoWrapperRef = useRef(null);
+  const videoRef = useRef(null);
   const [courseData, setCourseData] = useState<CourseData | null>(null);
   const [currentLecture, setCurrentLecture] = useState<Lecture | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
   const navigate = useNavigate();
 
-  const [currentLectureIndex, setCurrentLectureIndex] = useState<number>(0);  
+  const [currentLectureIndex, setCurrentLectureIndex] = useState<number>(0);
 
   React.useEffect(() => {
     courseOverviewApiCall();
   }, []);
 
+  useEffect(() => {
+  const onFullscreenChange = () => {
+    setIsFullscreen(!!document.fullscreenElement);
+  };
+
+  document.addEventListener("fullscreenchange", onFullscreenChange);
+
+  return () => {
+    document.removeEventListener("fullscreenchange", onFullscreenChange);
+  };
+}, []);
+
+
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+const toggleFullscreen = async () => {
+  try {
+    if (!document.fullscreenElement) {
+      await videoWrapperRef.current?.requestFullscreen();
+      setIsFullscreen(true);
+    } else {
+      await document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  } catch (err) {
+    console.log("Fullscreen error:", err);
+  }
+};
+
   const courseOverviewApiCall = async () => {
     const res = await api.get(`${API_ENDPOINTS.courseDetails}/${id}`);
     if (res.status) {
       const apiData = res.data.data.data;
-      // enrollment_progress payload example from API:
-      // {
-      //   falseCount: 10,
-      //   falseIndexes: [],
-      //   trueCount: 0,
-      //   trueIndexes: []
-      // }
-      // We derive progress using content.length as total and trueCount as watched
+
       const enrollmentProgress = apiData.enrollment_progress || {};
       const totalLectures = Array.isArray(apiData.content)
         ? apiData.content.length
         : 0;
       const watchedCount = Number(enrollmentProgress.trueCount || 0);
-      const trueIndexes: number[] = Array.isArray(enrollmentProgress.trueIndexes)
+      const trueIndexes: number[] = Array.isArray(
+        enrollmentProgress.trueIndexes,
+      )
         ? enrollmentProgress.trueIndexes
         : [];
       // Map API response to CourseData
       const mappedCourse: CourseData = {
         id: apiData.id,
         title: apiData.product.title,
-        subtitle:apiData.product.subtitle,
+        subtitle: apiData.product.subtitle,
         instructor: apiData.product.meta.educator,
         rating: undefined, // If available, map from apiData.product.rating
-       // totalStudents: Number(apiData.product.meta.students.replace(/,/g, "")),
+        // totalStudents: Number(apiData.product.meta.students.replace(/,/g, "")),
         //totalDuration: apiData.product.meta.duration,
         description: apiData.product.description,
         thumbnail: apiData.product.preview_image,
@@ -408,40 +168,40 @@ const CourseDetail: React.FC = () => {
       // Set first lecture as default
       if (mappedCourse.lectures.length > 0) {
         // prefer first non-locked lecture, otherwise first lecture
-        const firstAvailable =  mappedCourse.lectures[currentLectureIndex];
+        const firstAvailable = mappedCourse.lectures[currentLectureIndex];
         setCurrentLecture(firstAvailable);
       }
     }
   };
 
   const handleLectureClick = (lecture: Lecture, index: number) => {
-    if (!lecture.isLocked) {
-      setCurrentLecture(lecture);
-      setIsPlaying(false);
+    if (!lecture.isCompleted) {
+      setIsPlaying(true);
     }
+    setCurrentLecture(lecture);
     setCurrentLectureIndex(index);
   };
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
-    callUpdateProgress()
+    callUpdateProgress();
   };
 
-  const callUpdateProgress=async()=>{
-    try{
-    const res=await api.patch(`${API_ENDPOINTS.updateLectureProgress}`,{
-      product_id: Number(id),
-      content_index: currentLectureIndex
-    })
-    if(res.status){
-      console.log("Progress updated")
-      // Optionally, refresh course data to update progress bar
-      courseOverviewApiCall();
+  const callUpdateProgress = async () => {
+    try {
+      const res = await api.patch(`${API_ENDPOINTS.updateLectureProgress}`, {
+        product_id: Number(id),
+        content_index: currentLectureIndex,
+      });
+      if (res.status) {
+        // Optionally, refresh course data to update progress bar
+        courseOverviewApiCall();
+      }
+    } catch (error) {
+      console.log(error, "??");
+      console.log(error);
     }
-    }catch(error){
-      console.log(error)
-    }
-  }
+  };
 
   // const completedLectures =
   //   courseData?.lectures.filter((l) => l.isCompleted).length || 0;
@@ -456,14 +216,41 @@ const CourseDetail: React.FC = () => {
     txt.innerHTML = html;
     return txt.value;
   }
-    const handleBackToCalculators = () => {
+  const handleBackToCalculators = () => {
     navigate(`${base}course-overview/${id}`);
   };
+
+  const Watermark = ({ text }) => {
+    const [pos, setPos] = useState({ top: 10, left: 10 });
+
+    useEffect(() => {
+      const interval = setInterval(() => {
+        const top = Math.floor(Math.random() * 70) + 5; // 5% to 75%
+        const left = Math.floor(Math.random() * 70) + 5; // 5% to 75%
+        setPos({ top, left });
+      }, 5000); // move every 5 sec
+
+      return () => clearInterval(interval);
+    }, []);
+
+    return (
+      <div
+        className="video-watermark"
+        style={{
+          top: `${pos.top}%`,
+          left: `${pos.left}%`,
+        }}
+      >
+        {text}
+      </div>
+    );
+  };
+
   return (
     <div className="course-detail-page">
       <div className="container">
         {/* Video Player Section */}
-       <div className="course-detail-page__header">
+        <div className="course-detail-page__header">
           <button className="back-button" onClick={handleBackToCalculators}>
             <ArrowLeft size={20} />
             Back to Course Overview
@@ -471,71 +258,89 @@ const CourseDetail: React.FC = () => {
           {/* <h1 className="course-detail-page__title">{courseData.title}</h1> */}
         </div>
         <Grid container spacing={2}>
-          <Grid size={{lg:8,sm:12}}>
-        <div className="video-section">
-          <div className="video-player">
-            {currentLecture ? (
-              <div className="video-wrapper">
-                <video
-                  key={currentLecture.id}
-                  controls
-                  poster={currentLecture.thumbnail}
-                  onPlay={() => callUpdateProgress()}
-                  className="main-video"
-                >
-                  <source src={currentLecture.videoUrl} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-                <div className="video-overlay">
-                  <button className="play-button" onClick={handlePlayPause}>
-                    <Play size={24} />
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="video-placeholder">
-                <img src={courseData.thumbnail} alt={courseData.title} />
-                <div className="placeholder-overlay">
-                  <Play size={48} />
-                  <p>Select a lecture to start learning</p>
-                </div>
-              </div>
-            )}
-          </div>
+          <Grid size={{ lg: 8, sm: 12 }}>
+            <div className="video-section">
+              <div className="video-player">
+                {currentLecture ? (
+                  <div className="video-wrapper" ref={videoWrapperRef}>
+                    <video
+                      ref={videoRef}
+                      key={currentLecture.id}
+                      controls
+                      poster={currentLecture.thumbnail}
+                      onPlay={() => callUpdateProgress()}
+                      className="main-video"
+                      // controls
+                      controlsList="nodownload noplaybackrate"
+                      disablePictureInPicture
+                      disableRemotePlayback
+                      onContextMenu={(e) => e.preventDefault()} // disable right-click
+                    >
+                      <source src={currentLecture.videoUrl} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                    <Watermark text={`User: ${userDetails?.video_unique_id}`} />
+                   <button className="fullscreen-btn" onClick={toggleFullscreen}>
+  {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+</button>
 
-          {/* Current Lecture Info */}
-          {currentLecture && (
-            <div className="current-lecture-info">
-              <h2>{currentLecture.title}</h2>
-              {/* <p
+                    {isPlaying && (
+                      <div className="video-overlay">
+                        <button
+                          className="play-button"
+                          onClick={handlePlayPause}
+                        >
+                          <Play size={24} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="video-placeholder">
+                    <img src={courseData.thumbnail} alt={courseData.title} />
+                    <div className="placeholder-overlay">
+                      <Play size={48} />
+                      <p>Select a lecture to start learning</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Current Lecture Info */}
+              {currentLecture && (
+                <div className="current-lecture-info">
+                  <h2>{currentLecture.title}</h2>
+                  {/* <p
                 dangerouslySetInnerHTML={{ __html: currentLecture.description }}
               /> */}
-              <p
-                dangerouslySetInnerHTML={{
-                  __html: decodeHtml(currentLecture.description),
-                }}
-              />
-             {currentLecture.duration && <div className="lecture-meta">
-                <span className="duration">
-                  <Clock size={16} />
-                  {currentLecture.duration}
-                </span>
-              </div>}
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: decodeHtml(currentLecture.description),
+                    }}
+                  />
+                  {currentLecture.duration && (
+                    <div className="lecture-meta">
+                      <span className="duration">
+                        <Clock size={16} />
+                        {currentLecture.duration}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-          )}
-        </div>
-</Grid>
+          </Grid>
 
-          <Grid size={{lg:4,sm:12}}>
-        {/* Course Sidebar */}
-        <div className="course-sidebar">
-          {/* Course Header */}
-          <div className="course-header">
-            <h1>{courseData.title}</h1>
+          <Grid size={{ lg: 4, sm: 12 }}>
+            {/* Course Sidebar */}
+            <div className="course-sidebar">
+              {/* Course Header */}
+              <div className="course-header">
+                <h1>{courseData.title}</h1>
 
-            <p>{courseData.subtitle}</p>
+                <p>{courseData.subtitle}</p>
 
-            {/* <div className="course-meta">
+                {/* <div className="course-meta">
               <div className="instructor">
                 <User size={16} />
                 <span>{courseData.instructor}</span>
@@ -547,96 +352,98 @@ const CourseDetail: React.FC = () => {
                 </span>
               </div>
             </div> */}
-            {/* <p
+                {/* <p
               className="course-description"
               dangerouslySetInnerHTML={{ __html: courseData.description }}
             /> */}
-{/* 
+                {/* 
             <p
               className="course-description"
               dangerouslySetInnerHTML={{
                 __html: decodeHtml(courseData.description),
               }}
             /> */}
-          </div>
+              </div>
 
-          {/* Progress Bar */}
-          <div className="progress-section">
-            <div className="progress-header">
-              <span>Course Progress</span>
-              <span>
-                {courseData.watchedCount}/{courseData.totalLectures} completed
-              </span>
-            </div>
-            <div className="progress-bar">
-              <div
-                className="progress-fill"
-                style={{ width: `${courseData.progressPercentage}%` }}
-              />
-            </div>
-          </div>
+              {/* Progress Bar */}
+              <div className="progress-section">
+                <div className="progress-header">
+                  <span>Course Progress</span>
+                  <span>
+                    {courseData.watchedCount}/{courseData.totalLectures}{" "}
+                    completed
+                  </span>
+                </div>
+                <div className="progress-bar">
+                  <div
+                    className="progress-fill"
+                    style={{ width: `${courseData.progressPercentage}%` }}
+                  />
+                </div>
+              </div>
 
-          {/* Lectures List */}
-          <div className="lectures-section">
-            <h3>Course Content</h3>
-            <div className="lectures-list">
-              {courseData.lectures.map((lecture, index) => (
-                <div
-                  key={lecture.id}
-                  className={`lecture-item ${
-                    currentLecture?.id === lecture.id ? "active" : ""
-                  } ${lecture.isLocked ? "locked" : ""} ${
-                    lecture.isCompleted ? "completed" : ""
-                  }`}
-                  onClick={() => handleLectureClick(lecture, index)}
-                >
-                 
-                  <div className="lecture-number">
-                    {lecture.isCompleted ? (
-                      <CheckCircle size={20} />
-                    ) : lecture.isLocked ? (
-                      <Lock size={20} />
-                    ) : (
-                      <span>{index + 1}</span>
-                    )}
-                  </div>
+              {/* Lectures List */}
+              <div className="lectures-section">
+                <h3>Course Content</h3>
+                <div className="lectures-list">
+                  {courseData.lectures.map((lecture, index) => (
+                    <div
+                      key={lecture.id}
+                      className={`lecture-item ${
+                        currentLecture?.id === lecture.id ? "active" : ""
+                      } ${lecture.isLocked ? "locked" : ""} ${
+                        lecture.isCompleted ? "completed" : ""
+                      }`}
+                      onClick={() => handleLectureClick(lecture, index)}
+                    >
+                      <div className="lecture-number">
+                        {lecture.isCompleted ? (
+                          <CheckCircle size={20} />
+                        ) : lecture.isLocked ? (
+                          <Lock size={20} />
+                        ) : (
+                          <span>{index + 1}</span>
+                        )}
+                      </div>
 
-                  <div className="lecture-content">
-                    <h4>{lecture.title}</h4>
-                   { lecture.duration &&<div className="lecture-duration">
-                      <Clock size={14} />
-                      <span>{lecture.duration}</span>
-                    </div>}
-                  </div>
+                      <div className="lecture-content">
+                        <h4>{lecture.title}</h4>
+                        {lecture.duration && (
+                          <div className="lecture-duration">
+                            <Clock size={14} />
+                            <span>{lecture.duration}</span>
+                          </div>
+                        )}
+                      </div>
 
-                  <div>
-                     {lecture.isCompleted && (
-                    <div className="lecture-watched-tag">Watched</div>
-                  )}
-                  <div  className="lecture-actions">
-                    {currentLecture?.id === lecture.id && (
-                      <div className="now-playing">
-                        <div className="playing-indicator">
-                          <span></span>
-                          <span></span>
-                          <span></span>
+                      <div>
+                        {lecture.isCompleted && (
+                          <div className="lecture-watched-tag">Watched</div>
+                        )}
+                        <div className="lecture-actions">
+                          {currentLecture?.id === lecture.id && (
+                            <div className="now-playing">
+                              <div className="playing-indicator">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                              </div>
+                            </div>
+                          )}
+
+                          {!lecture.isLocked && (
+                            <button className="play-btn">
+                              <Play size={16} />
+                            </button>
+                          )}
                         </div>
                       </div>
-                    )}
-                    
-                    {!lecture.isLocked && (
-                      <button className="play-btn">
-                        <Play size={16} />
-                      </button>
-                    )}
-                  </div>
-                  </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
-          </div>
-        </div>
-        </Grid>
+          </Grid>
         </Grid>
         <div className="blurs_wrapper">
           <div className="blurs_object is-fluo"></div>

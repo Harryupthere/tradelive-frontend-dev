@@ -9,6 +9,11 @@ import { errorMsg } from "../../utils/customFn";
 
 const base = import.meta.env.VITE_BASE;
 const planPrice = import.meta.env.VITE_PLAN_PRICE;
+const instructorPrice = import.meta.env.VITE_INSTRUCTOR_PRICE;
+const whatsappPrice = import.meta.env.VITE_WHATSAPP_PRICE;
+const feesPrice = import.meta.env.VITE_FEES;
+
+
 
 // small helper to convert iso2 to emoji flag
 const iso2ToFlag = (iso2: string) => {
@@ -43,7 +48,8 @@ interface CheckoutFormData {
   subscriptionType:
     | "Yearly Subscription"
     | "Activation Coupon"
-    | "Instructor Meeting";
+    | "Instructor Meeting"
+    | "Whatsapp Trade";
   paymentGateway: "stripe" | "boomfi" | string;
   couponQuantity: number;
   meetingReason?: string;
@@ -57,14 +63,32 @@ interface PricingDetails {
 }
 
 const Checkout: React.FC = () => {
-  // detect instructor meeting data from URL and set default subscription
-  const [activationCoupnOpen, setActivationCoupnOpen] =
+
+
+  const [cryptoCurrencies, setCryptoCurrencies] = useState<any[]>([]);
+  const [selectedCryptoCurrency, setSelectedCryptoCurrency] =
+    useState<any>(null);
+  const [openCryptoSelection, setOpenCryptoSelection] =
     useState<boolean>(false);
+  const [cryptoQuantity, setCryptoQuantity] = useState<number>(0);
 
   const fetchActivationCoupon = () => {
     const params = new URLSearchParams(window.location.search);
 
     const activationCouponRaw = params.get("activationCoupon");
+    if (
+      activationCouponRaw &&
+      (activationCouponRaw.toLowerCase() === "true" ||
+        activationCouponRaw === "1")
+    ) {
+      return true;
+    }
+  };
+
+  const fetchWhatsappTrade = () => {
+    const params = new URLSearchParams(window.location.search);
+
+    const activationCouponRaw = params.get("whatsappTrade");
     if (
       activationCouponRaw &&
       (activationCouponRaw.toLowerCase() === "true" ||
@@ -118,6 +142,7 @@ const Checkout: React.FC = () => {
 
   const instructorMeetingFromUrl = parseInstructorMeetingFromUrl();
   const activationCouponFromUrl = fetchActivationCoupon();
+  const whatsappTradeFromUrl = fetchWhatsappTrade();
 
   const [formData, setFormData] = useState<CheckoutFormData>({
     fullName: "",
@@ -127,9 +152,11 @@ const Checkout: React.FC = () => {
     subscriptionType:
       instructorMeetingFromUrl && instructorMeetingFromUrl.enabled
         ? "Instructor Meeting"
-        : getUser()?.userType.id == 1 && !activationCouponFromUrl
-        ? "Yearly Subscription"
-        : "Activation Coupon",
+        : getUser()?.userType.id == 1 || activationCouponFromUrl
+        ? "Activation Coupon"
+        : whatsappTradeFromUrl
+        ? "Whatsapp Trade"
+        : "Yearly Subscription",
     paymentGateway: "1",
     couponQuantity: 1,
     meetingReason: "",
@@ -198,18 +225,23 @@ const Checkout: React.FC = () => {
   }, [instructorMeetingData]);
 
   // Initialize pricing with 0 fees, will update after API call
+  
   const [pricing, setPricing] = useState<PricingDetails>({
     basePrice:
       instructorMeetingFromUrl && instructorMeetingFromUrl.enabled
-        ? 99.0
+        ? parseFloat(instructorPrice)
+        : whatsappTradeFromUrl
+        ? parseFloat(whatsappPrice)
         : planPrice
         ? parseFloat(planPrice)
         : 12.0,
     quantity: 1,
-    fees: 0, // Initialize with 0
+    fees: feesPrice, //0, // Initialize with 0
     total:
       instructorMeetingFromUrl && instructorMeetingFromUrl.enabled
-        ? 99.0
+        ? parseFloat(instructorPrice)
+        : whatsappTradeFromUrl
+        ? parseFloat(whatsappPrice)
         : planPrice
         ? parseFloat(planPrice)
         : 12.0, // Initial total without fees
@@ -225,13 +257,14 @@ const Checkout: React.FC = () => {
         getUser().userType.id == 1 ? paymentGateways[0] : paymentGateways[1];
       const basePrice =
         shouldFetch == 1 || shouldFetch
-          ? 99.0
+          ? parseFloat(instructorPrice)
+          : whatsappTradeFromUrl
+          ? parseFloat(whatsappPrice)
           : planPrice
           ? parseFloat(planPrice)
           : 12.0;
       const feesPercent = Number(firstGateway.fee_percentage || 0);
-      const fees = (basePrice * feesPercent) / 100;
-      console.log(basePrice, "????");
+      const fees = parseInt(firstGateway?.fees_amount); // (basePrice * feesPercent) / 100;
       setPricing((prev) => ({
         ...prev,
         fees,
@@ -245,6 +278,7 @@ const Checkout: React.FC = () => {
 
   useEffect(() => {
     callPaymentGateways();
+    callCryptoCurrencies();
   }, []);
 
   // if more complex parsing at mount is required, keep here
@@ -272,10 +306,23 @@ const Checkout: React.FC = () => {
     }
   };
 
+  const callCryptoCurrencies = async () => {
+    try {
+      const res = await api.get(API_ENDPOINTS.cryptoCurrencies);
+      // adapter: adjust depending on real response shape
+      setCryptoCurrencies(res?.data?.data.data || []);
+    } catch (error) {
+      console.error("Error fetching payment gateways:", error);
+    }
+  };
+
   const handleInputChange = (
     field: keyof CheckoutFormData,
     value: string | number
   ) => {
+    if (value == "2") {
+      setOpenCryptoSelection(true);
+    }
     const updatedFormData = { ...formData, [field]: value } as CheckoutFormData;
     setFormData(updatedFormData);
 
@@ -358,22 +405,31 @@ const Checkout: React.FC = () => {
         0
     );
 
+    const feesAmount = Number(
+      (selectedGateway as any)?.fees_amount ||
+        (selectedGateway as any)?.fees_percent ||
+        feesPrice
+    );
+
     if (data.subscriptionType === "Yearly Subscription") {
       basePrice = planPrice ? parseFloat(planPrice) : 12.0;
       quantity = 1;
-      fees = basePrice * (feesPercentage / 100);
+      fees = feesAmount; // basePrice * (feesPercentage / 100);
     } else if (data.subscriptionType === "Activation Coupon") {
       basePrice = planPrice ? parseFloat(planPrice) : 12.0;
       quantity = data.couponQuantity || 1;
-      fees = basePrice * quantity * (feesPercentage / 100);
+      fees = feesAmount; // basePrice * quantity * (feesPercentage / 100);
     } else if (data.subscriptionType === "Instructor Meeting") {
       basePrice = instructorDetails?.meeting_price
         ? parseFloat(instructorDetails.meeting_price)
         : 99.0; // default meeting price
       quantity = 1;
-      fees = basePrice * (feesPercentage / 100);
+      fees = feesAmount; //basePrice * (feesPercentage / 100);
+    }else if (data.subscriptionType === "Whatsapp Trade") {
+      basePrice = whatsappPrice ? parseFloat(whatsappPrice) : 99.0; // default meeting price
+      quantity = 1;
+      fees = feesAmount; //basePrice * (feesPercentage / 100);
     }
-
     const total = basePrice * quantity + fees;
 
     setPricing({
@@ -383,6 +439,41 @@ const Checkout: React.FC = () => {
       total: total || 0,
     });
   };
+
+  // Helpers for crypto selection and calculation
+  const calculateCryptoAmount = (rate: number | string) => {
+    const r = Number(rate) || 1;
+    if (!r) return 0;
+    return pricing.total * r;
+  };
+
+  const handleSelectCrypto = (c: any) => {
+    setSelectedCryptoCurrency(c);
+      console.log(c,"selectedCryptoCurrency")
+
+    const qty = calculateCryptoAmount(c.rate.rate);
+    const decimals = Number(c.decimal_places ?? 6);
+    setCryptoQuantity(Number(qty.toFixed(2)));
+  };
+
+  // Keep crypto quantity in sync when pricing changes
+  useEffect(() => {
+    if (selectedCryptoCurrency) {
+      console.log(selectedCryptoCurrency,"selectedCryptoCurrency")
+      const qty = calculateCryptoAmount(selectedCryptoCurrency.rate.rate);
+      const decimals = Number(selectedCryptoCurrency.decimal_places ?? 6);
+      setCryptoQuantity(Number(qty.toFixed(decimals)));
+    }
+  }, [selectedCryptoCurrency, pricing.total]);
+
+  // Keep crypto quantity in sync when pricing changes
+  useEffect(() => {
+    if (selectedCryptoCurrency) {
+      const qty = calculateCryptoAmount(selectedCryptoCurrency.rate.rate);
+      const decimals = Number(selectedCryptoCurrency.decimal_places ?? 6);
+      setCryptoQuantity(Number(qty.toFixed(decimals)));
+    }
+  }, [selectedCryptoCurrency, pricing.total]);
 
   const handleBackToCalculators = () => {
     window.history.back();
@@ -426,7 +517,13 @@ const Checkout: React.FC = () => {
           window.location.href = res?.data?.data?.checkoutUrl;
         }
       } else {
-        const res = await api.post(API_ENDPOINTS.stripeCreateSession, payload);
+        console.log(selectedCryptoCurrency,"selectedCryptoCurrency")
+        payload.selectedCrypto = selectedCryptoCurrency.id;
+        const res = await api.post(API_ENDPOINTS.coinpaymentInvoice, payload);
+        if (res.data.status) {
+          // Redirect to Stripe Checkout
+           window.location.href = res?.data?.data?.checkoutUrl;
+        }
       }
     } catch (error) {
       console.log(error);
@@ -507,6 +604,7 @@ const Checkout: React.FC = () => {
 
               <div className="form-group">
                 <label className="form-label">Mobile No. *</label>
+               
                 <div className="input-wrapper">
                   <input
                     id="mobileNo"
@@ -525,6 +623,7 @@ const Checkout: React.FC = () => {
                     }}
                   />
                 </div>
+                {whatsappTradeFromUrl && <span style={{ color: "#e74c3c", fontSize: 12, marginTop: 4 }}>Please ensure this is your whatsapp number</span>}
                 {errors.mobileNo && (
                   <div style={{ color: "#e74c3c", fontSize: 12, marginTop: 6 }}>
                     {errors.mobileNo}
@@ -564,59 +663,53 @@ const Checkout: React.FC = () => {
                 )}
               </div>
 
-                  {formData.subscriptionType ===
-                                            "Instructor Meeting" && (
-                                            <div style={{ marginTop: 12 }}>
-                                              <label
-                                                style={{
-                                                  display: "block",
-                                                  marginBottom: 6,
-                                                  fontWeight: 600,
-                                                }}
-                                              >
-                                                Reason for meeting
-                                              </label>
-                                              <textarea
-                                                rows={4}
-                                                value={formData.meetingReason}
-                                                onChange={(e) =>
-                                                  handleInputChange(
-                                                    "meetingReason",
-                                                    e.target.value
-                                                  )
-                                                }
-                                                placeholder="Briefly describe what you'd like to discuss with the mentor (issues, goals, topics)..."
-                                                style={{
-                                                  width: "100%",
-                                                  padding: 8,
-                                                  borderRadius: 6,
-                                                  border: "1px solid #ddd",
-                                                }}
-                                              />
-                                              {errors.meetingReason && (
-                                                <div
-                                                  style={{
-                                                    color: "#e74c3c",
-                                                    fontSize: 12,
-                                                    marginTop: 6,
-                                                  }}
-                                                >
-                                                  {errors.meetingReason}
-                                                </div>
-                                              )}
-                                              <div
-                                                style={{
-                                                  fontSize: 12,
-                                                  color: "#888",
-                                                  marginTop: 6,
-                                                }}
-                                              >
-                                                This will be sent to the
-                                                instructor along with your
-                                                booking.
-                                              </div>
-                                            </div>
-                                          )}
+              {formData.subscriptionType === "Instructor Meeting" && (
+                <div style={{ marginTop: 12 }}>
+                  <label
+                    style={{
+                      display: "block",
+                      marginBottom: 6,
+                      fontWeight: 600,
+                    }}
+                  >
+                    Reason for meeting
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={formData.meetingReason}
+                    onChange={(e) =>
+                      handleInputChange("meetingReason", e.target.value)
+                    }
+                    placeholder="Briefly describe what you'd like to discuss with the mentor (issues, goals, topics)..."
+                    style={{
+                      width: "100%",
+                      padding: 8,
+                      borderRadius: 6,
+                      border: "1px solid #ddd",
+                    }}
+                  />
+                  {errors.meetingReason && (
+                    <div
+                      style={{
+                        color: "#e74c3c",
+                        fontSize: 12,
+                        marginTop: 6,
+                      }}
+                    >
+                      {errors.meetingReason}
+                    </div>
+                  )}
+                  <div
+                    style={{
+                      fontSize: 12,
+                      color: "#888",
+                      marginTop: 6,
+                    }}
+                  >
+                    This will be sent to the instructor along with your booking.
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="checkout-card">
@@ -727,7 +820,6 @@ const Checkout: React.FC = () => {
                                             padding: 0,
                                           }}
                                         >
-                                      
                                           {new Date(
                                             a.available_date
                                           ).toLocaleDateString()}{" "}
@@ -763,6 +855,36 @@ const Checkout: React.FC = () => {
                       </div>
                     </label>
                   </div>
+                ) : whatsappTradeFromUrl ? (
+                  <>
+                    <div className="subscription-option">
+                      <input
+                        type="radio"
+                        id="Whatsapp Trade"
+                        name="subscriptionType"
+                        checked={formData.subscriptionType === "Whatsapp Trade"}
+                        onChange={() =>
+                          handleInputChange(
+                            "subscriptionType",
+                            "Whatsapp Trade"
+                          )
+                        }
+                      />
+                      <label
+                        htmlFor="Whatsapp Trade"
+                        className="subscription-label"
+                      >
+                        <div className="subscription-header">
+                          <CreditCard size={20} />
+                          <span>Whatsapp Trade Subscription</span>
+                        </div>
+                        <div className="subscription-description">
+                          Get whatsapp tips and trade ideas directly on your
+                          phone for a year
+                        </div>
+                      </label>
+                    </div>
+                  </>
                 ) : (
                   <>
                     {getUser().userType.id == 1 && (
@@ -966,13 +1088,39 @@ const Checkout: React.FC = () => {
                   </>
                 )}
               </div>
+
+              {openCryptoSelection && (
+                <div className="crypto-selection-box">
+                  {cryptoCurrencies.map((item, index) => (
+                    <label key={item.id} className="crypto-option">
+                      <input
+                        type="radio"
+                        name="crypto"
+                        value={item.id}
+                        onChange={() => handleSelectCrypto(item)}
+                      />
+
+                      <img
+                        src={item.logo_url}
+                        alt={item.name}
+                        className="crypto-logo"
+                      />
+
+                      <div className="crypto-info">
+                        <span className="crypto-name">{item.name}</span>
+                        <span className="crypto-symbol">({item.symbol})</span>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
           <div className="checkout-summary-section">
             <div className="summary-card">
               <h2 className="section-title">Order Summary</h2>
-
+{console.log(pricing,"???")}
               <div className="summary-details">
                 <div className="summary-item">
                   <span className="summary-label">
@@ -1014,7 +1162,7 @@ const Checkout: React.FC = () => {
                     )}
                   </span>
                   <span className="summary-value">
-                    ${pricing.fees.toFixed(2)}
+                    ${parseFloat(pricing.fees).toFixed(2)}
                   </span>
                 </div>
 
@@ -1023,9 +1171,20 @@ const Checkout: React.FC = () => {
                 <div className="summary-item summary-total">
                   <span className="summary-label">Total Amount</span>
                   <span className="summary-value">
-                    ${pricing.total.toFixed(2)}
+                    ${parseFloat(pricing.total).toFixed(2)}
                   </span>
                 </div>
+                {selectedCryptoCurrency && (
+                  <div className="summary-item">
+                    <span className="summary-label">
+                      Crypto ({selectedCryptoCurrency.symbol}) Quantity
+                    </span>
+
+                    <span className="summary-value">
+                      {cryptoQuantity} {selectedCryptoCurrency.symbol}
+                    </span>
+                  </div>
+                )}
               </div>
               <button
                 className="proceed-button"

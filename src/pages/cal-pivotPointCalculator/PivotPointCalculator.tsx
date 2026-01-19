@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowLeft, LineChart, Calculator, Info, TrendingUp } from 'lucide-react';
 import '../cal-compoundingCalculator/CompoundingCalculator.scss';
 import { API_ENDPOINTS } from '../../constants/ApiEndPoints';
@@ -183,6 +183,22 @@ const PivotPointCalculator: React.FC = () => {
     if (value === null) return '-';
     return value.toFixed(5);
   };
+
+         useEffect(() => { addRecentActivity(); }, []);
+          
+              const addRecentActivity = async () => {
+              try {
+                const payload = {
+                  action_id:3,
+                  table_name: "calculator",
+                  table_id: 0,
+                  meta: {route: `pivot-point-calculator`}
+                  }
+                await api.post(API_ENDPOINTS.recentActivity, payload);
+              } catch (error) {
+                console.log("Failed to add recent activity", error);
+              }
+            }
 
   return (
     <div className="compounding-calculator">

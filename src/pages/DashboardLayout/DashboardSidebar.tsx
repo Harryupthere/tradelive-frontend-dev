@@ -10,11 +10,11 @@ import {
   School,
   Users2Icon,
   UserCheck,
-  TicketPlus
+  TicketPlus,
+  LogIn,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { removeToken, removeUser } from "../../utils/tokenUtils";
-
 const base = import.meta.env.VITE_BASE;
 
 const mainMenuItems = [
@@ -52,14 +52,30 @@ const mainMenuItems = [
     exact: true,
   },
   { path: `${base}resources`, icon: BookPlus, label: "Resources", exact: true },
-  { path: `${base}activation-coupons`, icon: TicketPlus, label: "Activation Coupons", exact: true },
-  { path: `${base}profile`, icon: Home, label: "Profile", exact: true },
+  {
+    path: `${base}activation-coupons`,
+    icon: TicketPlus,
+    label: "Activation Coupons",
+    exact: true,
+  },
 
-//   { path: `#/`, icon: FolderEdit, label: "Market Feed", exact: true },
+  { path: `${base}profile`, icon: Home, label: "Profile", exact: true },
+  {
+    path: `${base}login-sessions`,
+    icon: LogIn,
+    label: "Login Sessions",
+    exact: true,
+  },
+
+  //   { path: `#/`, icon: FolderEdit, label: "Market Feed", exact: true },
 ];
+
+import { useState } from "react";
+
 function DashboardSidebar({ sidebarOpen, closeSidebar }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const [tradeliveDropdownOpen, setTradeliveDropdownOpen] = useState(false);
 
   const handleLogout = () => {
     removeToken();
@@ -73,6 +89,13 @@ function DashboardSidebar({ sidebarOpen, closeSidebar }) {
     }
     return location.pathname.startsWith(path);
   };
+
+  // Close dropdown on navigation
+  const handleDropdownLinkClick = () => {
+    setTradeliveDropdownOpen(false);
+    closeSidebar && closeSidebar();
+  };
+
   return (
     <div className={`dashboard-sidebar${sidebarOpen ? " sidebar-open" : ""}`}>
       <div className="sidebar-content">
@@ -105,6 +128,88 @@ function DashboardSidebar({ sidebarOpen, closeSidebar }) {
                 </Link>
               )
             )}
+            {/* Tradelive24 Section Dropdown */}
+            <div
+              className={`menu-item tradelive24-dropdown${
+                tradeliveDropdownOpen ? " open" : ""
+              }`}
+            >
+              <div
+                className="tradelive24-dropdown__toggle"
+                onClick={() => setTradeliveDropdownOpen((v) => !v)}
+                tabIndex={0}
+                style={{ userSelect: "none", cursor: "pointer" }}
+              >
+                <img
+                  src={`${base}tradelive24-logo-bar.png`}
+                  alt="Tradelive24"
+                  className="tradelive24-logo-bar"
+                />
+                <span className="menu-label">Tradelive24 Sections</span>
+                <span
+                  className="tradelive24-dropdown__arrow"
+                  style={{
+                    transform: tradeliveDropdownOpen
+                      ? "rotate(180deg)"
+                      : undefined,
+                  }}
+                >
+                  ▼
+                </span>
+              </div>
+              <div className="tradelive24-dropdown__menu">
+                <Link
+                  to={`${base}platform-tutorial`}
+                  className="tradelive24-dropdown__item"
+                  onClick={handleDropdownLinkClick}
+                >
+                  Platform Tutorial
+                </Link>
+                <Link
+                  to={`${base}brokerage-tutorial`}
+                  className="tradelive24-dropdown__item"
+                  onClick={handleDropdownLinkClick}
+                >
+                  Brokerage Tutorial
+                </Link>
+                <Link
+                  to={`${base}deposit-withdrawal`}
+                  className="tradelive24-dropdown__item"
+                  onClick={handleDropdownLinkClick}
+                >
+                  Deposit and Withdrawal
+                </Link>
+                <Link
+                  to={`${base}navigate-tradelive`}
+                  className="tradelive24-dropdown__item"
+                  onClick={handleDropdownLinkClick}
+                >
+                  How to Navigate TradeLive
+                </Link>
+                <Link
+                  to={`${base}faq`}
+                  className="tradelive24-dropdown__item"
+                  onClick={handleDropdownLinkClick}
+                >
+                  FAQ
+                </Link>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              className="menu-item"
+              style={{ backgroundColor: "transparent", border: "none" }}
+              onClick={()=>navigate(`${base}checkout?whatsappTrade=true`)}
+            >
+                <img
+                  src={`${base}whatsapp-logo.png`}
+                  alt="Tradelive24"
+                  className="logo-images"
+                />
+                <span className="menu-label">Whatsapp Trade</span>
+             
+            </button>
             <button
               type="button"
               onClick={handleLogout}

@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import './LeverageCalculator.scss';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { API_ENDPOINTS } from '../../constants/ApiEndPoints';
+import { api } from '../../api/Service';
 
 const base = import.meta.env.VITE_BASE;
 
@@ -58,6 +60,7 @@ const LeverageCalculator: React.FC = () => {
         return;
       }
 
+
       setResults({
         requiredMargin: parseFloat(requiredMargin.toFixed(2)),
         leverageRatio,
@@ -93,6 +96,22 @@ const LeverageCalculator: React.FC = () => {
     }
     return null;
   };
+
+   useEffect(() => { addRecentActivity(); }, []);
+      
+          const addRecentActivity = async () => {
+          try {
+            const payload = {
+              action_id:3,
+              table_name: "calculator",
+              table_id: 0,
+              meta: {route: `leverage-calculator`}
+              }
+            await api.post(API_ENDPOINTS.recentActivity, payload);
+          } catch (error) {
+            console.log("Failed to add recent activity", error);
+          }
+        }
 
   return (
     <div className="leverage-calculator">

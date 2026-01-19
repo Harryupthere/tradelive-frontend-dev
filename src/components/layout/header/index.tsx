@@ -117,11 +117,13 @@ const Header = () => {
 
             {/* Desktop Navigation */}
             <ul className='desktop-nav'>
-              <li><Link to={`${base}`} className={isActive(`${base}`)}>Home</Link></li>
-              <li><Link to={`${base}forum`} className={isActive(`${base}forum`)}>Forum</Link></li>
+              <li><Link to={`${base}dashboard`} className={isActive(`${base}dashboard`)}>Home</Link></li>
+              {/* <li><Link to={`${base}forum`} className={isActive(`${base}forum`)}>Forum</Link></li>
               <li><Link to={`${base}news`} className={isActive(`${base}news`)}>News</Link></li>
-              <li><Link to={`${base}contactus`} className={isActive(`${base}contactus`)}>Contact</Link></li>
+              <li><Link to={`${base}contactus`} className={isActive(`${base}contactus`)}>Contact</Link></li> */}
               <li><Link to={`${base}about-us`} className={isActive(`${base}about-us`)}>About Us</Link></li>
+              <li><Link to={`${base}faq`} className={isActive(`${base}faq`)}>FAQ</Link></li>
+
             </ul>
             <div className='desktop-nav right-drawer'>
               <Translator />

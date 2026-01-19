@@ -50,7 +50,6 @@ const ForumPage: React.FC = () => {
           //   Authorization: `Bearer ${token}`, // 👈 add bearer token
           // },
         });
-        console.log(res.data.data.data.data)
 
         //   setForumData(mockForumData);
         setForumData(res.data.data.data.data);
@@ -82,7 +81,6 @@ const ForumPage: React.FC = () => {
 
   const handleSubCategoryClick = (subCategory: ForumSubCategory) => {
     // Placeholder for navigation to category topics
-    console.log('Navigate to category:', subCategory);
     navigate(`${base}forum/${subCategory.uniqueId}`);
   };
 
@@ -170,8 +168,7 @@ const ForumPage: React.FC = () => {
                         </div>
                         <p className="forum-category__description">{category.description}</p>
                         <div className="forum-category__meta">
-                          {/* {console.log(category.createdBy)} */}
-                          {/* {category.createdBy && ( */}
+                        
                           <span className="forum-category__created-by">
                             Created by: <strong>{category.createdBy ? category.createdBy.name : "Unknown"}</strong>
                           </span>

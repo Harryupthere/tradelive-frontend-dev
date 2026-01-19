@@ -216,6 +216,9 @@
   justify-content: space-between;
   position: relative;
   overflow: hidden;
+   width: 100%;
+  max-width: 500px;   /* controls card width */
+  margin: 0 auto;     /* center the card */
 
   &.red {
     background: linear-gradient(135deg, #d94545 0%, #b83535 100%);

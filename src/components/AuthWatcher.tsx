@@ -15,49 +15,83 @@ function decodeJwtPayload(token: string | null) {
   }
 }
 
+// const AuthWatcher = () => {
+//   const dispatch = useDispatch();
+//   const token = useSelector((s: any) => s?.auth?.token);
+//   const timeoutRef = useRef<number | null>(null);
+
+//   useEffect(() => {
+//     // clear previous timer
+//     if (timeoutRef.current) {
+//       window.clearTimeout(timeoutRef.current);
+//       timeoutRef.current = null;
+//     }
+
+//     if (!token) return;
+
+//     const payload = decodeJwtPayload(token);
+//     const exp = payload?.exp;
+//     if (!exp) {
+//       // invalid token -> logout immediately
+//       //dispatch(logout());
+//       //window.location.assign(`${base}login`);
+//       return;
+//     }
+
+//     const expiresAt = exp * 1000;
+//     const now = Date.now();
+//     if (expiresAt <= now) {
+//       // token already expired
+//       //dispatch(logout());
+//       //window.location.assign(`${base}login`);
+//       return;
+//     }
+
+//     // schedule auto-logout at expiry (+ small buffer)
+//     const msUntilExpire = expiresAt - now + 1000;
+//     timeoutRef.current = window.setTimeout(() => {
+//      // dispatch(logout());
+//      // window.location.assign(`${base}login`);
+//     }, msUntilExpire) as unknown as number;
+
+//     return () => {
+//       if (timeoutRef.current) {
+//         window.clearTimeout(timeoutRef.current);
+//         timeoutRef.current = null;
+//       }
+//     };
+//   }, [token, dispatch]);
+
+//   return null;
+// };
+
 const AuthWatcher = () => {
   const dispatch = useDispatch();
   const token = useSelector((s: any) => s?.auth?.token);
   const timeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
-    // clear previous timer
     if (timeoutRef.current) {
-      window.clearTimeout(timeoutRef.current);
+      clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
 
     if (!token) return;
 
     const payload = decodeJwtPayload(token);
-    const exp = payload?.exp;
-    if (!exp) {
-      // invalid token -> logout immediately
-      //dispatch(logout());
-      //window.location.assign(`${base}login`);
+    if (!payload?.exp) {
+      // corrupted token → logout
+      dispatch(logout());
+      window.location.assign(`${base}login`);
       return;
     }
 
-    const expiresAt = exp * 1000;
-    const now = Date.now();
-console.log(expiresAt,now)
-    if (expiresAt <= now) {
-      // token already expired
-      //dispatch(logout());
-      //window.location.assign(`${base}login`);
-      return;
-    }
-
-    // schedule auto-logout at expiry (+ small buffer)
-    const msUntilExpire = expiresAt - now + 1000;
-    timeoutRef.current = window.setTimeout(() => {
-     // dispatch(logout());
-     // window.location.assign(`${base}login`);
-    }, msUntilExpire) as unknown as number;
+    // ❌ DO NOT auto-logout on expiry
+    // Axios refresh logic handles it
 
     return () => {
       if (timeoutRef.current) {
-        window.clearTimeout(timeoutRef.current);
+        clearTimeout(timeoutRef.current);
         timeoutRef.current = null;
       }
     };
@@ -65,5 +99,6 @@ console.log(expiresAt,now)
 
   return null;
 };
+
 
 export default AuthWatcher;

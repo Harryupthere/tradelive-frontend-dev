@@ -57,9 +57,16 @@
             overflow: hidden;
             /* hide the overflowing text */
             text-overflow: ellipsis;
-        }
-
-        .rating-align {
+        }.rating-align {
+            .MuiRating-iconFilled {
+                color: #FFD700 !important;
+                /* golden yellow */
+            }
+        
+            .MuiRating-iconEmpty {
+                color: #555 !important;
+                /* visible grey on black background */
+            }
             display: flex;
             justify-content: space-between;
             font-size: 14px;

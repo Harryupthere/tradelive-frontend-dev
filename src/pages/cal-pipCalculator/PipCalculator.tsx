@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowLeft, ChevronDown } from 'lucide-react';
 import './PipCalculator.scss';
 import { Info, Search } from "lucide-react";
@@ -168,6 +168,22 @@ const PipCalculator: React.FC = () => {
   const handleBackToCalculators = () => {
     window.history.back();
   };
+
+       useEffect(() => { addRecentActivity(); }, []);
+        
+            const addRecentActivity = async () => {
+            try {
+              const payload = {
+                action_id:3,
+                table_name: "calculator",
+                table_id: 0,
+                meta: {route: `pip-calculator`}
+                }
+              await api.post(API_ENDPOINTS.recentActivity, payload);
+            } catch (error) {
+              console.log("Failed to add recent activity", error);
+            }
+          }
 
   const getSelectedPairDetails = () => {
     if (!selectedPair) return null;

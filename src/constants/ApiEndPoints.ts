@@ -55,6 +55,9 @@ export const API_ENDPOINTS = {
   instructor:'instructors',
   instructors:'/instructor-scheduler',
   tradeJournal:'/trade-journal',
+  liveSessions:'dashboard/sessions',
+  platformTutorials:'/platform-tutorials',
+
 
 
 
@@ -67,6 +70,13 @@ export const API_ENDPOINTS = {
 
   dashboard:'/dashboard/user',
 
+  cryptoCurrencies:'/crypto',
+coinpaymentInvoice:'/billing/coinpayments-invoice',
+demoProducts:'/products/demo/list',
+recentActivity:'/recent-activities',
+application_questions:'/applications/questions',
+application_submit:'/applications/submit',
+application_content:'/applications/all-content',
 };
 
 

@@ -175,6 +175,7 @@ const ForumTopicsPage: React.FC = () => {
 
       setTopicsData(data);
       if (data.kind === "threads") {
+    
         setForumCategoryIdNumber(data.data[0]?.forumCategory.id || null);
       }
 
@@ -333,7 +334,6 @@ const ForumTopicsPage: React.FC = () => {
         const url = await uploadFileToS3(file);
         if (url) imageUrls.push(url);
       }
-      // console.log(replyToThread)
       await axios.post(`${apiUrl}threads`, {
         forumCategoryId: parseInt(forumCategoryIdNumber),
         parentThreadId:
@@ -368,7 +368,7 @@ const ForumTopicsPage: React.FC = () => {
         <header className="forum-topics-page__header">
           <div className="forum-topics-page__breadcrumb">
             <button
-              onClick={() => navigate("/forum")}
+              onClick={() => navigate(`${base}forum`)}
               className="forum-topics-page__breadcrumb-item"
             >
               Forum

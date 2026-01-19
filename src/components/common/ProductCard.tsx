@@ -6,12 +6,14 @@ import image from '../../assets/images/thumb1.jpg'
 export interface Course {
   id: number;
   title: string;
+  subtitle:string;
   enrollments: string;
   rating: number;
   preview_image: string;
   // optional type field - backend may use `type` or `course_type`
   type?: string;
  // course_type?: string;
+ avgRating:number;
 }
 
 interface ProductCardProps {
@@ -35,20 +37,20 @@ const ProductCard: React.FC<ProductCardProps> = ({ course }) => {
       <div className="card-content">
         <h3 className="title">{course.title}</h3>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quam, vel?
+          {course.subtitle}
         </p>
         <div className="rating-align">
           <div className="rating">
             <Rating
               name="size-small"
-              defaultValue={5}
+              defaultValue={course.avgRating}
               precision={0.5}
               size="small"
               readOnly
             />{" "}
-            <span>({Math.floor(Math.random() * 200)})</span>
+            <span>({course.avgRating})</span>
           </div>
-          <div className="total-enroll">{course.enrollments} Enrollments</div>
+          <div className="total-enroll">{course.enrolledCount} Enrollments</div>
         </div>
         <button type="button" className="border-btn">
           View Full Course

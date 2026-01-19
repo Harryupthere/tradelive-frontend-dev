@@ -80,6 +80,7 @@ const SignupPage: React.FC = () => {
         email: data.email,
         registration_type_id: 1, // form signup
         password: data.password,
+        marketing_notifications:acceptMarketing?1:0
       } as any;
 
       // add referral_id only when present
@@ -147,6 +148,8 @@ const SignupPage: React.FC = () => {
           email: res.data.email,
           password: null,
           registration_type_id: 2,
+        marketing_notifications:acceptMarketing?1:0
+
         } as any;
         // add referral_id only when present
         if (referral) {
@@ -174,7 +177,8 @@ const SignupPage: React.FC = () => {
                   // dispatch to redux
                   dispatch(setCredentials({ token, user }));
           successMsg(ress.message);
-          navigate(`${base}`);
+          const redirection= ress?.data?.data?.redirection;
+          navigate(`${base}${redirection}`);
         } else {
           errorMsg(ress?.message || "Google login failed");
         }

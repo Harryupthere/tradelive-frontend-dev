@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   ArrowLeft,
   BarChart3,
@@ -59,8 +59,8 @@ const DrawdownCalculator: React.FC = () => {
 
    const response=await api.post(API_ENDPOINTS.drawdownCalculator, {
       startingBalance: startBalance,
-      periods: numPeriods,
-      gainPerPeriod: gainPercent,
+      lossPerTrade: numPeriods,
+      consecutiveLosses: gainPercent,
     });
 
     const DrawdownResults=   response.data.data;
@@ -91,6 +91,22 @@ const DrawdownCalculator: React.FC = () => {
   const formatPercentage = (value: number): string => {
     return `${value.toFixed(2)}%`;
   };
+
+    useEffect(() => { addRecentActivity(); }, []);
+  
+      const addRecentActivity = async () => {
+      try {
+        const payload = {
+          action_id:3,
+          table_name: "calculator",
+          table_id: 0,
+          meta: {route: `drawdown-calculator`}
+          }
+        await api.post(API_ENDPOINTS.recentActivity, payload);
+      } catch (error) {
+        console.log("Failed to add recent activity", error);
+      }
+    }
 
   return (
     <div className="drawdown-calculator">
@@ -126,26 +142,26 @@ const DrawdownCalculator: React.FC = () => {
                 </div>
 
                 <div className="input-group">
-                  <label htmlFor="periods">Periods:</label>
+                  <label htmlFor="periods">Consecutive Losses:</label>
                   <input
                     id="periods"
                     type="number"
                     value={periods}
                     onChange={(e) => setPeriods(e.target.value)}
-                    placeholder="Enter number of periods"
+                    placeholder="Enter number of consecutive losses"
                     className="price-input"
                     min="1"
                   />
                 </div>
 
                 <div className="input-group">
-                  <label htmlFor="gain-per-period">Gain per Period (%):</label>
+                  <label htmlFor="gain-per-period">lossPerTrade (%):</label>
                   <input
                     id="gain-per-period"
                     type="number"
                     value={gainPerPeriod}
                     onChange={(e) => setGainPerPeriod(e.target.value)}
-                    placeholder="Enter gain percentage"
+                    placeholder="Enter loss per trade percentage"
                     className="price-input"
                   />
                 </div>
@@ -176,12 +192,11 @@ const DrawdownCalculator: React.FC = () => {
                     <div className="header-cell">Periods</div>
                     <div className="header-cell">Starting Balance</div>
                     <div className="header-cell">Ending Balance</div>
-                    <div className="header-cell">Total Profit</div>
                     <div className="header-cell">Total Loss</div>
+                    <div className="header-cell">Total Loss Percent</div>
                   </div>
-
-                  <div className="table-body">
-                    {results.periods.map((period) => (
+                 <div className="table-body">
+                    {results.map((period) => (
                       <div key={period.period} className="table-row">
                         <div className="table-cell period-cell">
                           {period.period}
@@ -193,10 +208,10 @@ const DrawdownCalculator: React.FC = () => {
                           {formatCurrency(period.endingBalance)}
                         </div>
                         <div className="table-cell profit-cell">
-                          {formatCurrency(period.totalProfit)}
+                          {formatCurrency(period.totalLoss)}
                         </div>
                         <div className="table-cell gain-cell">
-                          {formatPercentage(period.totalLoss)}
+                          {(period.totalLossPercent)}
                         </div>
                       </div>
                     ))}

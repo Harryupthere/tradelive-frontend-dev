@@ -70,6 +70,20 @@ const CurrencyConverter: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+        const addRecentActivity = async () => {
+      try {
+        const payload = {
+          action_id:3,
+          table_name: "calculator",
+          table_id: 0,
+          meta: {route: `currency-converter`}
+          }
+        await api.post(API_ENDPOINTS.recentActivity, payload);
+      } catch (error) {
+        console.log("Failed to add recent activity", error);
+      }
+    }
+
   // Fetch supported currencies on mount
   useEffect(() => {
     const fetchSupportedCurrencies = async () => {
@@ -108,6 +122,8 @@ const CurrencyConverter: React.FC = () => {
     };
 
     fetchSupportedCurrencies();
+    addRecentActivity();
+
   }, []);
 
   // Fetch conversion rate when currencies change
@@ -270,6 +286,9 @@ const CurrencyConverter: React.FC = () => {
     const handleBackToCalculators = () => {
     navigate(`${base}forax-calculators`);
   };
+  
+
+  
 
   return (
     <div className="currency-converter">

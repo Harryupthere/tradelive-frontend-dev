@@ -23,6 +23,15 @@
         }
 
         .rating-align {
+               .MuiRating-iconFilled {
+                color: #FFD700 !important;
+                /* golden yellow */
+            }
+        
+            .MuiRating-iconEmpty {
+                color: #555 !important;
+                /* visible grey on black background */
+            }
             display: flex;
             gap: 10px;
             align-items: center;

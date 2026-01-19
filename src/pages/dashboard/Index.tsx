@@ -33,8 +33,56 @@ interface UserData {
   lastCalculator: {};
 }
 
+const actionIconMap = {
+  COURSE_VIEW: Activity,
+  NEWS_VIEW: Eye,
+  CALCULATOR_USED: Calculator,
+};
+
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
+    const [recentActions,setRecentActions] = useState([
+    // {
+    //   title: "Last Course Viewed",
+    //   value:
+    //     userData.lastCourse != null
+    //       ? userData.lastCourse?.course?.name
+    //       : "No Course viewed. Please click here to view latest courses",
+    //   icon: Eye,
+    //   description:
+    //     userData.lastCourse != null
+    //       ? timeAgo(userData.lastCourse?.created_at)
+    //       : null,
+    //   pageName: "courses",
+    // },
+    // {
+    //   title: "Last News Views",
+    //   value:
+    //     userData.lastNews != null
+    //       ? userData.lastNews?.news?.title
+    //       : "No News viewed. Please click here to view latest news",
+    //   icon: Activity,
+    //   description:
+    //     userData.lastNews != null
+    //       ? timeAgo(userData.lastNews?.created_at)
+    //       : null,
+    //   pageName: "news",
+    // },
+    // {
+    //   title: "Last Calculator Used",
+    //   value:
+    //     userData.lastCalculator != null
+    //       ? userData.lastCalculator?.calculator?.name
+    //       : "No Calculator used. Please click here to use latest calculators",
+    //   icon: Calculator,
+    //   description:
+    //     userData.lastCalculator != null
+    //       ? timeAgo(userData.lastCalculator?.created_at)
+    //       : null,
+    //   pageName: "forax-calculators",
+    // },
+  ]);
+
   const [userData, setUserData] = useState<UserData>({
     name: getUser()?.first_name || "",
     profile_image: getUser()?.profile_image || "",
@@ -117,6 +165,20 @@ const Dashboard: React.FC = () => {
           lastNews: res.data.data.data.lastNews,
           lastCalculator: res.data.data.data.lastCalculator,
         });
+
+        // Build recent actions with icons
+      const recentActionsWithIcons = [
+        res.data.data.data.lastCourse,
+        res.data.data.data.lastNews,
+        res.data.data.data.lastCalculator,
+      ]
+        .filter(Boolean) // removes null/undefined
+        .map((item) => ({
+          ...item,
+          icon: actionIconMap[item?.action?.action_key] || Activity,
+        }));
+
+      setRecentActions(recentActionsWithIcons);
       }
     } catch (error) {
       console.log("Error fetching dashboard data", error);
@@ -168,47 +230,7 @@ const Dashboard: React.FC = () => {
     },
   ];
 
-  const recentActions = [
-    {
-      title: "Last Course Viewed",
-      value:
-        userData.lastCourse != null
-          ? userData.lastCourse?.course?.name
-          : "No Course viewed. Please click here to view latest courses",
-      icon: Eye,
-      description:
-        userData.lastCourse != null
-          ? timeAgo(userData.lastCourse?.created_at)
-          : null,
-      pageName: "courses",
-    },
-    {
-      title: "Last News Views",
-      value:
-        userData.lastNews != null
-          ? userData.lastNews?.news?.title
-          : "No News viewed. Please click here to view latest news",
-      icon: Activity,
-      description:
-        userData.lastNews != null
-          ? timeAgo(userData.lastNews?.created_at)
-          : null,
-      pageName: "news",
-    },
-    {
-      title: "Last Calculator Used",
-      value:
-        userData.lastCalculator != null
-          ? userData.lastCalculator?.calculator?.name
-          : "No Calculator used. Please click here to use latest calculators",
-      icon: Calculator,
-      description:
-        userData.lastCalculator != null
-          ? timeAgo(userData.lastCalculator?.created_at)
-          : null,
-      pageName: "forax-calculators",
-    },
-  ];
+
 
   const handlepageChange = async (pageName) => {
     navigate(`${base}${pageName}`);
@@ -255,7 +277,7 @@ const Dashboard: React.FC = () => {
         {/* Statistics Grid */}
         <div className="dashboard__statistics">
           <div className="dashboard__section-header">
-            <h2 className="dashboard__section-title">Your Statics</h2>
+            <h2 className="dashboard__section-title">Your Stats</h2>
             <div className="dashboard__section-line"></div>
           </div>
           <div className="dashboard__stats-grid">
@@ -291,7 +313,7 @@ const Dashboard: React.FC = () => {
           <div className="dashboard__actions-grid">
             {recentActions.map((action, index) => (
               <div
-                key={action.title}
+                key={action.action.label}
                 className="dashboard__action-card"
                 style={{ animationDelay: `${(index + 6) * 0.1}s` }}
                 
@@ -300,19 +322,19 @@ const Dashboard: React.FC = () => {
                   <action.icon size={28} />
                 </div>
                 <div className="dashboard__action-content">
-                  <h3 className="dashboard__action-title">{action.title}</h3>
-                  <div className="dashboard__action-value">{action.value}</div>
-                  <div className="dashboard__action-time">
+                  <h3 className="dashboard__action-title">{action.action.label}</h3>
+                  <div className="dashboard__action-value">{action.action.label}</div>
+                   <div className="dashboard__action-time">
                     {action.description && (
                       <>
                         <Clock size={14} />
                         <span>{action.description}</span>
                       </>
                     )}
-                  </div>
+                  </div> 
                 </div>
                 <div className="dashboard__action-arrow" onClick={() => {
-                  handlepageChange(action.pageName);
+                  handlepageChange(`${action.meta.route}`);
                 }}>
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path
@@ -340,7 +362,9 @@ const Dashboard: React.FC = () => {
             <button
               className="dashboard__quick-btn dashboard__quick-btn--primary"
               onClick={() => {
-                handlepageChange("course");
+                // handlepageChange("course");
+                handlepageChange("dashboard");
+
               }}
             >
               <BookOpen size={20} />
@@ -349,7 +373,9 @@ const Dashboard: React.FC = () => {
             <button
               className="dashboard__quick-btn dashboard__quick-btn--secondary"
               onClick={() => {
-                handlepageChange("news");
+                // handlepageChange("news");
+                handlepageChange("dashboard");
+
               }}
             >
               <Newspaper size={20} />
@@ -358,7 +384,9 @@ const Dashboard: React.FC = () => {
             <button
               className="dashboard__quick-btn dashboard__quick-btn--accent"
               onClick={() => {
-                handlepageChange("trade-journal");
+                // handlepageChange("trade-journal");
+                handlepageChange("dashboard");
+
               }}
             >
               <TrendingUp size={20} />

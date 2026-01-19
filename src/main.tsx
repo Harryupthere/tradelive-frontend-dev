@@ -15,7 +15,7 @@ createRoot(document.getElementById("root")!).render(
     <GoogleOAuthProvider clientId={clientId}>
       <Provider store={store}>
         <AuthProvider>
-          <AuthWatcher /> {/* <-- runs and monitors token */}
+          {/* <AuthWatcher />  */}
           <App />
         </AuthProvider>
       </Provider>

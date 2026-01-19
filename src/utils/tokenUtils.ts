@@ -1,5 +1,6 @@
 const TOKEN_KEY = import.meta.env.VITE_TOKEN_KEY;
 const USER_KEY = import.meta.env.VITE_USER_KEY || "APP_USER";
+const REFRESH_TOKEN_KEY = import.meta.env.VITE_REFRESH_TOKEN_KEY;
 
 export const getToken = () => localStorage.getItem(TOKEN_KEY);
 
@@ -8,6 +9,14 @@ export const setToken = (token: string): void => {
 };
 
 export const removeToken = () => localStorage.removeItem(TOKEN_KEY);
+export const getRefreshToken = () =>
+  localStorage.getItem(REFRESH_TOKEN_KEY);
+export const setRefreshToken = (token: string) =>
+  localStorage.setItem(REFRESH_TOKEN_KEY, token);
+
+export const removeRefreshToken = () =>
+  localStorage.removeItem(REFRESH_TOKEN_KEY);
+
 
 export const getTokenKey = () => TOKEN_KEY;
 

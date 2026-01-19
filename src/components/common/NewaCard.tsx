@@ -5,6 +5,8 @@ const base = import.meta.env.VITE_BASE;
 export interface News {
   id: number;
   title: string;
+  subtitle: string;
+
   updated_at: string;
   cover_image: string;
 }
@@ -24,7 +26,9 @@ const NewsCards: React.FC<NewsCardProps> = ({ news }) => {
       <div className="card-content">
         <h3 className="title">{news.title}</h3>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quam, vel?
+          {/* Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quam, vel?
+           */}
+           {news.subtitle} 
         </p>
         <div className="rating-align">
           <div className="rating">

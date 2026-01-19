@@ -42,7 +42,6 @@ const ContactUs = () => {
       const res = await submit(payload);
       // backend may respond with { data: { status: true, data: { message: '...' } } }
       const ok = res?.data?.status ?? res?.status === 200;
-      console.log(res.data)
       if (ok) {
         setStatus('success');
         successMsg(res?.data?.data?.message || 'Message sent successfully');

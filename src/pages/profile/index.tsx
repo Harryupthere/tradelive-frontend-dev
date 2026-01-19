@@ -333,7 +333,6 @@ const ProfilePage: React.FC = () => {
         `${API_ENDPOINTS.tradeJournal}?page=${page}&limit=${tradeJournalsPagination.limit}`
       );
       if (res.data.status) {
-        console.log(res.data.data.data.journals);
         setTradeJournals(res.data.data.data.journals);
         setTradeJournalsPagination({
           ...tradeJournalsPagination,
@@ -425,7 +424,6 @@ const ProfilePage: React.FC = () => {
       );
       if (res.data.status) {
         setMeetings(res.data.data.data);
-        console.log(res.data.data);
         setMeetingsPagination({
           ...meetingsPagination,
           page,

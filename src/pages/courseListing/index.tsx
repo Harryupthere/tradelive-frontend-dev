@@ -7,6 +7,7 @@ import { useEffect, useState, useRef } from "react";
 import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
 import CardShimmer from "../../components/common/cardShimmer";
 import NoData from "../../components/common/NoData";
+import { errorMsg } from "../../utils/customFn";
 
 const CourseListing = () => {
 
@@ -27,11 +28,11 @@ const CourseListing = () => {
             }
         } catch (error) {
             console.log("Failed to fetch courses", error);
+          
         } finally {
             setLoading(false);
         }
     };
-    console.log('course', course)
     useEffect(() => {
         fetchCourses('')
     }, []);

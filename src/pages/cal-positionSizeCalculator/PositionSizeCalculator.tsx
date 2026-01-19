@@ -99,6 +99,22 @@ const PositionSizeCalculator: React.FC = () => {
     navigate(`${base}forax-calculators`);
   };
 
+           useEffect(() => { addRecentActivity(); }, []);
+            
+                const addRecentActivity = async () => {
+                try {
+                  const payload = {
+                    action_id:3,
+                    table_name: "calculator",
+                    table_id: 0,
+                    meta: {route: `position-size-calculator`}
+                    }
+                  await api.post(API_ENDPOINTS.recentActivity, payload);
+                } catch (error) {
+                  console.log("Failed to add recent activity", error);
+                }
+              }
+
   return (
     <div className="position-size-calculator">
       <div className="container">

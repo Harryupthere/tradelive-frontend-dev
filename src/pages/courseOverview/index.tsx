@@ -140,9 +140,24 @@ const CourseOverview = () => {
 
   useEffect(() => {
     fetchCourses();
-    fetchCoursesFeedbacks()
+    fetchCoursesFeedbacks();
+   // addRecentActivity();
   }, []);
 
+  const addRecentActivity = async () => {
+    try {
+      const payload = {
+        action_id:2,
+        table_name: "products",
+        table_id: parseInt(id || "0"),
+        action_type: "COURSE_VIEW",
+        meta: {route: `/course-overview/${id}`}
+        }
+      await api.post(API_ENDPOINTS.recentActivity, payload);
+    } catch (error) {
+      console.log("Failed to add recent activity", error);
+    }
+  }
   function decodeHtml(html: string): string {
     const txt = document.createElement("textarea");
     txt.innerHTML = html;
@@ -234,21 +249,21 @@ const CourseOverview = () => {
               <div className="title">{courseDetail?.title}</div>
               <p className="description">{courseDetail?.subtitle}</p>
 
-              <div className="rating-align">
+             { <div className="rating-align">
                 <div className="rating">
                   <Rating
                     name="size-small"
-                    defaultValue={5}
+                    defaultValue={courseFeedback.avgRating}
                     precision={0.5}
                     size="small"
                     readOnly
                   />{" "}
-                  <span>({Math.floor(Math.random() * 200)})</span>
+                  <span>({courseFeedback.avgRating})</span>
                 </div>
                 <div className="total-enroll">
                   Enrollments( {courseDetail.enrolledCount}){" "}
                 </div>
-              </div>
+              </div>}
               <button
                 type="button"
                 className="gradient-btn"

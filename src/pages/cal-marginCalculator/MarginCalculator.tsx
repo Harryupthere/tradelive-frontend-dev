@@ -69,10 +69,8 @@ const MarginCalculator: React.FC = () => {
       accountCurrency,
       marginRatio,
       tradeSizeLots:tradeSize,
-    //  exchangeRate
     });
 
-    // console.log('Margin Calculator Response:', response);
 
     if (response && response.data.data.requiredMargin) {
       setResult(parseFloat(response.data.data.requiredMargin.toFixed(2)));
@@ -92,6 +90,22 @@ const MarginCalculator: React.FC = () => {
     // navigate(`${base}forax-calculators`);
     window.history.back();
   };
+
+     useEffect(() => { addRecentActivity(); }, []);
+      
+          const addRecentActivity = async () => {
+          try {
+            const payload = {
+              action_id:3,
+              table_name: "calculator",
+              table_id: 0,
+              meta: {route: `margin-calculator`}
+              }
+            await api.post(API_ENDPOINTS.recentActivity, payload);
+          } catch (error) {
+            console.log("Failed to add recent activity", error);
+          }
+        }
 
   return (
     <div className="margin-calculator">

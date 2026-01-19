@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowLeft, BarChart3, Calculator, Info, TrendingUp } from 'lucide-react';
 import './CompoundingCalculator.scss';
 import { useNavigate } from 'react-router-dom'; 
@@ -86,6 +86,22 @@ const CompoundingCalculator: React.FC = () => {
     return `${value.toFixed(2)}%`;
   };
 
+  useEffect(() => { addRecentActivity(); }, []);
+
+    const addRecentActivity = async () => {
+    try {
+      const payload = {
+        action_id:3,
+        table_name: "calculator",
+        table_id: 0,
+        meta: {route: `compounding-calculator`}
+        }
+      await api.post(API_ENDPOINTS.recentActivity, payload);
+    } catch (error) {
+      console.log("Failed to add recent activity", error);
+    }
+  }
+
   return (
     <div className="compounding-calculator">
       <div className="container">
@@ -170,15 +186,14 @@ const CompoundingCalculator: React.FC = () => {
                     <div className="header-cell">Total Profit</div>
                     <div className="header-cell">Total Gain</div>
                   </div>
-
                   <div className="table-body">
-                    {results.periods.map((period) => (
+                    {results.map((period) => (
                       <div key={period.period} className="table-row">
                         <div className="table-cell period-cell">{period.period}</div>
                         <div className="table-cell">{formatCurrency(period.startingBalance)}</div>
                         <div className="table-cell ending-balance">{formatCurrency(period.endingBalance)}</div>
                         <div className="table-cell profit-cell">{formatCurrency(period.totalProfit)}</div>
-                        <div className="table-cell gain-cell">{formatPercentage(period.totalGain)}</div>
+                        <div className="table-cell gain-cell">{(period.totalGain)}</div>
                       </div>
                     ))}
                   </div>

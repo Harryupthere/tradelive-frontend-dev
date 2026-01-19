@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './FibonacciCalculator.scss';
 import { ArrowLeft } from 'lucide-react';
 import { errorMsg } from '../../utils/customFn';
@@ -68,6 +68,22 @@ const FibonacciCalculator: React.FC = () => {
   const handleBackToCalculators = () => {
     window.history.back();
   };
+
+      useEffect(() => { addRecentActivity(); }, []);
+    
+        const addRecentActivity = async () => {
+        try {
+          const payload = {
+            action_id:3,
+            table_name: "calculator",
+            table_id: 0,
+            meta: {route: `fibonacci-calculator`}
+            }
+          await api.post(API_ENDPOINTS.recentActivity, payload);
+        } catch (error) {
+          console.log("Failed to add recent activity", error);
+        }
+      }
 
   return (
     <div className="fibonacci-calculator">
@@ -295,7 +311,8 @@ const FibonacciCalculator: React.FC = () => {
                   <div key={level.label} className="result-item">
                     <span className="result-label">{level.level}</span>
                     <span className="result-value">
-                      {results.retracements[level.value]?.toFixed(3) || '-'}
+                      {(results.retracements[level.value]) &&
+                     results.retracements[level.value].value?.toFixed(3) || '-'}
                     </span>
                   </div>
                 ))}

@@ -263,7 +263,82 @@
                 white-space: normal;
               }
             }
+          /* Tradelive24 Dropdown Styles */
+          &.tradelive24-dropdown {
+            position: relative;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0;
+            padding: 0;
+            background: none;
+            border-left: 3px solid transparent;
+            cursor: pointer;
+            .tradelive24-dropdown__toggle {
+              width: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: flex-start;
+              gap: 10px;
+              padding: 18px 20px;
+              color: var(--text-white);
+              font-size: 15px;
+              font-weight: 500;
+              transition: background 0.2s;
+              user-select: none;
+              .tradelive24-logo-bar {
+                width: 22px;
+                height: 22px;
+                object-fit: contain;
+                margin-right: 6px;
+                flex-shrink: 0;
+              }
+              .tradelive24-dropdown__arrow {
+                margin-left: auto;
+                font-size: 13px;
+                transition: transform 0.2s;
+              }
+            }
+            &.open .tradelive24-dropdown__toggle {
+              background-color: rgba(255,255,255,0.05);
+              color: white;
+            }
+            .tradelive24-dropdown__menu {
+              display: none;
+              flex-direction: column;
+              position: static;
+              min-width: 220px;
+              background: var(--card-bg);
+              border-radius: 0 0 10px 10px;
+              box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+              border: 1px solid var(--border-color);
+              overflow: hidden;
+              margin-top: 0;
+            }
+            &.open .tradelive24-dropdown__menu {
+              display: flex;
+            }
+            .tradelive24-dropdown__item {
+              padding: 14px 24px;
+              color: var(--text-white);
+              text-decoration: none;
+              font-size: 15px;
+              font-weight: 400;
+              transition: background 0.18s, color 0.18s;
+              cursor: pointer;
+              &:hover {
+                background: rgba(7,129,254,0.08);
+                color: var(--primary-blue);
+              }
+            }
           }
+          }
+           .logo-images {
+                width: 22px;
+                height: 22px;
+                object-fit: contain;
+                margin-right: 6px;
+                flex-shrink: 0;
+              }
         }
 
         .section-toggle {

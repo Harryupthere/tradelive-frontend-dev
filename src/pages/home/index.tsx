@@ -5,12 +5,15 @@ import "./home.scss";
 import image from "../../assets/images/bar-graph.png";
 import glob from "../../assets/images/glob.png";
 import Slider from "react-slick";
-import { useRef } from "react";
-import ProductCard, { Course } from "../../components/common/ProductCard";
+import { useEffect, useRef, useState } from "react";
+import ProductCardDemo, { Course } from "../../components/common/ProductCardDemo";
 import { ArrowRight, Play } from "lucide-react";
 import CTA from "../../components/home/CTA";
 import CommunitySection from "../../components/home/Community";
 import WatchLearnSection from "../../components/home/WatchLearn";
+import { api } from "../../api/Service";
+import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
+import VideoPopup from "../../components/common/VideoPopup";
 
 
 
@@ -25,7 +28,7 @@ const responsiveSlider = {
   slidesToScroll: 2,
   initialSlide: 0,
   arrows: false,
-  dots: false,
+  // dots: false,
   responsive: [
     {
       breakpoint: 1024,
@@ -55,14 +58,36 @@ const responsiveSlider = {
 };
 
 const Home = () => {
+
+  const [showPopup, setShowPopup] = useState(false);
+const [activeVideo, setActiveVideo] = useState<string | null>(null);
+const openVideo = (url: string) => {
+  setActiveVideo(url);
+  setShowPopup(true);
+};
+const closeVideo = () => {
+  setShowPopup(false);
+  setActiveVideo(null);
+};
+
   const sliderRef = useRef<Slider | null>(null);
 
-  const courses: Course[] = [
-    { id: 1, title: "Trade Live Class", enrollments: "4.9K", rating: 5 },
-    { id: 2, title: "Stock Market Basics", enrollments: "3.2K", rating: 4 },
-    { id: 3, title: "Crypto Fundamentals", enrollments: "2.7K", rating: 4.5 },
-    { id: 4, title: "Options Trading Mastery", enrollments: "6.1K", rating: 5 },
-  ];
+  const [courses,setCourse]=useState([])
+  useEffect(()=>{
+callDemoApi()
+  },[])
+  const callDemoApi=async()=>{
+    try{
+      const res=await api.get(API_ENDPOINTS.demoProducts);
+      if(res.data.status){
+     setCourse(res.data.data.data)
+
+      }
+
+    }catch(err){
+      console.log(err)
+    }
+  }
 
   return (
     <div className="home-wrapped">
@@ -141,15 +166,15 @@ const Home = () => {
           </div>
 
           <div className="right-content" data-aos="fade-left">
-            <div className="slider-container">
+            {/* <div className="slider-container">
               <Slider ref={sliderRef} {...responsiveSlider}>
                 {courses.map((course) => (
                   <div key={course.id} className="courses-slide">
-                    <ProductCard course={course} />
+                    <ProductCardDemo course={course} onPlay={() => openVideo(course.demo_video_url)}/>
                   </div>
                 ))}
               </Slider>
-            </div>
+            </div> */}
           </div>
         </section>
         {/* <WatchLearnSection/> */}
@@ -164,6 +189,9 @@ const Home = () => {
           <Courses />
         </section> */}
       </div>
+      {showPopup && activeVideo && (
+  <VideoPopup videoUrl={activeVideo} onClose={closeVideo} />
+)}
     </div>
   );
 };

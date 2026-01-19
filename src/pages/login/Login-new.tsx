@@ -17,6 +17,7 @@ import {
   setToken as persistToken,
   setUser as persistUser,
   getUser,
+  setRefreshToken
 } from "../../utils/tokenUtils";
 
 const base = import.meta.env.VITE_BASE;
@@ -54,6 +55,10 @@ const LoginPage: React.FC = () => {
         const token = res?.data?.data?.access_token;
         // if backend also returns user object, adapt the path accordingly.
         const user = res?.data?.data?.user || res?.data?.data?.profile || null;
+        const refreshToken = res?.data?.data?.refresh_token;
+        const redirection = res?.data?.data?.redirection;
+
+        if (refreshToken) setRefreshToken(refreshToken);
 
         // maintain existing context login if you still use it
         login(token);
@@ -70,7 +75,8 @@ const LoginPage: React.FC = () => {
         dispatch(setCredentials({ token, user }));
         setSubmitError("");
         //   successMsg(res.message);
-        navigate(`${base}dashboard`);
+
+        navigate(`${base}${redirection}`);
       } else {
         setSubmitError(res?.message || "Login failed");
 
@@ -105,6 +111,11 @@ const LoginPage: React.FC = () => {
 
         const ress = await loginService(payload);
         const token = ress?.data?.data?.access_token;
+        const refreshToken = ress?.data?.data?.refresh_token;
+       
+        if (refreshToken) setRefreshToken(refreshToken);
+        const redirection = ress?.data?.data.redirection;
+
         // if backend also returns user object, adapt the path accordingly.
         const user =
           ress?.data?.data?.user || ress?.data?.data?.profile || null;
@@ -124,7 +135,7 @@ const LoginPage: React.FC = () => {
         dispatch(setCredentials({ token, user }));
 
         //  successMsg(ress.message);
-        navigate(`${base}dashboard`);
+       navigate(`${base}${redirection}`);
       } catch (err: any) {
         errorMsg(err?.response?.data?.message || "Google login failed");
       } finally {
