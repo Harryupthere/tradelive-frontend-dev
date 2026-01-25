@@ -65,7 +65,7 @@
             li {
                 list-style-type: none;
 
-                a {
+                a, .scroll-link {
                     color: var(--fc-primary);
                     font-size: 16px;
                     font-style: normal;
@@ -73,6 +73,10 @@
                     line-height: normal;
                     text-decoration: none;
                     transition: all 0.35s ease;
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    padding: 0;
 
                     &.active {
                         color: var(--primary);

@@ -231,6 +231,47 @@ const Dashboard: React.FC = () => {
   ];
 
 
+  // const recentActions = [
+  //   {
+  //     title: "Last Course Viewed",
+  //     value:
+  //       userData.lastCourse != null
+  //         ? userData.lastCourse?.course?.name
+  //         : "No Course viewed. Please click here to view latest courses",
+  //     icon: Eye,
+  //     description:
+  //       userData.lastCourse != null
+  //         ? timeAgo(userData.lastCourse?.created_at)
+  //         : null,
+  //     pageName: "courses",
+  //   },
+  //   {
+  //     title: "Last News Views",
+  //     value:
+  //       userData.lastNews != null
+  //         ? userData.lastNews?.news?.title
+  //         : "No News viewed. Please click here to view latest news",
+  //     icon: Activity,
+  //     description:
+  //       userData.lastNews != null
+  //         ? timeAgo(userData.lastNews?.created_at)
+  //         : null,
+  //     pageName: "news",
+  //   },
+  //   {
+  //     title: "Last Calculator Used",
+  //     value:
+  //       userData.lastCalculator != null
+  //         ? userData.lastCalculator?.calculator?.name
+  //         : "No Calculator used. Please click here to use latest calculators",
+  //     icon: Calculator,
+  //     description:
+  //       userData.lastCalculator != null
+  //         ? timeAgo(userData.lastCalculator?.created_at)
+  //         : null,
+  //     pageName: "forax-calculators",
+  //   },
+  // ];
 
   const handlepageChange = async (pageName) => {
     navigate(`${base}${pageName}`);

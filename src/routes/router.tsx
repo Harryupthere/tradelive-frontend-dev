@@ -39,6 +39,7 @@ import NewsListing from "../pages/newsListing";
 import CountdownPage from "../pages/countdown/index";
 import ApplicationForm from "../pages/applicationForm/ApplicationForm";
 import VerifyEmail from "../pages/login/VerifyEmail";
+import { Navigate } from "react-router-dom";
 
 const base = import.meta.env.VITE_BASE;
 const isUser = getUser();
@@ -68,10 +69,10 @@ const Router = () => {
         </ProtectedPage>
       ),
     },
-    { path: `${base}reset-password`, element: <ResetPasswordPage /> },
-    { path: `${base}forgot-password`, element: <ForgetPasswordPage /> },
-    { path: `${base}payment-success`, element: <PaymentSuccess /> },
-    { path: `${base}payment-failure`, element: <PaymentFailure /> },
+    // { path: `${base}reset-password`, element: <ResetPasswordPage /> },
+    // { path: `${base}forgot-password`, element: <ForgetPasswordPage /> },
+    // { path: `${base}payment-success`, element: <PaymentSuccess /> },
+    // { path: `${base}payment-failure`, element: <PaymentFailure /> },
     {
       element: <Layout />,
       children: [
@@ -122,163 +123,167 @@ const Router = () => {
         // // { path: `${base}activation-coupons`, element: <ActivationCoupons /> },
         // { path: `${base}instructor/:id`, element: <InstructorProfile /> },
 
-        {
-          path: `${base}course-overview/:id`,
-          element: (
-            <ProtectedPage condition={!!isUser}>
-              <CourseOverview />
-            </ProtectedPage>
-          ),
-        },
+        // {
+        //   path: `${base}course-overview/:id`,
+        //   element: (
+        //     <ProtectedPage condition={!!isUser}>
+        //       <CourseOverview />
+        //     </ProtectedPage>
+        //   ),
+        // },
 
-        {
-          path: `${base}course/detail/:id`,
-          element: (
-            <ProtectedPage condition={!!isUser}>
-              <CourseDetail />
-            </ProtectedPage>
-          ),
-        },
+        // {
+        //   path: `${base}course/detail/:id`,
+        //   element: (
+        //     <ProtectedPage condition={!!isUser}>
+        //       <CourseDetail />
+        //     </ProtectedPage>
+        //   ),
+        // },
 
-        {
-          path: `${base}currency-converter`,
-          element: (
-            <ProtectedPage condition={!!isUser}>
-              <CurrencyConverter />
-            </ProtectedPage>
-          ),
-        },
+        // {
+        //   path: `${base}currency-converter`,
+        //   element: (
+        //     <ProtectedPage condition={!!isUser}>
+        //       <CurrencyConverter />
+        //     </ProtectedPage>
+        //   ),
+        // },
 
-        {
-          path: `${base}position-size-calculator`,
-          element: (
-            <ProtectedPage condition={!!isUser}>
-              <PositionSizeCalculator />
-            </ProtectedPage>
-          ),
-        },
+        // {
+        //   path: `${base}position-size-calculator`,
+        //   element: (
+        //     <ProtectedPage condition={!!isUser}>
+        //       <PositionSizeCalculator />
+        //     </ProtectedPage>
+        //   ),
+        // },
 
-        {
-          path: `${base}pip-calculator`,
-          element: (
-            <ProtectedPage condition={!!isUser}>
-              <PipCalculator />
-            </ProtectedPage>
-          ),
-        },
+        // {
+        //   path: `${base}pip-calculator`,
+        //   element: (
+        //     <ProtectedPage condition={!!isUser}>
+        //       <PipCalculator />
+        //     </ProtectedPage>
+        //   ),
+        // },
 
-        {
-          path: `${base}margin-calculator`,
-          element: (
-            <ProtectedPage condition={!!isUser}>
-              <MarginCalculator />
-            </ProtectedPage>
-          ),
-        },
+        // {
+        //   path: `${base}margin-calculator`,
+        //   element: (
+        //     <ProtectedPage condition={!!isUser}>
+        //       <MarginCalculator />
+        //     </ProtectedPage>
+        //   ),
+        // },
 
-        {
-          path: `${base}fibonacci-calculator`,
-          element: (
-            <ProtectedPage condition={!!isUser}>
-              <FibonacciCalculator />
-            </ProtectedPage>
-          ),
-        },
+        // {
+        //   path: `${base}fibonacci-calculator`,
+        //   element: (
+        //     <ProtectedPage condition={!!isUser}>
+        //       <FibonacciCalculator />
+        //     </ProtectedPage>
+        //   ),
+        // },
 
-        {
-          path: `${base}pivot-point-calculator`,
-          element: (
-            <ProtectedPage condition={!!isUser}>
-              <PivotPointCalculator />
-            </ProtectedPage>
-          ),
-        },
+        // {
+        //   path: `${base}pivot-point-calculator`,
+        //   element: (
+        //     <ProtectedPage condition={!!isUser}>
+        //       <PivotPointCalculator />
+        //     </ProtectedPage>
+        //   ),
+        // },
 
-        {
-          path: `${base}risk-of-ruin-calculator`,
-          element: (
-            <ProtectedPage condition={!!isUser}>
-              <RiskOfRuinCalculator />
-            </ProtectedPage>
-          ),
-        },
+        // {
+        //   path: `${base}risk-of-ruin-calculator`,
+        //   element: (
+        //     <ProtectedPage condition={!!isUser}>
+        //       <RiskOfRuinCalculator />
+        //     </ProtectedPage>
+        //   ),
+        // },
 
-        {
-          path: `${base}compounding-calculator`,
-          element: (
-            <ProtectedPage condition={!!isUser}>
-              <CompoundingCalculator />
-            </ProtectedPage>
-          ),
-        },
+        // {
+        //   path: `${base}compounding-calculator`,
+        //   element: (
+        //     <ProtectedPage condition={!!isUser}>
+        //       <CompoundingCalculator />
+        //     </ProtectedPage>
+        //   ),
+        // },
 
-        {
-          path: `${base}drawdown-calculator`,
-          element: (
-            <ProtectedPage condition={!!isUser}>
-              <DrawdownCalculator />
-            </ProtectedPage>
-          ),
-        },
+        // {
+        //   path: `${base}drawdown-calculator`,
+        //   element: (
+        //     <ProtectedPage condition={!!isUser}>
+        //       <DrawdownCalculator />
+        //     </ProtectedPage>
+        //   ),
+        // },
 
-        {
-          path: `${base}leverage-calculator`,
-          element: (
-            <ProtectedPage condition={!!isUser}>
-              <LeverageCalculator />
-            </ProtectedPage>
-          ),
-        },
+        // {
+        //   path: `${base}leverage-calculator`,
+        //   element: (
+        //     <ProtectedPage condition={!!isUser}>
+        //       <LeverageCalculator />
+        //     </ProtectedPage>
+        //   ),
+        // },
 
-        {
-          path: `${base}profit-calculator`,
-          element: (
-            <ProtectedPage condition={!!isUser}>
-              <ProfitCalculator />
-            </ProtectedPage>
-          ),
-        },
+        // {
+        //   path: `${base}profit-calculator`,
+        //   element: (
+        //     <ProtectedPage condition={!!isUser}>
+        //       <ProfitCalculator />
+        //     </ProtectedPage>
+        //   ),
+        // },
 
-        {
-          path: `${base}rebate-calculator`,
-          element: (
-            <ProtectedPage condition={!!isUser}>
-              <RebateCalculator />
-            </ProtectedPage>
-          ),
-        },
+        // {
+        //   path: `${base}rebate-calculator`,
+        //   element: (
+        //     <ProtectedPage condition={!!isUser}>
+        //       <RebateCalculator />
+        //     </ProtectedPage>
+        //   ),
+        // },
 
-        {
-          path: `${base}checkout`,
-          element: (
-            <ProtectedPage condition={isUser}>
-              <Checkout />
-            </ProtectedPage>
-          ),
-        },
+        // {
+        //   path: `${base}checkout`,
+        //   element: (
+        //     <ProtectedPage condition={isUser}>
+        //       <Checkout />
+        //     </ProtectedPage>
+        //   ),
+        // },
 
-        {
-          path: `${base}activation-coupons`,
-          element: (
-            <ProtectedPage condition={!!isUser}>
-              <ActivationCoupons />
-            </ProtectedPage>
-          ),
-        },
+        // {
+        //   path: `${base}activation-coupons`,
+        //   element: (
+        //     <ProtectedPage condition={!!isUser}>
+        //       <ActivationCoupons />
+        //     </ProtectedPage>
+        //   ),
+        // },
 
-        {
-          path: `${base}instructor/:id`,
-          element: (
-            <ProtectedPage condition={!!isUser}>
-              <InstructorProfile />
-            </ProtectedPage>
-          ),
-        },
+        // {
+        //   path: `${base}instructor/:id`,
+        //   element: (
+        //     <ProtectedPage condition={!!isUser}>
+        //       <InstructorProfile />
+        //     </ProtectedPage>
+        //   ),
+        // },
       ],
     },
     {
       element: <PrivateRoute />,
       children: [{ element: <Layout />, children: RoutesArray }],
+    },
+     {
+      path: "*",
+      element: <Navigate to={`${base}`} replace />,
     },
   ]);
   return <RouterProvider router={router} />;

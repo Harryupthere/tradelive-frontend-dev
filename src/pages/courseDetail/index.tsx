@@ -124,7 +124,6 @@ const toggleFullscreen = async () => {
     const res = await api.get(`${API_ENDPOINTS.courseDetails}/${id}`);
     if (res.status) {
       const apiData = res.data.data.data;
-
       const enrollmentProgress = apiData.enrollment_progress || {};
       const totalLectures = Array.isArray(apiData.content)
         ? apiData.content.length

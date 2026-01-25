@@ -13,8 +13,6 @@ const instructorPrice = import.meta.env.VITE_INSTRUCTOR_PRICE;
 const whatsappPrice = import.meta.env.VITE_WHATSAPP_PRICE;
 const feesPrice = import.meta.env.VITE_FEES;
 
-
-
 // small helper to convert iso2 to emoji flag
 const iso2ToFlag = (iso2: string) => {
   if (!iso2) return "";
@@ -63,8 +61,6 @@ interface PricingDetails {
 }
 
 const Checkout: React.FC = () => {
-
-
   const [cryptoCurrencies, setCryptoCurrencies] = useState<any[]>([]);
   const [selectedCryptoCurrency, setSelectedCryptoCurrency] =
     useState<any>(null);
@@ -153,10 +149,10 @@ const Checkout: React.FC = () => {
       instructorMeetingFromUrl && instructorMeetingFromUrl.enabled
         ? "Instructor Meeting"
         : getUser()?.userType.id == 1 || activationCouponFromUrl
-        ? "Activation Coupon"
-        : whatsappTradeFromUrl
-        ? "Whatsapp Trade"
-        : "Yearly Subscription",
+          ? "Activation Coupon"
+          : whatsappTradeFromUrl
+            ? "Whatsapp Trade"
+            : "Yearly Subscription",
     paymentGateway: "1",
     couponQuantity: 1,
     meetingReason: "",
@@ -164,7 +160,7 @@ const Checkout: React.FC = () => {
 
   // store parsed instructor meeting data (if any)
   const [instructorMeetingData, setInstructorMeetingData] = useState<any>(
-    instructorMeetingFromUrl
+    instructorMeetingFromUrl,
   );
   const [instructorDetails, setInstructorDetails] = useState<any | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<any | null>(null);
@@ -202,7 +198,7 @@ const Checkout: React.FC = () => {
             const availId = instructorMeetingData.availableId;
             if (availId && payload?.availabilities) {
               const found = payload.availabilities.find(
-                (a: any) => String(a.id) === String(availId)
+                (a: any) => String(a.id) === String(availId),
               );
               if (found) setSelectedSlot(found);
               else {
@@ -225,26 +221,26 @@ const Checkout: React.FC = () => {
   }, [instructorMeetingData]);
 
   // Initialize pricing with 0 fees, will update after API call
-  
+
   const [pricing, setPricing] = useState<PricingDetails>({
     basePrice:
       instructorMeetingFromUrl && instructorMeetingFromUrl.enabled
         ? parseFloat(instructorPrice)
         : whatsappTradeFromUrl
-        ? parseFloat(whatsappPrice)
-        : planPrice
-        ? parseFloat(planPrice)
-        : 12.0,
+          ? parseFloat(whatsappPrice)
+          : planPrice
+            ? parseFloat(planPrice)
+            : 12.0,
     quantity: 1,
     fees: feesPrice, //0, // Initialize with 0
     total:
       instructorMeetingFromUrl && instructorMeetingFromUrl.enabled
         ? parseFloat(instructorPrice)
         : whatsappTradeFromUrl
-        ? parseFloat(whatsappPrice)
-        : planPrice
-        ? parseFloat(planPrice)
-        : 12.0, // Initial total without fees
+          ? parseFloat(whatsappPrice)
+          : planPrice
+            ? parseFloat(planPrice)
+            : 12.0, // Initial total without fees
   });
 
   // Add useEffect to update pricing when payment gateways load
@@ -259,10 +255,10 @@ const Checkout: React.FC = () => {
         shouldFetch == 1 || shouldFetch
           ? parseFloat(instructorPrice)
           : whatsappTradeFromUrl
-          ? parseFloat(whatsappPrice)
-          : planPrice
-          ? parseFloat(planPrice)
-          : 12.0;
+            ? parseFloat(whatsappPrice)
+            : planPrice
+              ? parseFloat(planPrice)
+              : 12.0;
       const feesPercent = Number(firstGateway.fee_percentage || 0);
       const fees = parseInt(firstGateway?.fees_amount); // (basePrice * feesPercent) / 100;
       setPricing((prev) => ({
@@ -318,7 +314,7 @@ const Checkout: React.FC = () => {
 
   const handleInputChange = (
     field: keyof CheckoutFormData,
-    value: string | number
+    value: string | number,
   ) => {
     if (value == "2") {
       setOpenCryptoSelection(true);
@@ -397,18 +393,18 @@ const Checkout: React.FC = () => {
     let fees = 0;
 
     const selectedGateway = paymentGateways.find(
-      (g) => String(g.id) === String(data.paymentGateway)
+      (g) => String(g.id) === String(data.paymentGateway),
     );
     const feesPercentage = Number(
       (selectedGateway as any)?.fee_percentage ||
         (selectedGateway as any)?.fees_percent ||
-        0
+        0,
     );
 
     const feesAmount = Number(
       (selectedGateway as any)?.fees_amount ||
         (selectedGateway as any)?.fees_percent ||
-        feesPrice
+        feesPrice,
     );
 
     if (data.subscriptionType === "Yearly Subscription") {
@@ -425,7 +421,7 @@ const Checkout: React.FC = () => {
         : 99.0; // default meeting price
       quantity = 1;
       fees = feesAmount; //basePrice * (feesPercentage / 100);
-    }else if (data.subscriptionType === "Whatsapp Trade") {
+    } else if (data.subscriptionType === "Whatsapp Trade") {
       basePrice = whatsappPrice ? parseFloat(whatsappPrice) : 99.0; // default meeting price
       quantity = 1;
       fees = feesAmount; //basePrice * (feesPercentage / 100);
@@ -449,7 +445,7 @@ const Checkout: React.FC = () => {
 
   const handleSelectCrypto = (c: any) => {
     setSelectedCryptoCurrency(c);
-      console.log(c,"selectedCryptoCurrency")
+    console.log(c, "selectedCryptoCurrency");
 
     const qty = calculateCryptoAmount(c.rate.rate);
     const decimals = Number(c.decimal_places ?? 6);
@@ -459,7 +455,7 @@ const Checkout: React.FC = () => {
   // Keep crypto quantity in sync when pricing changes
   useEffect(() => {
     if (selectedCryptoCurrency) {
-      console.log(selectedCryptoCurrency,"selectedCryptoCurrency")
+      console.log(selectedCryptoCurrency, "selectedCryptoCurrency");
       const qty = calculateCryptoAmount(selectedCryptoCurrency.rate.rate);
       const decimals = Number(selectedCryptoCurrency.decimal_places ?? 6);
       setCryptoQuantity(Number(qty.toFixed(decimals)));
@@ -486,7 +482,7 @@ const Checkout: React.FC = () => {
         const firstErrorField = Object.keys(errors)[0];
         if (firstErrorField) {
           const el = document.querySelector(
-            `[name="${firstErrorField}"], #${firstErrorField}`
+            `[name="${firstErrorField}"], #${firstErrorField}`,
           ) as HTMLElement | null;
           el?.focus();
         }
@@ -517,12 +513,12 @@ const Checkout: React.FC = () => {
           window.location.href = res?.data?.data?.checkoutUrl;
         }
       } else {
-        console.log(selectedCryptoCurrency,"selectedCryptoCurrency")
+        console.log(selectedCryptoCurrency, "selectedCryptoCurrency");
         payload.selectedCrypto = selectedCryptoCurrency.id;
         const res = await api.post(API_ENDPOINTS.coinpaymentInvoice, payload);
         if (res.data.status) {
           // Redirect to Stripe Checkout
-           window.location.href = res?.data?.data?.checkoutUrl;
+          window.location.href = res?.data?.data?.checkoutUrl;
         }
       }
     } catch (error) {
@@ -530,7 +526,7 @@ const Checkout: React.FC = () => {
       errorMsg(
         error.message
           ? error.message
-          : "Something went wrong during checkout process. or already booked"
+          : "Something went wrong during checkout process. or already booked",
       );
     }
   };
@@ -604,7 +600,7 @@ const Checkout: React.FC = () => {
 
               <div className="form-group">
                 <label className="form-label">Mobile No. *</label>
-               
+
                 <div className="input-wrapper">
                   <input
                     id="mobileNo"
@@ -623,7 +619,13 @@ const Checkout: React.FC = () => {
                     }}
                   />
                 </div>
-                {whatsappTradeFromUrl && <span style={{ color: "#e74c3c", fontSize: 12, marginTop: 4 }}>Please ensure this is your whatsapp number</span>}
+                {whatsappTradeFromUrl && (
+                  <span
+                    style={{ color: "#e74c3c", fontSize: 12, marginTop: 4 }}
+                  >
+                    Please ensure this is your whatsapp number
+                  </span>
+                )}
                 {errors.mobileNo && (
                   <div style={{ color: "#e74c3c", fontSize: 12, marginTop: 6 }}>
                     {errors.mobileNo}
@@ -729,7 +731,7 @@ const Checkout: React.FC = () => {
                       onChange={() =>
                         handleInputChange(
                           "subscriptionType",
-                          "Instructor Meeting"
+                          "Instructor Meeting",
                         )
                       }
                     />
@@ -788,7 +790,7 @@ const Checkout: React.FC = () => {
                                 </div>
                                 <div>
                                   {new Date(
-                                    selectedSlot.available_date
+                                    selectedSlot.available_date,
                                   ).toLocaleDateString()}{" "}
                                   • {selectedSlot.start_time} -{" "}
                                   {selectedSlot.end_time}
@@ -821,7 +823,7 @@ const Checkout: React.FC = () => {
                                           }}
                                         >
                                           {new Date(
-                                            a.available_date
+                                            a.available_date,
                                           ).toLocaleDateString()}{" "}
                                           • {a.start_time} - {a.end_time}
                                         </button>
@@ -866,7 +868,7 @@ const Checkout: React.FC = () => {
                         onChange={() =>
                           handleInputChange(
                             "subscriptionType",
-                            "Whatsapp Trade"
+                            "Whatsapp Trade",
                           )
                         }
                       />
@@ -899,7 +901,7 @@ const Checkout: React.FC = () => {
                           onChange={() =>
                             handleInputChange(
                               "subscriptionType",
-                              "Yearly Subscription"
+                              "Yearly Subscription",
                             )
                           }
                         />
@@ -930,7 +932,7 @@ const Checkout: React.FC = () => {
                         onChange={() =>
                           handleInputChange(
                             "subscriptionType",
-                            "Activation Coupon"
+                            "Activation Coupon",
                           )
                         }
                       />
@@ -1120,15 +1122,15 @@ const Checkout: React.FC = () => {
           <div className="checkout-summary-section">
             <div className="summary-card">
               <h2 className="section-title">Order Summary</h2>
-{console.log(pricing,"???")}
+              {console.log(pricing, "???")}
               <div className="summary-details">
                 <div className="summary-item">
                   <span className="summary-label">
                     {formData.subscriptionType === "Yearly Subscription"
                       ? "Yearly Subscription"
                       : formData.subscriptionType === "Instructor Meeting"
-                      ? "Instructor Meeting"
-                      : "Activation Coupons"}
+                        ? "Instructor Meeting"
+                        : "Activation Coupons"}
                   </span>
 
                   <span className="summary-value">

@@ -117,7 +117,7 @@ const Header = () => {
 
             {/* Desktop Navigation */}
             <ul className='desktop-nav'>
-              <li><Link to={`${base}dashboard`} className={isActive(`${base}dashboard`)}>Home</Link></li>
+              <li><Link to={`${base}`} className={isActive(`${base}`)}>Home</Link></li>
               {/* <li><Link to={`${base}forum`} className={isActive(`${base}forum`)}>Forum</Link></li>
               <li><Link to={`${base}news`} className={isActive(`${base}news`)}>News</Link></li>
               <li><Link to={`${base}contactus`} className={isActive(`${base}contactus`)}>Contact</Link></li> */}
@@ -149,8 +149,8 @@ const Header = () => {
         <nav className={`mobile-nav ${isMobileMenuOpen ? 'active' : ''}`} onClick={(e) => e.stopPropagation()}>
           <ul>
             <li><Link to={`${base}`} onClick={closeMobileMenu}>Home</Link></li>
-            <li><Link to={`${base}courses`} onClick={closeMobileMenu}>Courses</Link></li>
-            <li><Link to={`${base}news`} onClick={closeMobileMenu}>News</Link></li>
+            {/* <li><Link to={`${base}courses`} onClick={closeMobileMenu}>Courses</Link></li>
+            <li><Link to={`${base}news`} onClick={closeMobileMenu}>News</Link></li> */}
             <li><Link to={`${base}contactus`} onClick={closeMobileMenu}>Contact</Link></li>
             <li><Link to={`${base}about-us`} onClick={closeMobileMenu}>About Us</Link></li>
           </ul>
