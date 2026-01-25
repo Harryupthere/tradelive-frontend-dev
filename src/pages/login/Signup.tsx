@@ -426,7 +426,7 @@ const SignupPage: React.FC = () => {
             Built by traders, for traders
           </div>
           <Link to={`${base}`}>
-            <img src="/test/graph-logo.png" alt="logo" />
+            <img src={`${base}graph-logo.png`} alt="logo" />
           </Link>
         </div>
       </div>
