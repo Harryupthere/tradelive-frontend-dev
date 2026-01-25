@@ -12,6 +12,7 @@ import {
   UserCheck,
   TicketPlus,
   LogIn,
+  NotebookText,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { removeToken, removeUser } from "../../utils/tokenUtils";
@@ -52,6 +53,12 @@ const mainMenuItems = [
   //   exact: true,
   // },
   { path: `${base}resources`, icon: BookPlus, label: "Resources", exact: true },
+    {
+    path: `${base}faq`,
+    icon: NotebookText,
+    label: "Faq",
+    exact: true,
+  },
   // {
   //   path: `${base}activation-coupons`,
   //   icon: TicketPlus,
@@ -128,6 +135,7 @@ function DashboardSidebar({ sidebarOpen, closeSidebar }) {
                 </Link>
               )
             )}
+
             {/* Tradelive24 Section Dropdown */}
             {/* <div
               className={`menu-item tradelive24-dropdown${

@@ -146,6 +146,7 @@ const FAQ = () => {
                   className="learning-accordion"
                 >
                   <AccordionSummary
+                  sx={{backgroundColor:'#282828',borderRadius:'10px',fontSize:'16px',fontWeight:700}}
                     expandIcon={
                       expanded === `faq${idx}` ? (
                         <Minus className="accordion-icon" />
@@ -155,9 +156,9 @@ const FAQ = () => {
                     }
                     className="accordion-summary"
                   >
-                    <span className="accordion-title">{faq.question}</span>
+                    <span className="accordion-title" style={{fontWeight:'700'}}>{faq.question}</span>
                   </AccordionSummary>
-                  <AccordionDetails className="accordion-details">
+                  <AccordionDetails className="accordion-details" sx={{color:'#fff'}}>
                     <p className="accordion-content">{faq.answer}</p>
                   </AccordionDetails>
                 </Accordion>

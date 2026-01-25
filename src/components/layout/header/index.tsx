@@ -112,7 +112,7 @@ const Header = () => {
         <div className='container'>
           <div className='flex-container'>
             <Link to={`${base}`} className='brand' onClick={closeMobileMenu}>
-              <img src={`${base}TRADELIVE24-logo.png`} alt="TradeLive Logo" />
+              <img  src='../tradelive-logo.png' alt="TradeLive Logo" />
             </Link>
 
             {/* Desktop Navigation */}
@@ -122,7 +122,7 @@ const Header = () => {
               <li><Link to={`${base}news`} className={isActive(`${base}news`)}>News</Link></li>
               <li><Link to={`${base}contactus`} className={isActive(`${base}contactus`)}>Contact</Link></li> */}
               <li><Link to={`${base}about-us`} className={isActive(`${base}about-us`)}>About Us</Link></li>
-              <li><Link to={`${base}faq`} className={isActive(`${base}faq`)}>FAQ</Link></li>
+              <li><a href='#faq' className={isActive(`${base}faq`)}>FAQ</a></li>
 
             </ul>
             <div className='desktop-nav right-drawer'>

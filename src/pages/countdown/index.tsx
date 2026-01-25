@@ -135,8 +135,7 @@ const CountdownPage: React.FC = () => {
                   </div>
                   <div className="main-title-image">
                     <img
-                      //   src="/TRADELIVE24-logo.png"
-                      src={`${base}TRADELIVE24-logo.png`}
+                      src='../tradelive-logo.png'
                       alt="TRADELIVE24"
                     />
                   </div>
