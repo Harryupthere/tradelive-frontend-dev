@@ -14,6 +14,7 @@ import WatchLearnSection from "../../components/home/WatchLearn";
 import { api } from "../../api/Service";
 import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
 import VideoPopup from "../../components/common/VideoPopup";
+import SliderSection from "../../components/home/SliderSection";
 
 
 
@@ -60,31 +61,31 @@ const responsiveSlider = {
 const Home = () => {
 
   const [showPopup, setShowPopup] = useState(false);
-  const [activeVideo, setActiveVideo] = useState<string | null>(null);
-  const openVideo = (url: string) => {
-    setActiveVideo(url);
-    setShowPopup(true);
-  };
-  const closeVideo = () => {
-    setShowPopup(false);
-    setActiveVideo(null);
-  };
+const [activeVideo, setActiveVideo] = useState<string | null>(null);
+const openVideo = (url: string) => {
+  setActiveVideo(url);
+  setShowPopup(true);
+};
+const closeVideo = () => {
+  setShowPopup(false);
+  setActiveVideo(null);
+};
 
   const sliderRef = useRef<Slider | null>(null);
 
-  const [courses, setCourse] = useState([])
-  useEffect(() => {
-    callDemoApi()
-  }, [])
-  const callDemoApi = async () => {
-    try {
-      const res = await api.get(API_ENDPOINTS.demoProducts);
-      if (res.data.status) {
-        setCourse(res.data.data.data)
+  const [courses,setCourse]=useState([])
+  useEffect(()=>{
+callDemoApi()
+  },[])
+  const callDemoApi=async()=>{
+    try{
+      const res=await api.get(API_ENDPOINTS.demoProducts);
+      if(res.data.status){
+     setCourse(res.data.data.data)
 
       }
 
-    } catch (err) {
+    }catch(err){
       console.log(err)
     }
   }
@@ -92,22 +93,22 @@ const Home = () => {
   return (
     <div className="home-wrapped">
       <div className="container">
-        <Banner />
+      <Banner />
         <section data-aos="fade-up">
-          <div className="center-content">
-            <div className="overlay-img">
-              <img src={image} alt="img" />
-            </div>
-            <h2 className="title">Our Belief</h2>
-            <h2 className="gradient-text">Trading Knowledge Should Be Free.</h2>
-            <p>
-              At TradeLive24, we believe education isn’t a luxury — it’s a
-              foundation. That’s why our goal is to make high-quality trading
-              education accessible to everyone, without fake promises or expensive
-              paywalls. Learn the craft, understand the markets, and grow with a
-              community that values knowledge over hype.
-            </p>
+        <div className="center-content">
+          <div className="overlay-img">
+            <img src={image} alt="img" />
           </div>
+          <h2 className="title">Our Belief</h2>
+          <h2 className="gradient-text">Trading Knowledge Should Be Free.</h2>
+          <p>
+            At TradeLive24, we believe education isn’t a luxury — it’s a
+            foundation. That’s why our goal is to make high-quality trading
+            education accessible to everyone, without fake promises or expensive
+            paywalls. Learn the craft, understand the markets, and grow with a
+            community that values knowledge over hype.
+          </p>
+        </div>  
         </section >
         <section className="whatis-trade">
           <div className="blurs_wrapper">
@@ -118,7 +119,7 @@ const Home = () => {
               <img src={glob} alt="glob" className="glob" />
             </div>
             <h2 className="bottom-title">
-              What <img src='../tradelive-logo.png' alt="logo" /> Is
+              What <img  src='../tradelive-logo.png' alt="logo" /> Is
             </h2>
           </div>
           <div className="right-content" data-aos="fade-left">
@@ -166,6 +167,7 @@ const Home = () => {
           </div>
 
           <div className="right-content" data-aos="fade-left">
+            <SliderSection/>
             {/* <div className="slider-container">
               <Slider ref={sliderRef} {...responsiveSlider}>
                 {courses.map((course) => (
@@ -179,10 +181,10 @@ const Home = () => {
         </section>
         {/* <WatchLearnSection/> */}
         <section data-aos="fade-up">
-          <CommunitySection />
+        <CommunitySection />
         </section>
-        <section id="faq">
-          <CTA />
+        <section>
+        <CTA />
         </section>
         {/* 
         <section>
@@ -190,8 +192,8 @@ const Home = () => {
         </section> */}
       </div>
       {showPopup && activeVideo && (
-        <VideoPopup videoUrl={activeVideo} onClose={closeVideo} />
-      )}
+  <VideoPopup videoUrl={activeVideo} onClose={closeVideo} />
+)}
     </div>
   );
 };

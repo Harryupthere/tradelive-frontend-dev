@@ -159,7 +159,6 @@
         .right-content {
             flex: 1;
             text-align: center;
-
             h2 {
                 font-size: 40px;
                 font-weight: 700;
@@ -214,7 +213,7 @@
         }
 
         .left-content {
-            width: 50%;
+            width: 40%;
 
             @include responsive(md) {
                 width: 100%;
@@ -274,7 +273,7 @@
         }
 
         .right-content {
-            width: 50%;
+            width: 60%;
             text-align: left;
 
             @include responsive(md) {
