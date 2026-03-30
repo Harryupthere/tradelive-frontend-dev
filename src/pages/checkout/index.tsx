@@ -11,6 +11,7 @@ const base = import.meta.env.VITE_BASE;
 const planPrice = import.meta.env.VITE_PLAN_PRICE;
 const instructorPrice = import.meta.env.VITE_INSTRUCTOR_PRICE;
 const whatsappPrice = import.meta.env.VITE_WHATSAPP_PRICE;
+const aiPlanPrice = import.meta.env.VITE_AI_PLAN_PRICE;
 const feesPrice = import.meta.env.VITE_FEES;
 
 // small helper to convert iso2 to emoji flag
@@ -47,7 +48,9 @@ interface CheckoutFormData {
     | "Yearly Subscription"
     | "Activation Coupon"
     | "Instructor Meeting"
-    | "Whatsapp Trade";
+    | "Whatsapp Trade"
+    | "AI Plan";
+
   paymentGateway: "stripe" | "boomfi" | string;
   couponQuantity: number;
   meetingReason?: string;
@@ -89,6 +92,16 @@ const Checkout: React.FC = () => {
       activationCouponRaw &&
       (activationCouponRaw.toLowerCase() === "true" ||
         activationCouponRaw === "1")
+    ) {
+      return true;
+    }
+  };
+  const fetchAIPlan = () => {
+    const params = new URLSearchParams(window.location.search);
+    const aiPlanRaw = params.get("aiPlan") || params.get("aiplan");
+    if (
+      aiPlanRaw &&
+      (aiPlanRaw.toLowerCase() === "true" || aiPlanRaw === "1")
     ) {
       return true;
     }
@@ -139,6 +152,7 @@ const Checkout: React.FC = () => {
   const instructorMeetingFromUrl = parseInstructorMeetingFromUrl();
   const activationCouponFromUrl = fetchActivationCoupon();
   const whatsappTradeFromUrl = fetchWhatsappTrade();
+  const aiPlanFromUrl = fetchAIPlan();
 
   const [formData, setFormData] = useState<CheckoutFormData>({
     fullName: "",
@@ -148,11 +162,14 @@ const Checkout: React.FC = () => {
     subscriptionType:
       instructorMeetingFromUrl && instructorMeetingFromUrl.enabled
         ? "Instructor Meeting"
-        : getUser()?.userType.id == 1 || activationCouponFromUrl
-          ? "Activation Coupon"
+        : aiPlanFromUrl
+          ? "AI Plan"
           : whatsappTradeFromUrl
-            ? "Whatsapp Trade"
-            : "Yearly Subscription",
+              ? "Whatsapp Trade"
+          : getUser()?.userType.id == 1 || activationCouponFromUrl
+            ? "Activation Coupon"
+            
+              : "Yearly Subscription",
     paymentGateway: "1",
     couponQuantity: 1,
     meetingReason: "",
@@ -228,9 +245,11 @@ const Checkout: React.FC = () => {
         ? parseFloat(instructorPrice)
         : whatsappTradeFromUrl
           ? parseFloat(whatsappPrice)
-          : planPrice
-            ? parseFloat(planPrice)
-            : 12.0,
+          : aiPlanFromUrl
+            ? parseFloat(aiPlanPrice)
+            : planPrice
+              ? parseFloat(planPrice)
+              : 12.0,
     quantity: 1,
     fees: feesPrice, //0, // Initialize with 0
     total:
@@ -238,9 +257,11 @@ const Checkout: React.FC = () => {
         ? parseFloat(instructorPrice)
         : whatsappTradeFromUrl
           ? parseFloat(whatsappPrice)
-          : planPrice
-            ? parseFloat(planPrice)
-            : 12.0, // Initial total without fees
+          : aiPlanFromUrl
+            ? parseFloat(aiPlanPrice)
+            : planPrice
+              ? parseFloat(planPrice)
+              : 12.0, // Initial total without fees
   });
 
   // Add useEffect to update pricing when payment gateways load
@@ -256,9 +277,11 @@ const Checkout: React.FC = () => {
           ? parseFloat(instructorPrice)
           : whatsappTradeFromUrl
             ? parseFloat(whatsappPrice)
-            : planPrice
-              ? parseFloat(planPrice)
-              : 12.0;
+            : aiPlanFromUrl
+              ? parseFloat(aiPlanPrice)
+              : planPrice
+                ? parseFloat(planPrice)
+                : 12.0;
       const feesPercent = Number(firstGateway.fee_percentage || 0);
       const fees = parseInt(firstGateway?.fees_amount); // (basePrice * feesPercent) / 100;
       setPricing((prev) => ({
@@ -271,6 +294,14 @@ const Checkout: React.FC = () => {
 
   // validation errors
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showWhatsappModal, setShowWhatsappModal] = useState(false);
+  const [whatsappAgreeChecked, setWhatsappAgreeChecked] = useState(false);
+  const [signatureName, setSignatureName] = useState("");
+  const today = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   useEffect(() => {
     callPaymentGateways();
@@ -411,6 +442,10 @@ const Checkout: React.FC = () => {
       basePrice = planPrice ? parseFloat(planPrice) : 12.0;
       quantity = 1;
       fees = feesAmount; // basePrice * (feesPercentage / 100);
+    } else if (data.subscriptionType === "AI Plan") {
+      basePrice = aiPlanPrice ? parseFloat(aiPlanPrice) : 10.0;
+      quantity = 1;
+      fees = feesAmount;
     } else if (data.subscriptionType === "Activation Coupon") {
       basePrice = planPrice ? parseFloat(planPrice) : 12.0;
       quantity = data.couponQuantity || 1;
@@ -489,8 +524,29 @@ const Checkout: React.FC = () => {
         return;
       }
 
+      // If Whatsapp Trade, show T&C modal and await user agreement
+      if (
+        formData.subscriptionType === "Whatsapp Trade" &&
+        !showWhatsappModal
+      ) {
+        setShowWhatsappModal(true);
+        return;
+      }
+
       // Process checkout
-      // include instructorMeetingData in metadata if present
+      await executeCheckout();
+    } catch (error) {
+      console.log(error);
+      errorMsg(
+        error.message
+          ? error.message
+          : "Something went wrong during checkout process. or already booked",
+      );
+    }
+  };
+
+  const executeCheckout = async () => {
+    try {
       const metadata = {
         ...formData,
         ...pricing,
@@ -499,6 +555,9 @@ const Checkout: React.FC = () => {
           : {}),
         ...(instructorDetails ? { instructorDetails } : {}),
         ...(selectedSlot ? { selectedSlot } : {}),
+        ...(formData.subscriptionType === "Whatsapp Trade"
+          ? { digitalSignature: signatureName, signatureDate: today }
+          : {}),
       };
       const payload = {
         transactionType: formData.subscriptionType,
@@ -514,24 +573,119 @@ const Checkout: React.FC = () => {
         }
       } else {
         console.log(selectedCryptoCurrency, "selectedCryptoCurrency");
-        payload.selectedCrypto = selectedCryptoCurrency.id;
+        payload.selectedCrypto = selectedCryptoCurrency?.id;
         const res = await api.post(API_ENDPOINTS.coinpaymentInvoice, payload);
         if (res.data.status) {
           // Redirect to Stripe Checkout
           window.location.href = res?.data?.data?.checkoutUrl;
         }
       }
-    } catch (error) {
-      console.log(error);
-      errorMsg(
-        error.message
-          ? error.message
-          : "Something went wrong during checkout process. or already booked",
-      );
+    } catch (err: any) {
+      console.error("executeCheckout error:", err);
+      errorMsg(err?.message || "Checkout failed");
     }
   };
   return (
     <div className="checkout-page">
+      {/* Whatsapp T&C Modal */}
+      {showWhatsappModal && (
+        <div className="tnc-modal-overlay">
+          <div className="tnc-modal">
+            <div className="tnc-modal-header">
+              <h3>Whatsapp Trade Terms & Conditions</h3>
+            </div>
+            <div className="tnc-modal-body">
+              <div className="tnc-modal-text">
+                <p>
+                  By purchasing the Whatsapp Trade subscription you agree that
+                  trade signals and trade ideas are for educational purposes
+                  only. Tradelive24 is not responsible for any losses. Signals
+                  may not always be accurate and market conditions can change
+                  rapidly.
+                </p>
+                <p>
+                  Please ensure the mobile number provided is correct and
+                  activated for WhatsApp. Standard messaging charges may apply.
+                </p>
+                <p>
+                  Refunds are subject to our refund policy. Continued use of the
+                  service implies acceptance of these terms.
+                </p>
+              </div>
+
+              <label className="tnc-accept">
+                <input
+                  type="checkbox"
+                  checked={whatsappAgreeChecked}
+                  onChange={(e) => setWhatsappAgreeChecked(e.target.checked)}
+                />
+                I have read and agree to the Terms & Conditions.
+              </label>
+
+              <div
+                style={{
+                  marginTop: 20,
+                  paddingTop: 20,
+                  borderTop: "1px solid #ddd",
+                }}
+              >
+                <label
+                  style={{ display: "block", marginBottom: 8, fontWeight: 600 }}
+                >
+                  Digital Signature *
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter your full name as signature"
+                  value={signatureName}
+                  onChange={(e) => setSignatureName(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "8px 12px",
+                    borderRadius: 4,
+                    border: "1px solid #ddd",
+                    fontFamily: "cursive",
+                    fontSize: 16,
+                    marginBottom: 8,
+                  }}
+                />
+                <div style={{ fontSize: 12, color: "#666", marginBottom: 12 }}>
+                  <strong>Date:</strong> {today}
+                </div>
+                {!signatureName && (
+                  <div style={{ fontSize: 12, color: "#e74c3c" }}>
+                    Please provide your signature to proceed
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="tnc-modal-actions">
+              <button
+                className="tnc-cancel"
+                onClick={() => {
+                  setShowWhatsappModal(false);
+                  setWhatsappAgreeChecked(false);
+                  setSignatureName("");
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="tnc-proceed"
+                disabled={!whatsappAgreeChecked || !signatureName}
+                onClick={async () => {
+                  setShowWhatsappModal(false);
+                  setWhatsappAgreeChecked(false);
+                  // proceed with checkout
+                  await executeCheckout();
+                }}
+              >
+                Agree & Proceed
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="checkout-container">
         <div className="checkout__header">
           <button className="back-button" onClick={handleBackToCalculators}>
@@ -878,11 +1032,11 @@ const Checkout: React.FC = () => {
                       >
                         <div className="subscription-header">
                           <CreditCard size={20} />
-                          <span>Whatsapp Trade Subscription</span>
+                          <span>Trade Signal Subscription</span>
                         </div>
                         <div className="subscription-description">
                           Get whatsapp tips and trade ideas directly on your
-                          phone for a year
+                          phone for 3 months
                         </div>
                       </label>
                     </div>
@@ -920,6 +1074,28 @@ const Checkout: React.FC = () => {
                         </label>
                       </div>
                     )}
+
+                    {/* <div className="subscription-option">
+                      <input
+                        type="radio"
+                        id="AI Plan"
+                        name="subscriptionType"
+                        checked={formData.subscriptionType === "AI Plan"}
+                        onChange={() =>
+                          handleInputChange("subscriptionType", "AI Plan")
+                        }
+                      />
+                      <label htmlFor="AI Plan" className="subscription-label">
+                        <div className="subscription-header">
+                          <LineChart size={20} />
+                          <span>AI Plan</span>
+                        </div>
+                        <div className="subscription-description">
+                          Access to the AI Chart Assistant (AI queries and image
+                          analysis)
+                        </div>
+                      </label>
+                    </div> */}
 
                     <div className="subscription-option">
                       <input
@@ -1122,7 +1298,6 @@ const Checkout: React.FC = () => {
           <div className="checkout-summary-section">
             <div className="summary-card">
               <h2 className="section-title">Order Summary</h2>
-              {console.log(pricing, "???")}
               <div className="summary-details">
                 <div className="summary-item">
                   <span className="summary-label">
@@ -1130,7 +1305,9 @@ const Checkout: React.FC = () => {
                       ? "Yearly Subscription"
                       : formData.subscriptionType === "Instructor Meeting"
                         ? "Instructor Meeting"
-                        : "Activation Coupons"}
+                        : formData.subscriptionType === "AI Plan"
+                          ? "AI Plan"
+                          : "Activation Coupons"}
                   </span>
 
                   <span className="summary-value">

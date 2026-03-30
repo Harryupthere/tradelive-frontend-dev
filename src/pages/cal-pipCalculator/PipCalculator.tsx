@@ -174,7 +174,7 @@ const PipCalculator: React.FC = () => {
             const addRecentActivity = async () => {
             try {
               const payload = {
-                action_id:3,
+                action_id:3,"action_type":"CALCULATOR",
                 table_name: "calculator",
                 table_id: 0,
                 meta: {route: `pip-calculator`}

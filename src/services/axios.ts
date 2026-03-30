@@ -75,11 +75,11 @@ instance.interceptors.response.use(
      */
     console.log("status",status,message);
     if (status === 401 && message === "Multiple login attempts detected.") {
-      alert("mulyi ex");
+      //alert("mulyi ex");
 
       store.dispatch(logout());
       errorMsg(message);
-     // window.location.href = `${base}login`;
+     window.location.href = `${base}login`;
       return Promise.reject(error);
     }
 

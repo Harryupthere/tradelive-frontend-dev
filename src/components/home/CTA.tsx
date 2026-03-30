@@ -132,7 +132,7 @@ const CTA = () => {
   ];
 
   return (
-    <div className="learning-section">
+    <div className="learning-section" id="cta-section">
       <div className="blurs_wrapper">
         <div className="blurs_object is-fluo"></div>
       </div>

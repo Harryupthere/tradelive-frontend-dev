@@ -77,6 +77,9 @@ recentActivity:'/recent-activities',
 application_questions:'/applications/questions',
 application_submit:'/applications/submit',
 application_content:'/applications/all-content',
+
+aiSubmitQuery:'/ai/chart-question',
+  aiChatHistory:'/ai/history',
 };
 
 

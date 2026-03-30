@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../utils/customFn";
+import "./ResourceCard.scss";
 const base = import.meta.env.VITE_BASE;
 
 export interface Resource {
@@ -18,6 +19,7 @@ interface ResourceCardProps {
 
 const ResourceCard: React.FC<ResourceCardProps> = ({ resource }) => {
   const navigate = useNavigate();
+
   return (
     <div className="course-card">
       <div className="course-card-img">
@@ -25,7 +27,9 @@ const ResourceCard: React.FC<ResourceCardProps> = ({ resource }) => {
       </div>
       <div className="card-content">
         <h3 className="title">{resource.name}</h3>
-        <p>{resource.description}</p>
+        <div className="description-wrapper">
+          <p>{resource.description}</p>
+        </div>
         {/* metadata badges/tags */}
         {(() => {
           // normalize metadata: could be array, JSON string, or object

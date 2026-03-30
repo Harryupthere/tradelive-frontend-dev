@@ -69,77 +69,147 @@ const Router = () => {
         </ProtectedPage>
       ),
     },
-    // { path: `${base}reset-password`, element: <ResetPasswordPage /> },
-    // { path: `${base}forgot-password`, element: <ForgetPasswordPage /> },
-    // { path: `${base}payment-success`, element: <PaymentSuccess /> },
-    // { path: `${base}payment-failure`, element: <PaymentFailure /> },
+    { path: `${base}reset-password`, element: <ResetPasswordPage /> },
+    { path: `${base}forgot-password`, element: <ForgetPasswordPage /> },
+    { path: `${base}payment-success`, element: <PaymentSuccess /> },
+    { path: `${base}payment-failure`, element: <PaymentFailure /> },
     {
       element: <Layout />,
       children: [
         { path: `${base}`, element: <Home /> },
         
-        // { path: `${base}forum`, element: <ForumPage /> },
-        // { path: `${base}forum/:forumId`, element: <ForumTopicsPage /> },
+        { path: `${base}forum`, element: <ForumPage /> },
+        { path: `${base}forum/:forumId`, element: <ForumTopicsPage /> },
         { path: `${base}terms-and-condition`, element: <TermsConditions /> },
         { path: `${base}privacy-policy`, element: <PrivacyPolicy /> },
-        // { path: `${base}contactus`, element: <ContactUs /> },
+        { path: `${base}contactus`, element: <ContactUs /> },
         { path: `${base}about-us`, element: <AboutUs /> },
         // { path: `${base}news`, element: <NewsListing /> },
-        // { path: `${base}news-detail/:id`, element: <NewsDetailPage /> },
+
+        { path: `${base}news-detail/:id`, element: <NewsDetailPage /> },
 
         //  below this i want the ProtectedPage
 
         // { path: `${base}course-overview/:id`, element: <CourseOverview /> },
         // { path: `${base}course/detail/:id`, element: <CourseDetail /> },
-        // { path: `${base}currency-converter`, element: <CurrencyConverter /> },
-        // {
-        //   path: `${base}position-size-calculator`,
-        //   element: <PositionSizeCalculator />,
-        // },
-        // { path: `${base}pip-calculator`, element: <PipCalculator /> },
-        // { path: `${base}margin-calculator`, element: <MarginCalculator /> },
-        // {
-        //   path: `${base}fibonacci-calculator`,
-        //   element: <FibonacciCalculator />,
-        // },
-        // {
-        //   path: `${base}pivot-point-calculator`,
-        //   element: <PivotPointCalculator />,
-        // },
-        // {
-        //   path: `${base}risk-of-ruin-calculator`,
-        //   element: <RiskOfRuinCalculator />,
-        // },
-        // {
-        //   path: `${base}compounding-calculator`,
-        //   element: <CompoundingCalculator />,
-        // },
-        // { path: `${base}drawdown-calculator`, element: <DrawdownCalculator /> },
-        // { path: `${base}leverage-calculator`, element: <LeverageCalculator /> },
-        // { path: `${base}profit-calculator`, element: <ProfitCalculator /> },
-        // { path: `${base}rebate-calculator`, element: <RebateCalculator /> },
+        {
+          path: `${base}currency-converter`,
+          element: (
+            <ProtectedPage condition={!!isUser}>
+              <CurrencyConverter />
+            </ProtectedPage>
+          ),
+        },
+        {
+          path: `${base}position-size-calculator`,
+          element: (
+            <ProtectedPage condition={!!isUser}>
+              <PositionSizeCalculator />
+            </ProtectedPage>
+          ),
+        },
+        {
+          path: `${base}pip-calculator`,
+          element: (
+            <ProtectedPage condition={!!isUser}>
+              <PipCalculator />
+            </ProtectedPage>
+          ),
+        },
+        {
+          path: `${base}margin-calculator`,
+          element: (
+            <ProtectedPage condition={!!isUser}>
+              <MarginCalculator />
+            </ProtectedPage>
+          ),
+        },
+        {
+          path: `${base}fibonacci-calculator`,
+          element: (
+            <ProtectedPage condition={!!isUser}>
+              <FibonacciCalculator />
+            </ProtectedPage>
+          ),
+        },
+        {
+          path: `${base}pivot-point-calculator`,
+          element: (
+            <ProtectedPage condition={!!isUser}>
+              <PivotPointCalculator />
+            </ProtectedPage>
+          ),
+        },
+        {
+          path: `${base}risk-of-ruin-calculator`,
+          element: (
+            <ProtectedPage condition={!!isUser}>
+              <RiskOfRuinCalculator />
+            </ProtectedPage>
+          ),
+        },
+        {
+          path: `${base}compounding-calculator`,
+          element: (
+            <ProtectedPage condition={!!isUser}>
+              <CompoundingCalculator />
+            </ProtectedPage>
+          ),
+        },
+        {
+          path: `${base}drawdown-calculator`,
+          element: (
+            <ProtectedPage condition={!!isUser}>
+              <DrawdownCalculator />
+            </ProtectedPage>
+          ),
+        },
+        {
+          path: `${base}leverage-calculator`,
+          element: (
+            <ProtectedPage condition={!!isUser}>
+              <LeverageCalculator />
+            </ProtectedPage>
+          ),
+        },
+        {
+          path: `${base}profit-calculator`,
+          element: (
+            <ProtectedPage condition={!!isUser}>
+              <ProfitCalculator />
+            </ProtectedPage>
+          ),
+        },
+        {
+          path: `${base}rebate-calculator`,
+          element: (
+            <ProtectedPage condition={!!isUser}>
+              <RebateCalculator />
+            </ProtectedPage>
+          ),
+        },
 
-        // { path: `${base}checkout`, element: <Checkout /> },
-        // // { path: `${base}activation-coupons`, element: <ActivationCoupons /> },
-        // { path: `${base}instructor/:id`, element: <InstructorProfile /> },
+        { path: `${base}checkout`, element: <Checkout /> },
+        // { path: `${base}activation-coupons`, element: <ActivationCoupons /> },
+        { path: `${base}instructor/:id`, element: <InstructorProfile /> },
 
-        // {
-        //   path: `${base}course-overview/:id`,
-        //   element: (
-        //     <ProtectedPage condition={!!isUser}>
-        //       <CourseOverview />
-        //     </ProtectedPage>
-        //   ),
-        // },
+        {
+          path: `${base}course-overview/:id`,
+          element: (
+            <ProtectedPage condition={!!isUser}>
+              <CourseOverview />
+            </ProtectedPage>
+          ),
+        },
 
-        // {
-        //   path: `${base}course/detail/:id`,
-        //   element: (
-        //     <ProtectedPage condition={!!isUser}>
-        //       <CourseDetail />
-        //     </ProtectedPage>
-        //   ),
-        // },
+        {
+          path: `${base}course/detail/:id`,
+          element: (
+            <ProtectedPage condition={!!isUser}>
+              <CourseDetail />
+            </ProtectedPage>
+          ),
+        },
 
         // {
         //   path: `${base}currency-converter`,
@@ -267,14 +337,14 @@ const Router = () => {
         //   ),
         // },
 
-        // {
-        //   path: `${base}instructor/:id`,
-        //   element: (
-        //     <ProtectedPage condition={!!isUser}>
-        //       <InstructorProfile />
-        //     </ProtectedPage>
-        //   ),
-        // },
+        {
+          path: `${base}instructor/:id`,
+          element: (
+            <ProtectedPage condition={!!isUser}>
+              <InstructorProfile />
+            </ProtectedPage>
+          ),
+        },
       ],
     },
     {

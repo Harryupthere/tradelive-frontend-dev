@@ -621,14 +621,14 @@ const ProfilePage: React.FC = () => {
           <h1 className="profile-page__title">Profile Settings</h1>
           <p className="profile-page__subtitle"></p>
         </div>
-        {getUser()?.userType.id == 1 && (
+        {/* {getUser()?.userType.id == 1 && (
           <button
             className="profile-page__save-btn"
             onClick={() => navigate(`${base}checkout`)}
           >
             <ArrowUpCircle size={16} /> Upgrade
           </button>
-        )}
+        )} */}
         {/* <button
           className="profile-page__save-btn"
           onClick={() => navigate(`${base}activation-coupons`)}

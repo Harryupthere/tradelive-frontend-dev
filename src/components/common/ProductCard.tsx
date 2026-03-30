@@ -28,7 +28,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ course }) => {
       {/* Tag showing course type (top-right) */}
       {(course.type || course.type) && (
         <div className="course-card__tag">
-          {course.type ==1?"Free":"Prime" || course.type==1?"Free":"Prime"}
+          {course.type == 1 ? "Free" : "Prime"}
         </div>
       )}
       <div className="course-card-img">

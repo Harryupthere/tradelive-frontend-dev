@@ -26,51 +26,57 @@ const mainMenuItems = [
     exact: true,
   },
 
-  // { path: `${base}courses`, icon: Notebook, label: "Courses", exact: true },
-  // { path: `${base}news`, icon: Newspaper, label: "News", exact: true },
-  // {
-  //   path: `${base}forax-calculators`,
-  //   icon: Calculator,
-  //   label: "FX Calculators",
-  //   exact: true,
-  // },
+  { path: `${base}courses`, icon: Notebook, label: "Courses", exact: true },
+  { path: `${base}news`, icon: Newspaper, label: "News", exact: true },
+  {
+    path: `${base}forax-calculators`,
+    icon: Calculator,
+    label: "FX Calculators",
+    exact: true,
+  },
   // {
   //   path: `${base}instructors`,
   //   icon: School,
   //   label: "Mentor Hub",
   //   exact: true,
   // },
-  // {
-  //   path: `${base}chat-discussions`,
-  //   icon: Users2Icon,
-  //   label: "Chat Discussion",
-  //   exact: true,
-  // },
-  // {
-  //   path: `${base}trade-journal`,
-  //   icon: ArrowUpRightSquareIcon,
-  //   label: "Trade Journal",
-  //   exact: true,
-  // },
+  {
+    path: `${base}chat-discussions`,
+    icon: Users2Icon,
+    label: "Chat Discussion",
+    exact: true,
+  },
+  {
+    path: `${base}trade-journal`,
+    icon: ArrowUpRightSquareIcon,
+    label: "Trade Journal",
+    exact: true,
+  },
   { path: `${base}resources`, icon: BookPlus, label: "Resources", exact: true },
     {
     path: `${base}faq`,
     icon: NotebookText,
-    label: "Faq",
+    label: "FAQ",
     exact: true,
   },
-  // {
-  //   path: `${base}activation-coupons`,
-  //   icon: TicketPlus,
-  //   label: "Activation Coupons",
-  //   exact: true,
-  // },
+  {
+    path: `${base}activation-coupons`,
+    icon: TicketPlus,
+    label: "Activation Coupons",
+    exact: true,
+  },
 
-  // { path: `${base}profile`, icon: Home, label: "Profile", exact: true },
+  { path: `${base}profile`, icon: Home, label: "Profile", exact: true },
   // {
   //   path: `${base}login-sessions`,
   //   icon: LogIn,
   //   label: "Login Sessions",
+  //   exact: true,
+  // },
+  //   {
+  //   path: `${base}ai-chart-chat`,
+  //   icon: LogIn,
+  //   label: "AI Chart Chat",
   //   exact: true,
   // },
 
@@ -202,7 +208,7 @@ function DashboardSidebar({ sidebarOpen, closeSidebar }) {
                   FAQ
                 </Link>
               </div>
-            </div>
+            </div> */}
 
             <button
               type="button"
@@ -215,9 +221,11 @@ function DashboardSidebar({ sidebarOpen, closeSidebar }) {
                   alt="Tradelive24"
                   className="logo-images"
                 />
-                <span className="menu-label">Whatsapp Trade</span>
+                <span className="menu-label">Trade Signals</span>
              
-            </button> */}
+            </button> 
+
+            
             <button
               type="button"
               onClick={handleLogout}

@@ -36,6 +36,14 @@ const Header = () => {
     setIsMobileMenuOpen(false);
   };
 
+  const handleScrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      closeMobileMenu();
+    }
+  };
+
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -118,11 +126,12 @@ const Header = () => {
             {/* Desktop Navigation */}
             <ul className='desktop-nav'>
               <li><Link to={`${base}`} className={isActive(`${base}`)}>Home</Link></li>
-              {/* <li><Link to={`${base}forum`} className={isActive(`${base}forum`)}>Forum</Link></li>
-              <li><Link to={`${base}news`} className={isActive(`${base}news`)}>News</Link></li>
+              {/* <li><Link to={`${base}forum`} className={isActive(`${base}forum`)}>Forum</Link></li> */}
+               {/*<li><Link to={`${base}news`} className={isActive(`${base}news`)}>News</Link></li>
               <li><Link to={`${base}contactus`} className={isActive(`${base}contactus`)}>Contact</Link></li> */}
+              
               <li><Link to={`${base}about-us`} className={isActive(`${base}about-us`)}>About Us</Link></li>
-              <li><a href='#faq' className={isActive(`${base}faq`)}>FAQ</a></li>
+              <li><button type="button" onClick={() => handleScrollToSection('cta-section')} className='scroll-link'>FAQ</button></li>
 
             </ul>
             <div className='desktop-nav right-drawer'>
@@ -153,6 +162,7 @@ const Header = () => {
             <li><Link to={`${base}news`} onClick={closeMobileMenu}>News</Link></li> */}
             <li><Link to={`${base}contactus`} onClick={closeMobileMenu}>Contact</Link></li>
             <li><Link to={`${base}about-us`} onClick={closeMobileMenu}>About Us</Link></li>
+            <li><button type="button" onClick={() => handleScrollToSection('cta-section')} className='scroll-link'>FAQ</button></li>
           </ul>
             {/* <Translator /> */}
           {renderUserArea()}

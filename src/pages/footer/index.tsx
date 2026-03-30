@@ -35,11 +35,11 @@ const Footer = () => {
                 <li>News</li>
                 <li>Courses</li>
                 <li>FX Calculator</li>
-                <li>Mentors Hub</li>
+                {/* <li>Mentors Hub</li> */}
                 <li>Chat & Discussion</li>
                 <li>About Us</li>
                 <li>Contact Us</li>
-                <li>Downloads</li>
+                {/* <li>Downloads</li> */}
               </ul>
             </div>
           </div>

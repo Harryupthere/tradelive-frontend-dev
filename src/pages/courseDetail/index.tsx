@@ -64,6 +64,7 @@ interface CourseData {
   description: string;
   thumbnail: string;
   lectures: Lecture[];
+  extra_data: [];
   // total number of lectures (content length)
   totalLectures?: number;
   // number of watched/completed lectures according to API (trueCount)
@@ -78,7 +79,7 @@ const CourseDetail: React.FC = () => {
   const userDetails = getUser();
   const { id } = useParams();
 
-  const videoWrapperRef = useRef(null);
+  const videoWrapperRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef(null);
   const [courseData, setCourseData] = useState<CourseData | null>(null);
   const [currentLecture, setCurrentLecture] = useState<Lecture | null>(null);
@@ -92,33 +93,32 @@ const CourseDetail: React.FC = () => {
   }, []);
 
   useEffect(() => {
-  const onFullscreenChange = () => {
-    setIsFullscreen(!!document.fullscreenElement);
-  };
+    const onFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
 
-  document.addEventListener("fullscreenchange", onFullscreenChange);
+    document.addEventListener("fullscreenchange", onFullscreenChange);
 
-  return () => {
-    document.removeEventListener("fullscreenchange", onFullscreenChange);
-  };
-}, []);
-
+    return () => {
+      document.removeEventListener("fullscreenchange", onFullscreenChange);
+    };
+  }, []);
 
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-const toggleFullscreen = async () => {
-  try {
-    if (!document.fullscreenElement) {
-      await videoWrapperRef.current?.requestFullscreen();
-      setIsFullscreen(true);
-    } else {
-      await document.exitFullscreen();
-      setIsFullscreen(false);
+  const toggleFullscreen = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await videoWrapperRef.current?.requestFullscreen();
+        setIsFullscreen(true);
+      } else {
+        await document.exitFullscreen();
+        setIsFullscreen(false);
+      }
+    } catch (err) {
+      console.log("Fullscreen error:", err);
     }
-  } catch (err) {
-    console.log("Fullscreen error:", err);
-  }
-};
+  };
 
   const courseOverviewApiCall = async () => {
     const res = await api.get(`${API_ENDPOINTS.courseDetails}/${id}`);
@@ -145,6 +145,8 @@ const toggleFullscreen = async () => {
         //totalDuration: apiData.product.meta.duration,
         description: apiData.product.description,
         thumbnail: apiData.product.preview_image,
+          extra_data: apiData.product.extra_data || null,
+
         lectures: (apiData.content || []).map((item: any, idx: number) => ({
           id: String(idx + 1),
           title: item.heading,
@@ -155,6 +157,7 @@ const toggleFullscreen = async () => {
           description: item.description,
           thumbnail: item.thumbnail,
           subheading: item.subheading,
+          extra_data: item.extra_data || null,
         })),
         // additional metadata derived from enrollment_progress
         totalLectures: totalLectures,
@@ -219,7 +222,7 @@ const toggleFullscreen = async () => {
     navigate(`${base}course-overview/${id}`);
   };
 
-  const Watermark = ({ text }) => {
+  const Watermark: React.FC<{ text: string }> = ({ text }) => {
     const [pos, setPos] = useState({ top: 10, left: 10 });
 
     useEffect(() => {
@@ -265,29 +268,38 @@ const toggleFullscreen = async () => {
                     <video
                       ref={videoRef}
                       key={currentLecture.id}
-                      controls
-                      poster={currentLecture.thumbnail}
-                      onPlay={() => callUpdateProgress()}
-                      className="main-video"
+                      // TODO: Uncomment controls when video is ready
                       // controls
-                      controlsList="nodownload noplaybackrate"
+                      poster={currentLecture.thumbnail}
+                      // TODO: Uncomment onPlay when video is ready
+                      // onPlay={() => callUpdateProgress()}
+                      className="main-video"
+                      // TODO: Uncomment controlsList when video is ready
+                      // controlsList="nodownload noplaybackrate"
                       disablePictureInPicture
                       disableRemotePlayback
                       onContextMenu={(e) => e.preventDefault()} // disable right-click
+                      // TODO: Remove this when video is ready to prevent accidental playing
+                      onPlay={(e) => e.preventDefault()}
                     >
                       <source src={currentLecture.videoUrl} type="video/mp4" />
                       Your browser does not support the video tag.
                     </video>
                     <Watermark text={`User: ${userDetails?.video_unique_id}`} />
-                   <button className="fullscreen-btn" onClick={toggleFullscreen}>
-  {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
-</button>
+                    <button
+                      className="fullscreen-btn"
+                      onClick={toggleFullscreen}
+                    >
+                      {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+                    </button>
 
                     {isPlaying && (
                       <div className="video-overlay">
                         <button
                           className="play-button"
-                          onClick={handlePlayPause}
+                          // TODO: Uncomment the line below when video is ready to play
+                          // onClick={handlePlayPause}
+                          disabled // Remove this line when video is ready
                         >
                           <Play size={24} />
                         </button>
@@ -338,6 +350,46 @@ const toggleFullscreen = async () => {
                 <h1>{courseData.title}</h1>
 
                 <p>{courseData.subtitle}</p>
+
+                {/* here i want to show extra_data which has key value pairs like {"name":"module1 video 1","link":"pdf link"} */}
+                 {courseData?.extra_data &&
+                  courseData?.extra_data.length > 0 && (
+                    <div className="extra-data">
+                <p className="documents-title">Course Documents</p>
+
+                      {courseData.extra_data.map((item, index) => (
+                        <div key={index} className="extra-item">
+                          <h4>{item.name}</h4>
+                          <a
+                            href={item.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Open PDF
+                          </a>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                {currentLecture?.extra_data &&
+                  currentLecture?.extra_data.length > 0 && (
+                    <div className="extra-data">
+                <p className="documents-title">Current Lecture Documents</p>
+
+                      {currentLecture.extra_data.map((item, index) => (
+                        <div key={index} className="extra-item">
+                          <h4>{item.name}</h4>
+                          <a
+                            href={item.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Open PDF
+                          </a>
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
                 {/* <div className="course-meta">
               <div className="instructor">

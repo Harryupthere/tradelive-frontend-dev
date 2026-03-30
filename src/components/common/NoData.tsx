@@ -1,7 +1,7 @@
 import { SearchX } from 'lucide-react'
 
 
-const NoData = ({col} ) => {
+const NoData = ({col}: {col?: number}) => {
   return (
     <>  
       {col ?

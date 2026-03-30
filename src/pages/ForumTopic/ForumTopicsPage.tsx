@@ -19,6 +19,8 @@ import { Box, IconButton, Modal, Typography } from "@mui/material";
 import image from "../../utils/helpers";
 
 import { errorMsg, successMsg } from "../../utils/customFn";
+import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
+import { api } from "../../api/Service";
 
 const base = import.meta.env.VITE_BASE;
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -175,7 +177,6 @@ const ForumTopicsPage: React.FC = () => {
 
       setTopicsData(data);
       if (data.kind === "threads") {
-    
         setForumCategoryIdNumber(data.data[0]?.forumCategory.id || null);
       }
 
@@ -247,7 +248,7 @@ const ForumTopicsPage: React.FC = () => {
     const date = new Date(dateString);
     const now = new Date();
     const diffInHours = Math.floor(
-      (now.getTime() - date.getTime()) / (1000 * 60 * 60)
+      (now.getTime() - date.getTime()) / (1000 * 60 * 60),
     );
 
     if (diffInHours < 1) return "Just now";
@@ -263,11 +264,11 @@ const ForumTopicsPage: React.FC = () => {
       return (topicsData.data as SubCategory[]).filter(
         (item) =>
           item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.description.toLowerCase().includes(searchTerm.toLowerCase())
+          item.description.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     } else {
       return (topicsData.data as Thread[]).filter((item) =>
-        item.message.toLowerCase().includes(searchTerm.toLowerCase())
+        item.message.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
   };
@@ -303,11 +304,18 @@ const ForumTopicsPage: React.FC = () => {
   const uploadFileToS3 = async (file: File) => {
     try {
       // 1. Get presigned URL from backend
-      const res = await axios.post(`${apiUrl}upload/request`, {
+      // const res = await axios.post(`${apiUrl}upload/request`, {
+      //   filename: file.name,
+      //   fileType: file.type,
+      // });
+      // const { uploadUrl, fileUrl } = res.data.data;
+
+      const res = await api.post(API_ENDPOINTS.uploadRequest, {
         filename: file.name,
         fileType: file.type,
       });
-      const { uploadUrl, fileUrl } = res.data.data;
+      const { uploadUrl, fileUrl } = res?.data.data || {};
+      if (!uploadUrl || !fileUrl) throw new Error("Invalid upload response");
 
       // 2. Upload file directly to S3
       await fetch(uploadUrl, {

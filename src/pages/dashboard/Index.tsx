@@ -13,11 +13,15 @@ import {
   Eye,
   Calculator,
 } from "lucide-react";
+import { Grid } from "@mui/material";
 import "./Dashboard.scss";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api/Service";
 import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
 import { getUser } from "../../utils/tokenUtils";
+import ResourceCard, { Resource } from "../../components/common/ResourceCard";
+import NoData from "../../components/common/NoData";
+
 const base = import.meta.env.VITE_BASE;
 interface UserData {
   name: string;
@@ -41,7 +45,9 @@ const actionIconMap = {
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
-    const [recentActions,setRecentActions] = useState([
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [multipleLogins, setMultipleLogins] = useState(false);
+  const [recentActions, setRecentActions] = useState([
     // {
     //   title: "Last Course Viewed",
     //   value:
@@ -166,19 +172,25 @@ const Dashboard: React.FC = () => {
           lastCalculator: res.data.data.data.lastCalculator,
         });
 
-        // Build recent actions with icons
-      const recentActionsWithIcons = [
-        res.data.data.data.lastCourse,
-        res.data.data.data.lastNews,
-        res.data.data.data.lastCalculator,
-      ]
-        .filter(Boolean) // removes null/undefined
-        .map((item) => ({
-          ...item,
-          icon: actionIconMap[item?.action?.action_key] || Activity,
-        }));
+        // setResources(res.data.data.data.resources);
+        setResources(res.data.data.data.resourses);
+        if(res.data.data.data.multipleLoginAttempts>10){
+          setMultipleLogins(true);
+        }
 
-      setRecentActions(recentActionsWithIcons);
+        // Build recent actions with icons
+        const recentActionsWithIcons = [
+          res.data.data.data.lastCourse,
+          res.data.data.data.lastNews,
+          res.data.data.data.lastCalculator,
+        ]
+          .filter(Boolean) // removes null/undefined
+          .map((item) => ({
+            ...item,
+            icon: actionIconMap[item?.action?.action_key] || Activity,
+          }));
+
+        setRecentActions(recentActionsWithIcons);
       }
     } catch (error) {
       console.log("Error fetching dashboard data", error);
@@ -229,7 +241,6 @@ const Dashboard: React.FC = () => {
       description: "Journal entries",
     },
   ];
-
 
   // const recentActions = [
   //   {
@@ -292,149 +303,192 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="dashboard">
-        {/* Header Section */}
-        <div className="dashboard__header">
-          <div className="dashboard__profile-section">
-            <div className="dashboard__welcome">
-              <h1 className="dashboard__welcome-title">
-                Welcome {userData.name}
-              </h1>
+      {/* Header Section */}
+      <div className="dashboard__header">
+        <div className="dashboard__profile-section">
+          <div className="dashboard__welcome">
+            <h1 className="dashboard__welcome-title">
+              Welcome {userData.name}
+            </h1>
+          </div>
+        </div>
+      </div>
+
+      {/* Welcome Message */}
+      <div className="dashboard__welcome-message">
+        <div className="dashboard__message-content">
+          <h2>Welcome to your learning journey!</h2>
+          <p>
+            Continue exploring our courses, stay updated with the latest market
+            news, and track your progress. Your success is our priority.
+          </p>
+        </div>
+      </div>
+
+      {/* Multiple Login Alert */}
+      {multipleLogins && (
+        <div className="dashboard__alert-warning">
+          <div className="dashboard__alert-content">
+            <div className="dashboard__alert-icon">
+              <Shield size={24} />
+            </div>
+            <div className="dashboard__alert-text">
+              <h3>Suspicious Login Activity Detected</h3>
+              <p>
+                We've detected multiple login attempts from different locations or devices on your account. 
+                If this wasn't you, please secure your password immediately. 
+                <strong> Continued suspicious activity may result in temporary suspension or permanent account deactivation.</strong>
+              </p>
             </div>
           </div>
         </div>
+      )}
 
-        {/* Welcome Message */}
-        <div className="dashboard__welcome-message">
-          <div className="dashboard__message-content">
-            <h2>Welcome to your learning journey!</h2>
-            <p>
-              Continue exploring our courses, stay updated with the latest
-              market news, and track your progress. Your success is our
-              priority.
-            </p>
-          </div>
+      {/* Statistics Grid */}
+      <div className="dashboard__statistics">
+        <div className="dashboard__section-header">
+          <h2 className="dashboard__section-title">Your Stats</h2>
+          <div className="dashboard__section-line"></div>
         </div>
-
-        {/* Statistics Grid */}
-        <div className="dashboard__statistics">
-          <div className="dashboard__section-header">
-            <h2 className="dashboard__section-title">Your Stats</h2>
-            <div className="dashboard__section-line"></div>
-          </div>
-          <div className="dashboard__stats-grid">
-            {statisticsCards.map((stat, index) => (
-              <div
-                key={stat.title}
-                className={`dashboard__stat-card dashboard__stat-card--${stat.color}`}
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className="dashboard__stat-icon">
-                  <stat.icon size={24} />
-                </div>
-                <div className="dashboard__stat-content">
-                  <h3 className="dashboard__stat-title">{stat.title}</h3>
-                  <div className="dashboard__stat-value">{stat.value}</div>
-                  <p className="dashboard__stat-description">
-                    {stat.description}
-                  </p>
-                </div>
-                <div className="dashboard__stat-glow"></div>
+        <div className="dashboard__stats-grid">
+          {statisticsCards.map((stat, index) => (
+            <div
+              key={stat.title}
+              className={`dashboard__stat-card dashboard__stat-card--${stat.color}`}
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              <div className="dashboard__stat-icon">
+                <stat.icon size={24} />
               </div>
-            ))}
-          </div>
+              <div className="dashboard__stat-content">
+                <h3 className="dashboard__stat-title">{stat.title}</h3>
+                <div className="dashboard__stat-value">{stat.value}</div>
+                <p className="dashboard__stat-description">
+                  {stat.description}
+                </p>
+              </div>
+              <div className="dashboard__stat-glow"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Resourses */}
+      {/* <div className="dashboard__recent-actions">
+        <div className="dashboard__section-header">
+          <h2 className="dashboard__section-title">Resourses</h2>
+          <div className="dashboard__section-line"></div>
         </div>
 
-        {/* Recent Actions */}
-        <div className="dashboard__recent-actions">
-          <div className="dashboard__section-header">
-            <h2 className="dashboard__section-title">Recent Actions</h2>
-            <div className="dashboard__section-line"></div>
-          </div>
+        <div className="dashboard__actions-grid">
+          <Grid container spacing={3}>
+            {resources?.length > 0 ? (
+              resources?.map((item) => (
+                <Grid size={{ md: 4, sm: 6 }} key={item.id}>
+                  <ResourceCard resource={item} />
+                </Grid>
+              ))
+            ) : (
+              <NoData />
+            )}
+          </Grid>
+        </div>
+      </div> */}
 
-          <div className="dashboard__actions-grid">
-            {recentActions.map((action, index) => (
+      {/* Recent Actions */}
+      <div className="dashboard__recent-actions">
+        <div className="dashboard__section-header">
+          <h2 className="dashboard__section-title">Recent Actions</h2>
+          <div className="dashboard__section-line"></div>
+        </div>
+
+        <div className="dashboard__actions-grid">
+          {recentActions.map((action, index) => (
+            <div
+              key={action.action.label}
+              className="dashboard__action-card"
+              style={{ animationDelay: `${(index + 6) * 0.1}s` }}
+            >
+              <div className="dashboard__action-icon">
+                <action.icon size={28} />
+              </div>
+              <div className="dashboard__action-content">
+                <h3 className="dashboard__action-title">
+                  {action.action.label}
+                </h3>
+                <div className="dashboard__action-value">
+                  {action.action.label}
+                </div>
+                <div className="dashboard__action-time">
+                  {action.description && (
+                    <>
+                      <Clock size={14} />
+                      <span>{action.description}</span>
+                    </>
+                  )}
+                </div>
+              </div>
               <div
-                key={action.action.label}
-                className="dashboard__action-card"
-                style={{ animationDelay: `${(index + 6) * 0.1}s` }}
-                
-              >
-                <div className="dashboard__action-icon">
-                  <action.icon size={28} />
-                </div>
-                <div className="dashboard__action-content">
-                  <h3 className="dashboard__action-title">{action.action.label}</h3>
-                  <div className="dashboard__action-value">{action.action.label}</div>
-                   <div className="dashboard__action-time">
-                    {action.description && (
-                      <>
-                        <Clock size={14} />
-                        <span>{action.description}</span>
-                      </>
-                    )}
-                  </div> 
-                </div>
-                <div className="dashboard__action-arrow" onClick={() => {
+                className="dashboard__action-arrow"
+                onClick={() => {
                   handlepageChange(`${action.meta.route}`);
-                }}>
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path
-                      d="M6 12L10 8L6 4"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path
+                    d="M6 12L10 8L6 4"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="dashboard__quick-actions">
+        <div className="dashboard__section-header">
+          <h2 className="dashboard__section-title">Quick Actions</h2>
+          <div className="dashboard__section-line"></div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="dashboard__quick-actions">
-          <div className="dashboard__section-header">
-            <h2 className="dashboard__section-title">Quick Actions</h2>
-            <div className="dashboard__section-line"></div>
-          </div>
-
-          <div className="dashboard__quick-buttons">
-            <button
-              className="dashboard__quick-btn dashboard__quick-btn--primary"
-              onClick={() => {
-                // handlepageChange("course");
-                handlepageChange("dashboard");
-
-              }}
-            >
-              <BookOpen size={20} />
-              Browse Courses
-            </button>
-            <button
-              className="dashboard__quick-btn dashboard__quick-btn--secondary"
-              onClick={() => {
-                // handlepageChange("news");
-                handlepageChange("dashboard");
-
-              }}
-            >
-              <Newspaper size={20} />
-              Latest News
-            </button>
-            <button
-              className="dashboard__quick-btn dashboard__quick-btn--accent"
-              onClick={() => {
-                // handlepageChange("trade-journal");
-                handlepageChange("dashboard");
-
-              }}
-            >
-              <TrendingUp size={20} />
-              Trade Journal
-            </button>
-          </div>
+        <div className="dashboard__quick-buttons">
+          <button
+            className="dashboard__quick-btn dashboard__quick-btn--primary"
+            onClick={() => {
+              handlepageChange("courses");
+              // handlepageChange("dashboard");
+            }}
+          >
+            <BookOpen size={20} />
+            Browse Courses
+          </button>
+          <button
+            className="dashboard__quick-btn dashboard__quick-btn--secondary"
+            onClick={() => {
+              handlepageChange("news");
+              // handlepageChange("dashboard");
+            }}
+          >
+            <Newspaper size={20} />
+            Latest News
+          </button>
+          <button
+            className="dashboard__quick-btn dashboard__quick-btn--accent"
+            onClick={() => {
+              handlepageChange("trade-journal");
+              // handlepageChange("dashboard");
+            }}
+          >
+            <TrendingUp size={20} />
+            Trade Journal
+          </button>
         </div>
+      </div>
     </div>
   );
 };

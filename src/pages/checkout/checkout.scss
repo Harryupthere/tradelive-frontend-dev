@@ -487,6 +487,100 @@
     }
   }
 
+  /* Whatsapp T&C Modal */
+  .tnc-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 20px;
+  }
+
+  .tnc-modal {
+    width: 680px;
+    max-width: 100%;
+    background: rgba(30, 30, 30, 0.98);
+    border-radius: 12px;
+    border: 1px solid rgba(212, 255, 0, 0.12);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tnc-modal-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  .tnc-modal-header h3 {
+    margin: 0;
+    color: #d4ff00;
+    font-size: 1.25rem;
+  }
+
+  .tnc-modal-body {
+    padding: 18px 22px;
+    max-height: 48vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .tnc-modal-text p {
+    margin: 0 0 12px 0;
+    color: #e0e0e0;
+    line-height: 1.5;
+    font-size: 0.95rem;
+  }
+
+  .tnc-accept {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #dfe6cf;
+    font-weight: 600;
+    margin-top: 8px;
+  }
+
+  .tnc-modal-actions {
+    padding: 14px 22px;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+  }
+
+  .tnc-cancel,
+  .tnc-proceed {
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+  }
+
+  .tnc-cancel {
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .tnc-proceed {
+    background: linear-gradient(135deg, #d4ff00 0%, #b8e600 100%);
+    color: #111;
+  }
+
+  .tnc-proceed:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
   // Responsive Design
   @media (max-width: 768px) {
     .checkout-content {

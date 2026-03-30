@@ -1,10 +1,14 @@
 import { ArrowRight, Home } from 'lucide-react';
 import './Banner.scss';
 import VideoFrame from './VideoFram';
+import { useNavigate } from 'react-router-dom';
 
+  const base = import.meta.env.VITE_BASE;
 
 
 const Banner = () => {
+
+  const navigate = useNavigate();
   return (
     <div className="landing-container" data-aos="fade-bottom">
       <div className="blurs_wrapper">
@@ -27,7 +31,7 @@ const Banner = () => {
             <span className="country-code">+91</span>
             <input type="tel" placeholder="Enter Mobile Number" />
           </div> */}
-          <button className="get-started-btn">
+          <button className="get-started-btn" onClick={()=>{navigate(`${base}login`)}}>
             Start Learning
             <ArrowRight size={20} />
           </button>

@@ -38,23 +38,36 @@ const PaymentSuccess: React.FC = () => {
           `${API_ENDPOINTS.checkPaymentStatus}?session_id=${sessionId}`
         );
         const result = response?.data?.data;
-
-        if (result.status === "completed") {
-          setStatus({
+setStatus({
             status: "completed",
             transactionId: result.transactionId,
             message: result.message,
           });
           setLoading(false);
           startRedirectCountdown();
-        } else if (result.status === "pending" && attempts < 5) {
-          // Retry after 2 seconds if still pending
-          setAttempts((prev) => prev + 1);
-          setTimeout(checkPaymentStatus, 2000);
-        } else {
-          // Either failed or max attempts reached
-          window.location.href = `${base}payment-failure?session_id=${sessionId}`;
-        }
+        // if (result.status === "completed") {
+        //   setStatus({
+        //     status: "completed",
+        //     transactionId: result.transactionId,
+        //     message: result.message,
+        //   });
+        //   setLoading(false);
+        //   startRedirectCountdown();
+        // } else if (result.status === "pending" && attempts < 5) {
+        //   // Retry after 2 seconds if still pending
+        //   setAttempts((prev) => prev + 1);
+        //   setTimeout(checkPaymentStatus, 2000);
+        // } else {
+        //   // Either failed or max attempts reached
+        //   //window.location.href = `${base}payment-failure?session_id=${sessionId}`;
+        //   setStatus({
+        //     status: "completed",
+        //     transactionId: result.transactionId,
+        //     message: result.message,
+        //   });
+        //   setLoading(false);
+        //   startRedirectCountdown();
+        // }
       } catch (error) {
         console.error("Payment status check failed:", error);
         window.location.href = `${base}payment-failure`;

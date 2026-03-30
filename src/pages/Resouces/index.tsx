@@ -19,19 +19,23 @@ const Resources = () => {
     const fetchResources = async (search = '',page=1,limit=10) => {
         setLoading(true);
         try {
-            const response = await api.get(`${API_ENDPOINTS?.resources}?page=${page}&limit=${limit}&search=${search}`);
-            if (response?.status) {
-                const data = response?.data?.data?.data;
-                setResources(Array.isArray(data) ? data : []);
-            }
+            // Backend API disabled for now (no resources yet), showing placeholder image only.
+            // const response = await api.get(`${API_ENDPOINTS?.resources}?page=${page}&limit=${limit}&search=${search}`);
+            // if (response?.status) {
+            //     const data = response?.data?.data?.data;
+            //     setResources(Array.isArray(data) ? data : []);
+            // }
+            setResources([]);
         } catch (error) {
             console.log("Failed to fetch resources", error);
+            setResources([]);
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
+        // Disabled backend call for now, just render default placeholder image while admin content is absent.
         fetchResources('');
     }, []);
 
@@ -96,7 +100,13 @@ const Resources = () => {
                             </Grid>
                         ))
                         :
-                        <NoData />
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', minHeight: '400px' }}>
+                            <img
+                                src="https://d2vg0c60oys8dk.cloudfront.net/2aa2bd62-202b-48e8-812d-f4005ce9948a-Tradelive24%204%20April%202026%20IDE.jpeg"
+                                alt="No resources yet"
+                                style={{ maxWidth: '80%', maxHeight: '80%', objectFit: 'contain', borderRadius: '12px' }}
+                            />
+                        </div>
                     }
                 </Grid>
             <div className="blurs_wrapper"><div className="blurs_object is-fluo"></div></div>
