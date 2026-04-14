@@ -13,6 +13,7 @@ import {
   TicketPlus,
   LogIn,
   NotebookText,
+  TicketX,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { removeToken, removeUser } from "../../utils/tokenUtils";
@@ -73,12 +74,19 @@ const mainMenuItems = [
   //   label: "Login Sessions",
   //   exact: true,
   // },
-  //   {
-  //   path: `${base}ai-chart-chat`,
-  //   icon: LogIn,
-  //   label: "AI Chart Chat",
-  //   exact: true,
-  // },
+    {
+    path: `${base}ai-chart-chat`,
+    icon: LogIn,
+    label: "AI Chart Chat",
+    exact: true,
+  },
+
+      {
+    path: `${base}support-tickets`,
+    icon: TicketX,
+    label: "Support Ticket",
+    exact: true,
+  },
 
   //   { path: `#/`, icon: FolderEdit, label: "Market Feed", exact: true },
 ];

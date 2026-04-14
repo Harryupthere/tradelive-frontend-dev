@@ -26,6 +26,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = (token: string) => {
     setToken(token);
+    // console.log(token,"login token");
     setUser({ token });
   };
 

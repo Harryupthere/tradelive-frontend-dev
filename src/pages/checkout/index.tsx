@@ -283,7 +283,7 @@ const Checkout: React.FC = () => {
                 ? parseFloat(planPrice)
                 : 12.0;
       const feesPercent = Number(firstGateway.fee_percentage || 0);
-      const fees = parseInt(firstGateway?.fees_amount); // (basePrice * feesPercent) / 100;
+      const fees = aiPlanFromUrl?1:parseInt(firstGateway?.fees_amount); // (basePrice * feesPercent) / 100;
       setPricing((prev) => ({
         ...prev,
         fees,
@@ -445,7 +445,7 @@ const Checkout: React.FC = () => {
     } else if (data.subscriptionType === "AI Plan") {
       basePrice = aiPlanPrice ? parseFloat(aiPlanPrice) : 10.0;
       quantity = 1;
-      fees = feesAmount;
+      fees = 1;
     } else if (data.subscriptionType === "Activation Coupon") {
       basePrice = planPrice ? parseFloat(planPrice) : 12.0;
       quantity = data.couponQuantity || 1;

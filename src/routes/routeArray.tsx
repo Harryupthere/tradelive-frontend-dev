@@ -17,6 +17,7 @@ import DepositAndWithdraw from "../pages/depositAndWithdraw/Index";
 import HowToNavigate from "../pages/howToNavigate/Index";
 import ApplicationForm from "../pages/applicationForm/ApplicationForm";
 import AIChatAssistant from "../pages/aIChatAssistant";
+import SupportTickets from "../pages/supportTickets";
 const base = import.meta.env.VITE_BASE;
 
 export const RoutesArray = [
@@ -39,6 +40,8 @@ export const RoutesArray = [
       { path: `${base}deposit-withdrawal`, element: <DepositAndWithdraw /> },
       { path: `${base}navigate-tradelive`, element: <HowToNavigate /> },
       { path: `${base}ai-chart-chat`, element: <AIChatAssistant /> },
+      { path: `${base}support-tickets`, element: <SupportTickets /> },
+
 
       { path: `${base}faq`, element: <Faqs /> },
 

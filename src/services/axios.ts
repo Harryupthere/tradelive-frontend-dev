@@ -143,7 +143,7 @@ instance.interceptors.response.use(
         message === "Invalid refresh token" ||
         message === "Session expired")
     ) {
-      alert("session ex");
+      // alert("session ex");
       store.dispatch(logout());
       errorMsg("Session expired. Please login again.");
       window.location.href = `${base}login`;
@@ -153,7 +153,7 @@ instance.interceptors.response.use(
     /**
      * ℹ️ OTHER ERRORS
      */
-    errorMsg("message" || "Something went wrong");
+    errorMsg(message?message:"message" || "Something went wrong");
     return Promise.reject(error);
   }
 );

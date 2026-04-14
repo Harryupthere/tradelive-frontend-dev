@@ -42,8 +42,10 @@ import VerifyEmail from "../pages/login/VerifyEmail";
 import { Navigate } from "react-router-dom";
 
 const base = import.meta.env.VITE_BASE;
-const isUser = getUser();
+// const isUser = getUser();
 const Router = () => {
+const isUser = getUser();
+
   const router = createBrowserRouter([
     // { path: `${base}login`, element: <Login /> },
     // { path: `${base}countdown`, element: <CountdownPage /> },
@@ -51,9 +53,9 @@ const Router = () => {
     {
       path: `${base}login`,
       element: (
-        <ProtectedPage condition={true}>
+        // <ProtectedPage condition={true}>
           <LoginPage />
-        </ProtectedPage>
+        // </ProtectedPage>
       ),
     },
 
@@ -64,9 +66,9 @@ const Router = () => {
     {
       path: `${base}signup`,
       element: (
-        <ProtectedPage condition={true}>
+        // <ProtectedPage condition={true}>
           <SignupPage />
-        </ProtectedPage>
+        // </ProtectedPage>
       ),
     },
     { path: `${base}reset-password`, element: <ResetPasswordPage /> },
@@ -205,137 +207,13 @@ const Router = () => {
         {
           path: `${base}course/detail/:id`,
           element: (
-            <ProtectedPage condition={!!isUser}>
+            <ProtectedPage condition={!!isUser} >
               <CourseDetail />
             </ProtectedPage>
           ),
         },
 
-        // {
-        //   path: `${base}currency-converter`,
-        //   element: (
-        //     <ProtectedPage condition={!!isUser}>
-        //       <CurrencyConverter />
-        //     </ProtectedPage>
-        //   ),
-        // },
-
-        // {
-        //   path: `${base}position-size-calculator`,
-        //   element: (
-        //     <ProtectedPage condition={!!isUser}>
-        //       <PositionSizeCalculator />
-        //     </ProtectedPage>
-        //   ),
-        // },
-
-        // {
-        //   path: `${base}pip-calculator`,
-        //   element: (
-        //     <ProtectedPage condition={!!isUser}>
-        //       <PipCalculator />
-        //     </ProtectedPage>
-        //   ),
-        // },
-
-        // {
-        //   path: `${base}margin-calculator`,
-        //   element: (
-        //     <ProtectedPage condition={!!isUser}>
-        //       <MarginCalculator />
-        //     </ProtectedPage>
-        //   ),
-        // },
-
-        // {
-        //   path: `${base}fibonacci-calculator`,
-        //   element: (
-        //     <ProtectedPage condition={!!isUser}>
-        //       <FibonacciCalculator />
-        //     </ProtectedPage>
-        //   ),
-        // },
-
-        // {
-        //   path: `${base}pivot-point-calculator`,
-        //   element: (
-        //     <ProtectedPage condition={!!isUser}>
-        //       <PivotPointCalculator />
-        //     </ProtectedPage>
-        //   ),
-        // },
-
-        // {
-        //   path: `${base}risk-of-ruin-calculator`,
-        //   element: (
-        //     <ProtectedPage condition={!!isUser}>
-        //       <RiskOfRuinCalculator />
-        //     </ProtectedPage>
-        //   ),
-        // },
-
-        // {
-        //   path: `${base}compounding-calculator`,
-        //   element: (
-        //     <ProtectedPage condition={!!isUser}>
-        //       <CompoundingCalculator />
-        //     </ProtectedPage>
-        //   ),
-        // },
-
-        // {
-        //   path: `${base}drawdown-calculator`,
-        //   element: (
-        //     <ProtectedPage condition={!!isUser}>
-        //       <DrawdownCalculator />
-        //     </ProtectedPage>
-        //   ),
-        // },
-
-        // {
-        //   path: `${base}leverage-calculator`,
-        //   element: (
-        //     <ProtectedPage condition={!!isUser}>
-        //       <LeverageCalculator />
-        //     </ProtectedPage>
-        //   ),
-        // },
-
-        // {
-        //   path: `${base}profit-calculator`,
-        //   element: (
-        //     <ProtectedPage condition={!!isUser}>
-        //       <ProfitCalculator />
-        //     </ProtectedPage>
-        //   ),
-        // },
-
-        // {
-        //   path: `${base}rebate-calculator`,
-        //   element: (
-        //     <ProtectedPage condition={!!isUser}>
-        //       <RebateCalculator />
-        //     </ProtectedPage>
-        //   ),
-        // },
-
-        // {
-        //   path: `${base}checkout`,
-        //   element: (
-        //     <ProtectedPage condition={isUser}>
-        //       <Checkout />
-        //     </ProtectedPage>
-        //   ),
-        // },
-
-        // {
-        //   path: `${base}activation-coupons`,
-        //   element: (
-        //     <ProtectedPage condition={!!isUser}>
-        //       <ActivationCoupons />
-        //     </ProtectedPage>
-        //   ),
-        // },
+       
 
         {
           path: `${base}instructor/:id`,

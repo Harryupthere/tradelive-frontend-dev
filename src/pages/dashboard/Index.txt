@@ -174,10 +174,7 @@ const Dashboard: React.FC = () => {
 
         // setResources(res.data.data.data.resources);
         setResources(res.data.data.data.resourses);
-        // if(res.data.data.data.multipleLoginAttempts>10){
-        //   setMultipleLogins(true);
-        // }
-        if(res.data.data.data.showMultipleLoginAttempts==1){
+        if(res.data.data.data.multipleLoginAttempts>10){
           setMultipleLogins(true);
         }
 
@@ -347,7 +344,7 @@ const Dashboard: React.FC = () => {
         </div>
       )}
 
-      {/* <div className="dashboard__alert-maintenance">
+      <div className="dashboard__alert-maintenance">
   <div className="dashboard__alert-content">
     <div className="dashboard__alert-icon dashboard__alert-icon--maintenance">
       <Shield size={24} />
@@ -361,7 +358,7 @@ const Dashboard: React.FC = () => {
       </p>
     </div>
   </div>
-</div> */}
+</div>
 
       {/* Statistics Grid */}
       <div className="dashboard__statistics">

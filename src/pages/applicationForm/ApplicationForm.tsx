@@ -115,7 +115,7 @@ const ApplicationForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    // alert(validateForm());
     if (!validateForm()) {
       return;
     }
@@ -124,20 +124,7 @@ const ApplicationForm: React.FC = () => {
 
     try {
 
-//         while submitting i want the payload as 
-//         the answers array will have 
-//         {
-//   "answers": [
-//     {
-//       "question_id": 1,
-//       "answer": "I understand that this system represents five years of disciplined work and real market experience. I am committed to protecting its integrity by following every rule exactly as defined, without improvisation or sharing any material with others."
-//     },
-//     ...]
 
-// please structure the payload like that
-
-
-      // Build payload as { answers: [ { question_id, answer } ] }
      const payload = {
        answers: questions.map(q => ({
          question_id: q.id,

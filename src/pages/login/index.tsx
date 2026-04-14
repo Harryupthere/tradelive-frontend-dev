@@ -36,7 +36,7 @@ const Login: React.FC = () => {
       if (res?.status) {
         login(res?.data?.data?.access_token);
         successMsg(res.message);
-        navigate(`${base}`);
+      //  navigate(`${base}`);
       }
     } catch (err: any) {
       errorMsg(err?.response?.data?.message || "Login failed");

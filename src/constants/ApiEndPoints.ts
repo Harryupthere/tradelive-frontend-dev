@@ -80,6 +80,8 @@ application_content:'/applications/all-content',
 
 aiSubmitQuery:'/ai/chart-question',
   aiChatHistory:'/ai/history',
+  supportTickets:'/user/support/my-tickets',
+  createSupportTicket:'/user/support/create',
 };
 
 

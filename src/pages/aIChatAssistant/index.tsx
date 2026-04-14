@@ -34,7 +34,11 @@ const AIChatAssistant: React.FC = () => {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [aiPlan,setAiPlan]=useState<boolean>(false);
   const [dailyUsage,setDailyUsage]=useState<number>(0);
+  const [dailyLimit,setDailyLimit]=useState<number>(0);
+
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [showLimitExceededModal, setShowLimitExceededModal] = useState(false);
+
 
     const navigate = useNavigate();
 
@@ -50,7 +54,10 @@ const AIChatAssistant: React.FC = () => {
       }else{
         setAiPlan(true);
       }
-      setDailyUsage(historyData.data.data.today_count);
+      console.log(historyData.data.data,"####");
+      setDailyUsage(historyData.data.data.usage.today_used);
+       setDailyLimit(historyData.data.data.usage.today_limit);
+      // console.log(historyData.data.data.usage);
       resolve(historyData.data.data.history);
     });
   };
@@ -161,6 +168,11 @@ const AIChatAssistant: React.FC = () => {
       return;
     }
 
+    if (aiPlan && dailyUsage==dailyLimit ) {
+      setShowLimitExceededModal(true);
+      return;
+    }
+
     const userMessage: ChatMessage = {
       id: Date.now(),
       question: newQuestion,
@@ -246,11 +258,12 @@ const AIChatAssistant: React.FC = () => {
               <div className="ai-chat__upgrade-modal-icon">💎</div>
               <h2 className="ai-chat__upgrade-modal-title">Upgrade to Premium</h2>
               <p className="ai-chat__upgrade-modal-subtitle">
-                You've reached your daily AI Chat limit
+                You've reached your weekly AI Chat limit
               </p>
               <p className="ai-chat__upgrade-modal-description">
                 Unlock unlimited access to the AI Chart Assistant with our Premium Plan. Get advanced analysis, unlimited queries, and priority support.
               </p>
+             
               <div className="ai-chat__upgrade-modal-price">
                 <span className="ai-chat__upgrade-modal-amount">$10</span>
                 <span className="ai-chat__upgrade-modal-period">/month</span>
@@ -258,7 +271,7 @@ const AIChatAssistant: React.FC = () => {
               <div className="ai-chat__upgrade-modal-features">
                 <div className="ai-chat__upgrade-modal-feature">
                   <span className="ai-chat__upgrade-modal-check">✓</span>
-                  Unlimited daily queries
+                  3 daily queries
                 </div>
                 <div className="ai-chat__upgrade-modal-feature">
                   <span className="ai-chat__upgrade-modal-check">✓</span>
@@ -286,6 +299,53 @@ const AIChatAssistant: React.FC = () => {
           </div>
         </div>
       )}
+            {showLimitExceededModal && (
+        <div className="ai-chat__upgrade-modal-overlay">
+          <div className="ai-chat__upgrade-modal">
+            <div className="ai-chat__upgrade-modal-content">
+              <div className="ai-chat__upgrade-modal-icon">💎</div>
+              <h2 className="ai-chat__upgrade-modal-title">Limit Exceed</h2>
+              <p className="ai-chat__upgrade-modal-subtitle">
+                You've reached your daily AI Chat limit
+              </p>
+              <p className="ai-chat__upgrade-modal-description">
+               You ahve reached your daily AI Chat limit.
+              </p>
+              {/* <div className="ai-chat__upgrade-modal-price">
+                <span className="ai-chat__upgrade-modal-amount">$10</span>
+                <span className="ai-chat__upgrade-modal-period">/month</span>
+              </div>
+              <div className="ai-chat__upgrade-modal-features">
+                <div className="ai-chat__upgrade-modal-feature">
+                  <span className="ai-chat__upgrade-modal-check">✓</span>
+                  Unlimited daily queries
+                </div>
+                <div className="ai-chat__upgrade-modal-feature">
+                  <span className="ai-chat__upgrade-modal-check">✓</span>
+                  Advanced chart analysis
+                </div>
+                <div className="ai-chat__upgrade-modal-feature">
+                  <span className="ai-chat__upgrade-modal-check">✓</span>
+                  Priority support
+                </div>
+              </div> */}
+              <div className="ai-chat__upgrade-modal-actions">
+                <button
+                  onClick={() => setShowLimitExceededModal(false)}
+                  className="ai-chat__upgrade-modal-cancel"
+                >
+                 Close
+                </button>
+                {/* <button className="ai-chat__upgrade-modal-upgrade"
+                  onClick={() => navigate(`${base}checkout?aiPlan=true`)}
+                >
+                  Upgrade Now
+                </button> */}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="ai-chat__container">
         {/* Header */}
@@ -301,6 +361,9 @@ const AIChatAssistant: React.FC = () => {
               <h1 className="ai-chat__title">Via AI Chart Assistant</h1>
               <p className="ai-chat__subtitle">
                 Upload a chart and ask educational trading questions
+              </p>
+              <p className="ai-chat__note">
+                Note: As part of our Prime Membership, you are entitled to one free question per week.
               </p>
             </div>
           </div>
