@@ -351,12 +351,12 @@ const AIChatAssistant: React.FC = () => {
         {/* Header */}
         <div className="ai-chat__header">
           <div className="ai-chat__header-info">
-            <div className="ai-chat__logo">
+            {/* <div className="ai-chat__logo">
               <div className="ai-chat__logo-icon">
                 <Bot size={24} />
               </div>
               <span className="ai-chat__logo-text">Tradelive24</span>
-            </div>
+            </div> */}
             <div className="ai-chat__title-section">
               <h1 className="ai-chat__title">Via AI Chart Assistant</h1>
               <p className="ai-chat__subtitle">

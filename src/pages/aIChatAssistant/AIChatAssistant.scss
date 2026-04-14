@@ -503,15 +503,13 @@
 
   &__header-info {
     display: flex;
-    align-items: center;
     gap: 2rem;
     flex: 1;
-    justify-content: center;
+    justify-content: space-between;
 
     @media (max-width: 768px) {
       flex-direction: column;
       gap: 1rem;
-      text-align: center;
     }
   }
 
@@ -553,9 +551,9 @@
     }
   }
 
-  &__title-section {
-    text-align: center;
-  }
+  // &__title-section {
+  //   text-align: center;
+  // }
 
   &__title {
     font-size: 1.8rem;
@@ -564,7 +562,7 @@
     margin: 0 0 0.25rem 0;
 
     @media (max-width: 768px) {
-      font-size: 1.4rem;
+      font-size: 1rem;
     }
   }
 
@@ -572,6 +570,9 @@
     font-size: 0.95rem;
     color: rgba(255, 255, 255, 0.6);
     margin: 0;
+       @media (max-width: 768px) {
+      font-size: 14px;
+    }
   }
 
   // Messages Area
@@ -1065,6 +1066,9 @@
   }
 }
 .ai-chat__note {
-  white-space: nowrap;
+  // white-space: nowrap; //iski  wajah se responsive me problem aa rhi thi 
+     @media (max-width: 768px) {
+      font-size: 12px;
+    }
 }
 
