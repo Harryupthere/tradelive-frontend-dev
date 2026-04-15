@@ -84,6 +84,7 @@ const CourseDetail: React.FC = () => {
   const [courseData, setCourseData] = useState<CourseData | null>(null);
   const [currentLecture, setCurrentLecture] = useState<Lecture | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [progressCalled, setProgressCalled] = useState(false);
   const navigate = useNavigate();
 
   const [currentLectureIndex, setCurrentLectureIndex] = useState<number>(0);
@@ -208,6 +209,7 @@ const CourseDetail: React.FC = () => {
     if (!lecture.isCompleted) {
       setIsPlaying(true);
     }
+    setProgressCalled(false)
     setCurrentLecture(lecture);
     setCurrentLectureIndex(index);
   };
@@ -234,21 +236,53 @@ const CourseDetail: React.FC = () => {
   //   setIsPlaying(!isPlaying);
   // };
 
+  // const callUpdateProgress = async () => {
+  //   //alert(1)
+  //   try {
+  //     const res = await api.patch(`${API_ENDPOINTS.updateLectureProgress}`, {
+  //       product_id: Number(id),
+  //       content_index: currentLectureIndex,
+  //     });
+  //     if (res.status) {
+  //       // Optionally, refresh course data to update progress bar
+  //      // courseOverviewApiCall();
+  //     }
+  //   } catch (error) {
+  //     console.log(error, "??");
+  //     console.log(error);
+  //   }
+  // };
   const callUpdateProgress = async () => {
-    try {
-      const res = await api.patch(`${API_ENDPOINTS.updateLectureProgress}`, {
-        product_id: Number(id),
-        content_index: currentLectureIndex,
+  try {
+    const res = await api.patch(`${API_ENDPOINTS.updateLectureProgress}`, {
+      product_id: Number(id),
+      content_index: currentLectureIndex,
+    });
+
+    if (res.status && courseData) {
+
+      const updatedLectures = courseData.lectures.map((lecture, idx) => {
+        if (idx === currentLectureIndex) {
+          return { ...lecture, isCompleted: true };
+        }
+        return lecture;
       });
-      if (res.status) {
-        // Optionally, refresh course data to update progress bar
-        courseOverviewApiCall();
-      }
-    } catch (error) {
-      console.log(error, "??");
-      console.log(error);
+
+      const newWatchedCount = (courseData.watchedCount || 0) + 1;
+
+      setCourseData({
+        ...courseData,
+        lectures: updatedLectures,
+        watchedCount: newWatchedCount,
+        progressPercentage:
+          (newWatchedCount / (courseData.totalLectures || 1)) * 100,
+      });
     }
-  };
+
+  } catch (error) {
+    console.log(error);
+  }
+};
 
   // const completedLectures =
   //   courseData?.lectures.filter((l) => l.isCompleted).length || 0;
@@ -362,7 +396,12 @@ const CourseDetail: React.FC = () => {
                         playsInline
                         poster={currentLecture.thumbnail}
                         // TODO: Uncomment onPlay when video is ready
-                        //onPlay={() => callUpdateProgress()}
+                        onPlay={() => {
+  if (!progressCalled) {
+    callUpdateProgress();
+    setProgressCalled(true);
+  }
+}}
                         className="main-video"
                         // TODO: Uncomment controlsList when video is ready
                         controlsList="nodownload noplaybackrate"

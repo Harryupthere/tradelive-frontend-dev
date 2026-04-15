@@ -37,15 +37,18 @@ const TradeJournal: React.FC = () => {
   const [addTradejournralModalOpen, setAddTradejournalModalOpen] = useState(false);
   const [tradejounralOpen, setTradejounralOpen] = useState(false);
   const [currentTradeJournal, setCurrentTradeJournal] = useState<any>(null);
-  const [tradeJournalFormData, setTradeJournalFormData] = useState({
-    symbol: "",
-    lot_size: "",
-    take_profit: "",
-    stop_loss: "",
-    trade_date: "",
-    picture: "",
-    reason: "",
-  });
+const [tradeJournalFormData, setTradeJournalFormData] = useState({
+  symbol: "",
+  lot_size: "",
+  take_profit: "",
+  stop_loss: "",
+  entry_price: "",
+  exit_price: "",
+  trade_type: "", // buy / sell
+  trade_date: "",
+  picture: "",
+  reason: "",
+});
   const [tradeJournalFile, setTradeJournalFile] = useState<File | null>(null);
   const [tradeJournalPreview, setTradeJournalPreview] = useState<string | null>(
     null
@@ -147,15 +150,27 @@ const TradeJournal: React.FC = () => {
         pictureUrl = uploaded;
       }
 
+      // const payload = {
+      //   symbol: tradeJournalFormData.symbol,
+      //   lot_size: tradeJournalFormData.lot_size,
+      //   take_profit: tradeJournalFormData.take_profit,
+      //   stop_loss: tradeJournalFormData.stop_loss,
+      //   trade_date: tradeJournalFormData.trade_date || null,
+      //   picture: pictureUrl,
+      //   reason: tradeJournalFormData.reason,
+      // };
       const payload = {
-        symbol: tradeJournalFormData.symbol,
-        lot_size: tradeJournalFormData.lot_size,
-        take_profit: tradeJournalFormData.take_profit,
-        stop_loss: tradeJournalFormData.stop_loss,
-        trade_date: tradeJournalFormData.trade_date || null,
-        picture: pictureUrl,
-        reason: tradeJournalFormData.reason,
-      };
+  symbol: tradeJournalFormData.symbol,
+  lot_size: tradeJournalFormData.lot_size,
+  take_profit: tradeJournalFormData.take_profit,
+  stop_loss: tradeJournalFormData.stop_loss,
+  entry_price: tradeJournalFormData.entry_price,
+  exit_price: tradeJournalFormData.exit_price,
+  trade_type: tradeJournalFormData.trade_type,
+  trade_date: tradeJournalFormData.trade_date || null,
+  picture: pictureUrl,
+  reason: tradeJournalFormData.reason,
+};
 
       const res = await api.post(API_ENDPOINTS.tradeJournal, payload);
       if (res?.data?.status) {
@@ -225,6 +240,9 @@ const TradeJournal: React.FC = () => {
                 <th>Take Profit</th>
                 <th>Stop Loss</th>
                 <th>Trade Date</th>
+                <th>Entry</th>
+<th>Exit</th>
+<th>Type</th>
                 <th>Picture</th>
                 <th>Reason</th>
                 <th>Created At</th>
@@ -241,6 +259,13 @@ const TradeJournal: React.FC = () => {
                     <td>{t.take_profit}</td>
                     <td>{t.stop_loss}</td>
                     <td>{new Date(t.trade_date).toLocaleString()}</td>
+                    <td>{t.entry_price || "—"}</td>
+<td>{t.exit_price || "—"}</td>
+<td>
+  <span className={`trade-type ${t.trade_type}`}>
+    {t.trade_type}
+  </span>
+</td>
                     <td>
                       {t.picture ? (
                         <img
@@ -368,6 +393,32 @@ const TradeJournal: React.FC = () => {
               />
             </div>
             <div className="form-row">
+  <label>Entry Price</label>
+  <input
+    className="input-group"
+    value={currentTradeJournal?.entry_price || ""}
+    readOnly
+  />
+</div>
+
+<div className="form-row">
+  <label>Exit Price</label>
+  <input
+    className="input-group"
+    value={currentTradeJournal?.exit_price || ""}
+    readOnly
+  />
+</div>
+
+<div className="form-row">
+  <label>Trade Type</label>
+  <input
+    className="input-group"
+    value={currentTradeJournal?.trade_type || ""}
+    readOnly
+  />
+</div>
+            <div className="form-row">
               <label>Picture</label>
               {currentTradeJournal?.picture ? (
                 <img
@@ -417,11 +468,11 @@ const TradeJournal: React.FC = () => {
         <Box sx={style}>
           <h2 className="modal-title">Add trade Journal</h2>
 
-          <div className="forum-modal-quoted">
+          {/* <div className="forum-modal-quoted">
             <p>
               <b>Reason:</b>
             </p>
-          </div>
+          </div> */}
           <div className="trade-journal-form">
             <div className="form-row">
               <label>Symbol</label>
@@ -497,6 +548,55 @@ const TradeJournal: React.FC = () => {
                 }
               />
             </div>
+            <div className="form-row">
+  <label>Entry Price</label>
+  <input
+    className="input-group"
+    type="number"
+    value={tradeJournalFormData.entry_price}
+    onChange={(e) =>
+      setTradeJournalFormData({
+        ...tradeJournalFormData,
+        entry_price: e.target.value,
+      })
+    }
+    placeholder="e.g. 25000"
+  />
+</div>
+
+<div className="form-row">
+  <label>Exit Price</label>
+  <input
+    className="input-group"
+    type="number"
+    value={tradeJournalFormData.exit_price}
+    onChange={(e) =>
+      setTradeJournalFormData({
+        ...tradeJournalFormData,
+        exit_price: e.target.value,
+      })
+    }
+    placeholder="e.g. 26000"
+  />
+</div>
+
+<div className="form-row">
+  <label>Trade Type</label>
+  <select
+    className="input-group"
+    value={tradeJournalFormData.trade_type}
+    onChange={(e) =>
+      setTradeJournalFormData({
+        ...tradeJournalFormData,
+        trade_type: e.target.value,
+      })
+    }
+  >
+    <option value="">Select</option>
+    <option value="buy">Buy</option>
+    <option value="sell">Sell</option>
+  </select>
+</div>
             <div className="form-row blocked-type">
               <label>Picture URL</label>
               <input

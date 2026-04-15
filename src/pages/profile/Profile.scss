@@ -739,3 +739,20 @@
     color: #ef4444;
   }
 }
+
+.trade-type {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  text-transform: capitalize;
+
+  &.buy {
+    background: #10b98120;
+    color: #10b981;
+  }
+
+  &.sell {
+    background: #ef444420;
+    color: #ef4444;
+  }
+}
