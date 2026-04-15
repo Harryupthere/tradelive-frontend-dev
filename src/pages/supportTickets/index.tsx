@@ -11,26 +11,20 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../utils/redux/typedHook";
 import { setUserProfile } from "../../utils/redux/slice";
 import { setUser as persistUser } from "../../utils/tokenUtils";
-import { Box, IconButton, Modal, Typography } from "@mui/material";
+import { Box, Dialog, IconButton, Modal, Typography, useMediaQuery, useTheme } from "@mui/material";
+import './supportTickets.scss'
 const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 500,
   bgcolor: "background.paper",
-  border: "none",
-  boxShadow: 24,
   p: 2,
   backgroundColor: "var(--bg-modal)",
-  borderRadius: "8px",
-  maxHeight: "90vh",
-  overflowY: "auto",
+
 };
 
 const base = import.meta.env.VITE_BASE || "/";
 
 const ProfilePage: React.FC = () => {
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [tickets, setTickets] = useState([]);
@@ -167,15 +161,18 @@ const ProfilePage: React.FC = () => {
         </div>
       </div>
 
-      <Modal
+      <Dialog
         open={ticketModal}
         onClose={() => setTicketModal(false)}
         className="profile-modal"
+        //  fullScreen={fullScreen}
+        maxWidth="md"
+        fullWidth
       >
         <Box sx={style}>
-          <h2 className="modal-title">Create Support Ticket</h2>
+          <h2 className="modal-title" style={{color:'#fff'}}>Create Support Ticket</h2>
 
-          <div className="trade-journal-form">
+          <div className="trade-journal-form supprot-tichet-form">
             <div className="form-row">
               <label>Name</label>
               <input
@@ -234,7 +231,7 @@ const ProfilePage: React.FC = () => {
               />
             </div>
 
-            <div className="modal-actions">
+            <div className="modal-actions" style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
               <button
                 className="cancel-btn"
                 onClick={() => setTicketModal(false)}
@@ -248,7 +245,7 @@ const ProfilePage: React.FC = () => {
             </div>
           </div>
         </Box>
-      </Modal>
+      </Dialog >
     </div>
   );
 };

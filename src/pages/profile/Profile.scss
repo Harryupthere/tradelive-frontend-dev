@@ -701,6 +701,14 @@
     margin-bottom: 15px;
     align-items: center;
     justify-content: space-between;
+     @media (max-width: 480px) {
+   flex-direction: column;
+    align-items: flex-start;
+    }
+    label{
+      color: #FFF;
+    }
+
   }
   .blocked-type{
     flex-direction: column;

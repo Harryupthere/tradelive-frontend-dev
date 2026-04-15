@@ -1,0 +1,10 @@
+.supprot-tichet-form{
+    .form-row{
+        .input-group{
+            width: 50%;
+             @media (max-width: 480px) {
+                width: 100%;
+            }
+        }
+    }
+}
