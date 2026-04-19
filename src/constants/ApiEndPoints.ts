@@ -67,6 +67,10 @@ export const API_ENDPOINTS = {
   chatMessages:'/chat/messages/1',
 
   resources:'/resources',
+  productResources:'/products/resources',
+  
+
+
 
   dashboard:'/dashboard/user',
 
