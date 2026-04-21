@@ -306,7 +306,7 @@ const CourseOverview = () => {
                 <div className="feedback-card__head">
                   <div className="user-info">
                     <div className="user-name">{f.user?.first_name} {f.user?.last_name}</div>
-                    <div className="user-meta">User Id - {f.user?.unique_id} • Member since - {formatDate( f.createdAt)} •  Enrolled - {formatDate(f.user?.enrollments?.[0]?.enrolled_at)}</div>
+                    {/* <div className="user-meta">User Id - {f.user?.unique_id} • Member since - {formatDate( f.user.created_at)} •  Enrolled - {formatDate(f.user?.enrollments?.[0]?.enrolled_at)}</div> */}
                   </div>
                 </div>
 
