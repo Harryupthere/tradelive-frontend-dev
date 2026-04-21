@@ -210,7 +210,7 @@ const ProductResourcesDetail: React.FC = () => {
           </Grid>
 
           {/* SIDEBAR */}
-          <Grid size={{ lg: 4, sm: 12 }}>
+          <Grid size={{ lg: 4, xs: 12 }}>
             <div className="course-sidebar">
 
               <div className="course-header">
@@ -242,9 +242,9 @@ const ProductResourcesDetail: React.FC = () => {
                         )}
                       </div>
 
-                      <button className="play-btn">
-                        <Play size={16} />
-                      </button>
+                        {/* <button className="play-btn">
+                          <Play size={16} />
+                        </button> */}
                     </div>
                   ))}
                 </div>
