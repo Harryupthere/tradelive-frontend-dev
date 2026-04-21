@@ -40,7 +40,7 @@ import CountdownPage from "../pages/countdown/index";
 import ApplicationForm from "../pages/applicationForm/ApplicationForm";
 import VerifyEmail from "../pages/login/VerifyEmail";
 import { Navigate } from "react-router-dom";
-import ProductResourcesDetail from "../pages/productResources";
+import ProductResourcesDetail from "../pages/productResources"; 
 
 const base = import.meta.env.VITE_BASE;
 // const isUser = getUser();

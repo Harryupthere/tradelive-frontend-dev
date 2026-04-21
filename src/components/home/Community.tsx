@@ -1,34 +1,65 @@
 import { MessageCircle, Users, TrendingUp, MessageSquare, Share2, Heart } from 'lucide-react';
 import './Community.scss';
-
+import { api } from "../../api/Service";
+import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
+import { useEffect, useState } from 'react';
 const   CommunitySection = () => {
-  const discussionCards = [
-    {
-      user: 'TraderMike',
-      topic: 'SPY Breaking Key Resistance',
-      comments: 24,
-      likes: 156,
-      time: '2h ago',
-      preview: 'Just noticed SPY breaking above 450. What are your thoughts on the next move?'
-    },
-    {
-      user: 'ChartMaster',
-      topic: 'Elliott Wave Analysis on NASDAQ',
-      comments: 18,
-      likes: 89,
-      time: '4h ago',
-      preview: 'Sharing my complete wave count. Wave 5 might be forming...'
-    },
-    {
-      user: 'DayTrader_Pro',
-      topic: 'Best Scalping Setups Today',
-      comments: 42,
-      likes: 203,
-      time: '6h ago',
-      preview: 'Found some amazing 5-min chart patterns this morning. Check these out!'
-    }
-  ];
 
+  const [discussionCards, setDiscussionCards] = useState([]);
+  // const discussionCards = [
+  //   {
+  //     user: 'TraderMike',
+  //     topic: 'SPY Breaking Key Resistance',
+  //     comments: 24,
+  //     likes: 156,
+  //     time: '2h ago',
+  //     preview: 'Just noticed SPY breaking above 450. What are your thoughts on the next move?'
+  //   },
+  //   {
+  //     user: 'ChartMaster',
+  //     topic: 'Elliott Wave Analysis on NASDAQ',
+  //     comments: 18,
+  //     likes: 89,
+  //     time: '4h ago',
+  //     preview: 'Sharing my complete wave count. Wave 5 might be forming...'
+  //   },
+  //   {
+  //     user: 'DayTrader_Pro',
+  //     topic: 'Best Scalping Setups Today',
+  //     comments: 42,
+  //     likes: 203,
+  //     time: '6h ago',
+  //     preview: 'Found some amazing 5-min chart patterns this morning. Check these out!'
+  //   }
+  // ];
+useEffect(() => {
+  fetchFeedbacks();
+}, []);
+
+const fetchFeedbacks = async () => {
+  try {
+    const res = await api.get(API_ENDPOINTS.communityFeedbacks);
+    if (res?.data?.data?.data) {
+      const formatted = res.data.data.data.map((f) => ({
+        user: `${f.user.first_name} ${f.user.last_name}`,
+        // topic: "Trader Insight",
+        comments: Math.floor(Math.random() * 40) + 5,
+        // likes: Math.floor(Math.random() * 200) + 20,
+time: new Date(f.created_at).toLocaleString([], {
+  year: "numeric",
+  month: "short",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+}),        preview: f.comment,
+      }));
+
+      setDiscussionCards(formatted);
+    }
+  } catch (err) {
+    console.log("Failed to fetch feedbacks", err);
+  }
+};
   return (
     <div className="community-section">
         <div className="blurs_wrapper">
@@ -47,7 +78,8 @@ const   CommunitySection = () => {
               </div>
             </div>
 
-            <div className="community-section__discussions">
+            <div className="community-section__discussions scrollable">
+                {/* <div className="community-section__discussions auto-scroll"> */}
               {discussionCards.map((card, index) => (
                 <div key={index} className="discussion-card">
                   <div className="discussion-card__header">
@@ -59,9 +91,9 @@ const   CommunitySection = () => {
                       <span className="discussion-card__time">{card.time}</span>
                     </div>
                   </div>
-                  <h4 className="discussion-card__topic">{card.topic}</h4>
+                  {/* <h4 className="discussion-card__topic">{card.topic}</h4> */}
                   <p className="discussion-card__preview">{card.preview}</p>
-                  <div className="discussion-card__footer">
+                  {/* <div className="discussion-card__footer">
                     <div className="discussion-card__stat">
                       <MessageSquare />
                       <span>{card.comments}</span>
@@ -74,10 +106,11 @@ const   CommunitySection = () => {
                       <Share2 />
                       <span>Share</span>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               ))}
             </div>
+            {/* </div> */}
           </div>
 
           <div className="community-section__feature-badge community-section__feature-badge--1">

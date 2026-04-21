@@ -86,6 +86,7 @@ aiSubmitQuery:'/ai/chart-question',
   aiChatHistory:'/ai/history',
   supportTickets:'/user/support/my-tickets',
   createSupportTicket:'/user/support/create',
+  communityFeedbacks:'/product-feedback/landing'
 };
 
 

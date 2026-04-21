@@ -582,7 +582,7 @@ const Checkout: React.FC = () => {
       }
     } catch (err: any) {
       console.error("executeCheckout error:", err);
-      errorMsg(err?.message || "Checkout failed");
+      errorMsg(err?.response?.data?.message || err?.message || "Checkout failed");
     }
   };
   return (

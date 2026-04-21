@@ -513,21 +513,21 @@ const InstructorProfile: React.FC = () => {
               <p className="instructor-hero__designation">
                 {instructor.designation || "Trading Instructor"}
               </p>
-
+              {instructor.metadata.length>0 &&
               <div className="instructor-hero__stats">
                 <div className="stat-item">
                   <Users size={20} />
-                  <span>1,250+ Students</span>
+                  <span>{instructor.metadata[0].students_count}</span>
                 </div>
                 <div className="stat-item">
                   <Play size={20} />
-                  <span>{instructor.products.length} Courses</span>
+                  <span>{instructor.metadata[1].courses}</span>
                 </div>
                 <div className="stat-item">
                   <Clock size={20} />
-                  <span>50+ Hours Content</span>
+                  <span>{instructor.metadata[2].hours_content}</span>
                 </div>
-              </div>
+              </div>}
 
               <div className="instructor-hero__contact">
                 <div className="contact-item">
