@@ -8,8 +8,17 @@ import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
 import CardShimmer from "../../components/common/cardShimmer";
 import NoData from "../../components/common/NoData";
 import { errorMsg } from "../../utils/customFn";
+import { getUser } from "../../utils/tokenUtils";
+import { useNavigate } from "react-router-dom";
+
+const base = import.meta.env.VITE_BASE;
 
 const CourseListing = () => {
+  const { courses_allowance } = getUser();
+  const navigate = useNavigate();
+  if(courses_allowance !== 2){
+    navigate(`${base}dashboard`);
+  }
 
     const [course, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState<boolean>(false);

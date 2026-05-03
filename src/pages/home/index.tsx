@@ -94,6 +94,32 @@ callDemoApi()
     <div className="home-wrapped">
       <div className="container">
       <Banner />
+      <section className="highlight-card" data-aos="fade-up">
+  <div className="highlight-inner">
+    
+    <h2 className="highlight-title">
+      Unlock Smarter Trading with AI + Real Education
+    </h2>
+
+    <p className="highlight-subtitle">
+      Why struggle with random signals when you can learn how markets actually work?
+      TradeLive24 gives you AI-powered insights, real trading education, and a
+      community that helps you grow — not gamble.
+    </p>
+
+    <div className="highlight-points">
+      <div className="point">📊 Learn Real Price Action</div>
+      <div className="point">🤖 AI Trading Assistant</div>
+      <div className="point">📚 Beginner → Pro Roadmap</div>
+      <div className="point">💬 Active Trader Community</div>
+    </div>
+
+    <button className="highlight-btn">
+      Start Learning Now →
+    </button>
+
+  </div>
+</section>
         <section data-aos="fade-up">
         <div className="center-content">
           <div className="overlay-img">

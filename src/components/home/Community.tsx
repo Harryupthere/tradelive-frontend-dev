@@ -74,7 +74,7 @@ time: new Date(f.created_at).toLocaleString([], {
               </div>
               <div className="community-section__header-text">
                 <h3>Trading Community</h3>
-                <p>15,234 Active Traders</p>
+                <p>427 Active Traders</p>
               </div>
             </div>
 
@@ -88,7 +88,7 @@ time: new Date(f.created_at).toLocaleString([], {
                     </div>
                     <div className="discussion-card__info">
                       <span className="discussion-card__user">{card.user}</span>
-                      <span className="discussion-card__time">{card.time}</span>
+                      {/* <span className="discussion-card__time">{card.time}</span> */}
                     </div>
                   </div>
                   {/* <h4 className="discussion-card__topic">{card.topic}</h4> */}

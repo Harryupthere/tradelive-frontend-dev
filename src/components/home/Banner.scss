@@ -1,6 +1,8 @@
 @use '../../assets/scss/mixin.scss' as *;
 .landing-container {
   display: flex;
+  //  flex-direction: column; // ✅ ADD THIS
+
   align-items: center;
   justify-content: space-between;
   gap: 50px;
@@ -12,6 +14,14 @@
           top: 0;
       }
   }
+}
+
+
+.landing-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 50px;
 }
 .content-section {
   flex: 1;
@@ -176,5 +186,131 @@
   .marquee-section {
     max-width: 100%;
     height: 400px;
+  }
+}
+
+// ===============================
+// Banner Alert (Landing Page)
+// ===============================
+.banner-alert {
+
+ position: sticky;
+  top: 20px; // ✅ default for desktop
+  z-index: 10;
+
+  width: 100%;
+  margin-bottom: 30px;
+
+  margin-top: 100px; // ✅ THIS controls spacing (not top)
+
+
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.15),
+    rgba(239, 68, 68, 0.05)
+  );
+
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: 14px;
+
+  padding: 14px 20px;
+
+  //position: relative;
+  overflow: hidden;
+
+  backdrop-filter: blur(8px);
+
+  animation: fadeSlideDown 0.6s ease;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(239, 68, 68, 0.2),
+      transparent
+    );
+    transform: translateX(-100%);
+    animation: shimmer 2.5s infinite;
+  }
+
+  &__content {
+    display: flex;
+    align-items: center; // ✅ center vertically
+    gap: 14px;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__icon {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+
+    color: #ef4444;
+    flex-shrink: 0;
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+
+    h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #f87171;
+      margin: 0;
+    }
+
+    p {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.75);
+      margin: 2px 0 0 0;
+      line-height: 1.4;
+    }
+  }
+
+  @media (max-width: 768px) {
+    &__content {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+}
+
+// ===============================
+// Animations
+// ===============================
+@keyframes fadeSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (max-width: 768px) {
+  .banner-alert {
+    position: relative; // ✅ disable sticky on mobile
+    top: 0;
   }
 }

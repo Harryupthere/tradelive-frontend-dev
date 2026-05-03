@@ -18,6 +18,7 @@ import HowToNavigate from "../pages/howToNavigate/Index";
 import ApplicationForm from "../pages/applicationForm/ApplicationForm";
 import AIChatAssistant from "../pages/aIChatAssistant";
 import SupportTickets from "../pages/supportTickets";
+import PricingPlans from "../pages/pricingPlans";
 const base = import.meta.env.VITE_BASE;
 
 export const RoutesArray = [
@@ -41,11 +42,9 @@ export const RoutesArray = [
       { path: `${base}navigate-tradelive`, element: <HowToNavigate /> },
       { path: `${base}ai-chart-chat`, element: <AIChatAssistant /> },
       { path: `${base}support-tickets`, element: <SupportTickets /> },
-
+      { path: `${base}plans`, element: <PricingPlans /> },
 
       { path: `${base}faq`, element: <Faqs /> },
-
-
     ],
   },
 ];

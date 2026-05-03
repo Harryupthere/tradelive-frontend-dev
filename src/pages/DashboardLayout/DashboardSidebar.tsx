@@ -14,89 +14,123 @@ import {
   LogIn,
   NotebookText,
   TicketX,
+  Package2,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { removeToken, removeUser } from "../../utils/tokenUtils";
-const base = import.meta.env.VITE_BASE;
+import { getUser } from "../../utils/tokenUtils";
 
-const mainMenuItems = [
-  {
-    path: `${base}dashboard`,
-    icon: UserCheck,
-    label: "Dashboard",
-    exact: true,
-  },
+const base = import.meta.env.VITE_BASE; 
 
-  { path: `${base}courses`, icon: Notebook, label: "Courses", exact: true },
-  { path: `${base}news`, icon: Newspaper, label: "News", exact: true },
-  {
-    path: `${base}forax-calculators`,
-    icon: Calculator,
-    label: "FX Calculators",
-    exact: true,
-  },
-  // {
-  //   path: `${base}instructors`,
-  //   icon: School,
-  //   label: "Mentor Hub",
-  //   exact: true,
-  // },
-  {
-    path: `${base}chat-discussions`,
-    icon: Users2Icon,
-    label: "Chat Discussion",
-    exact: true,
-  },
-  {
-    path: `${base}trade-journal`,
-    icon: ArrowUpRightSquareIcon,
-    label: "Trade Journal",
-    exact: true,
-  },
-  { path: `${base}resources`, icon: BookPlus, label: "Resources", exact: true },
-    {
-    path: `${base}faq`,
-    icon: NotebookText,
-    label: "FAQ",
-    exact: true,
-  },
-  {
-    path: `${base}activation-coupons`,
-    icon: TicketPlus,
-    label: "Activation Coupons",
-    exact: true,
-  },
-
-  { path: `${base}profile`, icon: Home, label: "Profile", exact: true },
-  // {
-  //   path: `${base}login-sessions`,
-  //   icon: LogIn,
-  //   label: "Login Sessions",
-  //   exact: true,
-  // },
-    {
-    path: `${base}ai-chart-chat`,
-    icon: LogIn,
-    label: "AI Chart Chat",
-    exact: true,
-  },
-
-      {
-    path: `${base}support-tickets`,
-    icon: TicketX,
-    label: "Support Ticket",
-    exact: true,
-  },
-
-  //   { path: `#/`, icon: FolderEdit, label: "Market Feed", exact: true },
-];
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function DashboardSidebar({ sidebarOpen, closeSidebar }) {
+  const mainMenuItems = [
+    {
+      path: `${base}dashboard`,
+      icon: UserCheck,
+      label: "Dashboard",
+      exact: true,
+    },
+
+    { path: `${base}news`, icon: Newspaper, label: "News", exact: true },
+    {
+      path: `${base}forax-calculators`,
+      icon: Calculator,
+      label: "FX Calculators",
+      exact: true,
+    },
+    // {
+    //   path: `${base}instructors`,
+    //   icon: School,
+    //   label: "Mentor Hub",
+    //   exact: true,
+    // },
+    {
+      path: `${base}chat-discussions`,
+      icon: Users2Icon,
+      label: "Chat Discussion",
+      exact: true,
+    },
+    {
+      path: `${base}trade-journal`,
+      icon: ArrowUpRightSquareIcon,
+      label: "Trade Journal",
+      exact: true,
+    },
+    {
+      path: `${base}faq`,
+      icon: NotebookText,
+      label: "FAQ",
+      exact: true,
+    },
+    {
+      path: `${base}activation-coupons`,
+      icon: TicketPlus,
+      label: "Activation Coupons",
+      exact: true,
+    },
+
+    { path: `${base}profile`, icon: Home, label: "Profile", exact: true },
+    // {
+    //   path: `${base}login-sessions`,
+    //   icon: LogIn,
+    //   label: "Login Sessions",
+    //   exact: true,
+    // },
+
+    {
+      path: `${base}plans`,
+      icon: Package2,
+      label: "Pricing Plans",
+      exact: true,
+    },
+    {
+      path: `${base}ai-chart-chat`,
+      icon: LogIn,
+      label: "AI Chart Chat",
+      exact: true,
+    },
+
+    {
+      path: `${base}support-tickets`,
+      icon: TicketX,
+      label: "Support Ticket",
+      exact: true,
+    },
+  ];
+const [menuItems, setMenuItems] = useState([...mainMenuItems]);
+  const coursesMenu = {
+    path: `${base}courses`,
+    icon: Notebook,
+    label: "Courses",
+    exact: true,
+  };
+  const resourcesMenu = {
+    path: `${base}resources`,
+    icon: FolderEdit,
+    label: "Resources",
+    exact: true,
+  };
+
   const location = useLocation();
   const navigate = useNavigate();
+  const { courses_allowance } = getUser();
+
   const [tradeliveDropdownOpen, setTradeliveDropdownOpen] = useState(false);
+
+useEffect(() => {
+  let updatedMenu = [...mainMenuItems];
+  if (courses_allowance === 1) {
+    updatedMenu.splice(2, 0, resourcesMenu); 
+  }
+
+  if (courses_allowance === 2) {
+    updatedMenu.splice(2, 0, resourcesMenu, coursesMenu);
+  }
+
+  setMenuItems(updatedMenu);
+}, [courses_allowance]);
 
   const handleLogout = () => {
     removeToken();
@@ -122,7 +156,7 @@ function DashboardSidebar({ sidebarOpen, closeSidebar }) {
       <div className="sidebar-content">
         <div className="menu-section">
           <nav className="menu-nav">
-            {mainMenuItems.map((item) =>
+            {menuItems.map((item) =>
               item.newTab ? (
                 <a
                   key={item.path}
@@ -147,7 +181,7 @@ function DashboardSidebar({ sidebarOpen, closeSidebar }) {
                   <item.icon className="menu-icon" />
                   <span className="menu-label">{item.label}</span>
                 </Link>
-              )
+              ),
             )}
 
             {/* Tradelive24 Section Dropdown */}
@@ -222,18 +256,16 @@ function DashboardSidebar({ sidebarOpen, closeSidebar }) {
               type="button"
               className="menu-item"
               style={{ backgroundColor: "transparent", border: "none" }}
-              onClick={()=>navigate(`${base}checkout?whatsappTrade=true`)}
+              onClick={() => navigate(`${base}checkout?whatsappTrade=true`)}
             >
-                <img
-                  src={`${base}whatsapp-logo.png`}
-                  alt="Tradelive24"
-                  className="logo-images"
-                />
-                <span className="menu-label">Trade Signals</span>
-             
-            </button> 
+              <img
+                src={`${base}whatsapp-logo.png`}
+                alt="Tradelive24"
+                className="logo-images"
+              />
+              <span className="menu-label">Trade Signals</span>
+            </button>
 
-            
             <button
               type="button"
               onClick={handleLogout}

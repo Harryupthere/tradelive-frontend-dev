@@ -177,7 +177,7 @@ const Dashboard: React.FC = () => {
         // if(res.data.data.data.multipleLoginAttempts>10){
         //   setMultipleLogins(true);
         // }
-        if(res.data.data.data.showMultipleLoginAttempts==1){
+        if (res.data.data.data.showMultipleLoginAttempts == 1) {
           setMultipleLogins(true);
         }
 
@@ -338,30 +338,39 @@ const Dashboard: React.FC = () => {
             <div className="dashboard__alert-text">
               <h3>Suspicious Login Activity Detected</h3>
               <p>
-                We've detected multiple login attempts from different locations or devices on your account. 
-                If this wasn't you, please secure your password immediately. 
-                <strong> Continued suspicious activity may result in temporary suspension or permanent account deactivation.</strong>
+                We've detected multiple login attempts from different locations
+                or devices on your account. If this wasn't you, please secure
+                your password immediately.
+                <strong>
+                  {" "}
+                  Continued suspicious activity may result in temporary
+                  suspension or permanent account deactivation.
+                </strong>
               </p>
             </div>
           </div>
         </div>
       )}
 
-      {/* <div className="dashboard__alert-maintenance">
-  <div className="dashboard__alert-content">
-    <div className="dashboard__alert-icon dashboard__alert-icon--maintenance">
-      <Shield size={24} />
-    </div>
-    <div className="dashboard__alert-text dashboard__alert-text--maintenance">
-      <h3>Scheduled Maintenance in Progress</h3>
-      <p>
-        We are currently performing system maintenance to improve performance and stability. 
-        Some features such as video playback or course progress updates may be temporarily unavailable. 
-        <strong> We expect services to resume shortly. Thank you for your patience.</strong>
-      </p>
-    </div>
-  </div>
-</div> */}
+     {/* <div className="dashboard__alert-maintenance">
+        <div className="dashboard__alert-content">
+          <div className="dashboard__alert-icon dashboard__alert-icon--maintenance">
+            <Shield size={24} />
+          </div>
+          <div className="dashboard__alert-text dashboard__alert-text--maintenance">
+            <h3>
+              Scheduled maintenance and enhancements are in progress until the
+              29th, 6AM
+            </h3>
+            <p>
+              During this time, module playback, payment, and news APIs may not
+              function as expected. This is part of routine maintenance, and all
+              services will be restored shortly. Thank you for your patience.
+               <strong> We expect services to resume shortly. Thank you for your patience.</strong> 
+            </p>
+          </div>
+        </div>
+      </div>*/}
 
       {/* Statistics Grid */}
       <div className="dashboard__statistics">

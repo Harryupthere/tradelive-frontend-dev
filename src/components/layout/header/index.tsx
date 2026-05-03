@@ -120,7 +120,10 @@ const Header = () => {
         <div className='container'>
           <div className='flex-container'>
             <Link to={`${base}`} className='brand' onClick={closeMobileMenu}>
-              <img  src='../tradelive-logo.png' alt="TradeLive Logo" />
+              {/* <img  src='../tradelive-logo.png' alt="TradeLive Logo" /> */}
+              
+              <img  src='https://d2vg0c60oys8dk.cloudfront.net/c5fb5e4d-07a0-43fb-90ce-744cd854b544-tradelive-logo.png' alt="TradeLive Logo" />
+           
             </Link>
 
             {/* Desktop Navigation */}

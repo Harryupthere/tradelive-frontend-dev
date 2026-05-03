@@ -9,8 +9,17 @@ import ResourceCard, { Resource } from "../../components/common/ResourceCard";
 import ResourceProductCard, {
   ProductResourceI,
 } from "../../components/common/ProductResourceCard";
+import { getUser } from "../../utils/tokenUtils";
+import { useNavigate } from "react-router-dom";
+const base = import.meta.env.VITE_BASE;
 
 const Resources = () => {
+
+    const { courses_allowance } = getUser();
+        const navigate = useNavigate();
+        if(courses_allowance === 0){
+          navigate(`${base}dashboard`);
+        }
   const [resources, setResources] = useState<Resource[]>([]);
   const [resourcesProduct, setResourcesProduct] = useState<ProductResourceI[]>(
     [],
@@ -119,26 +128,7 @@ const Resources = () => {
           ))
         ) : (
           <>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "100%",
-                minHeight: "400px",
-              }}
-            >
-              <img
-                src="https://d2vg0c60oys8dk.cloudfront.net/2aa2bd62-202b-48e8-812d-f4005ce9948a-Tradelive24%204%20April%202026%20IDE.jpeg"
-                alt="No resources yet"
-                style={{
-                  maxWidth: "80%",
-                  maxHeight: "80%",
-                  objectFit: "contain",
-                  borderRadius: "12px",
-                }}
-              />
-            </div>
+           
             <>
               {resourcesProduct?.length > 0 &&
                 resourcesProduct?.map((item) => (
