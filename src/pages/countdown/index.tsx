@@ -74,20 +74,20 @@ const CountdownPage: React.FC = () => {
 
         if (data) {
           setDynamicHtml(data.content || "");
-          const dateMs = new Date(data.launch_date).getTime();
+          const dateMs = new Date("2026-05-19T18:00:00").getTime();
           setTargetDate(dateMs);
           setTimeLeft(getTimeLeft(dateMs));
         } else {
           // No data from API → fallback
           setDynamicHtml(fallbackHtml);
-          const fallbackDate = new Date("2025-12-01T00:00:00").getTime();
+          const fallbackDate = new Date("2026-05-19T18:00:00").getTime();
           setTargetDate(fallbackDate);
           setTimeLeft(getTimeLeft(fallbackDate));
         }
       } catch (err: any) {
         setError(err);
         setDynamicHtml(fallbackHtml);
-        const fallbackDate = new Date("2025-12-01T00:00:00").getTime();
+        const fallbackDate = new Date("2026-05-19T18:00:00").getTime();
         setTargetDate(fallbackDate);
         setTimeLeft(getTimeLeft(fallbackDate));
       } finally {
@@ -150,14 +150,78 @@ const CountdownPage: React.FC = () => {
               </h1>
             </div> */}
 
-            <div className="countdown-page__home-btn">
+            {/* <div className="countdown-page__home-btn">
               <a href={`${base}`} className="home-btn-link">
                 ⬅ Back to Home
               </a>
-            </div>
+            </div> */}
 
             {/* Countdown Timer */}
-            <div className="countdown-page__countdown">
+            
+
+            {/* Dynamic HTML from API (option A: directly under countdown) */}
+            {/* {dynamicHtml && (
+              <div
+                className="countdown-page__dynamic-html"
+                dangerouslySetInnerHTML={{ __html: dynamicHtml }}
+              />
+            )} */}
+
+            {/* Info Section (you can keep / edit this part as you like) */}
+            {/* <div className="countdown-page__info-section">
+              <div className="countdown-page__main-message">
+                <p className="countdown-page__tagline">
+                  A new era of trading wisdom begins.
+                </p>
+              </div>
+
+              <div className="countdown-page__launch-info">
+                <p className="countdown-page__launch-text">
+                  <span className="countdown-page__brand-highlight">
+                    TradeLive24
+                  </span>{" "}
+                  goes live soon. Stay tuned for the official launch date.
+                </p>
+              </div>
+
+              <div className="countdown-page__call-to-action">
+                <p className="countdown-page__cta-text">
+                  Get ready to{" "}
+                  <span className="countdown-page__action-word">Learn.</span>{" "}
+                  <span className="countdown-page__action-word">Adapt.</span>{" "}
+                  <span className="countdown-page__action-word">React.</span>
+                </p>
+              </div>
+
+             
+            </div> */}
+            <div className="countdown-page__info-section">
+  <div className="countdown-page__main-message">
+    <p className="countdown-page__tagline">
+      We’re upgrading the TradeLive24 experience.
+    </p>
+  </div>
+
+  <div className="countdown-page__launch-info">
+    <p className="countdown-page__launch-text">
+      <span className="countdown-page__brand-highlight">
+        TradeLive24
+      </span>{" "}
+       has completed major platform upgrades and enhancements. We are currently
+    conducting final validation and performance checks to ensure everything
+    runs smoothly before relaunch.
+    </p>
+  </div>
+
+  <div className="countdown-page__call-to-action">
+    <p className="countdown-page__cta-text">
+      Enhanced platform experience in{" "}
+      <span className="countdown-page__action-word">
+        {/* {timeLeft} */}
+      </span>
+    </p>
+  </div>
+  <div className="countdown-page__countdown">
               <div className="countdown-page__timer">
                 {showDays && (
                   <>
@@ -197,64 +261,7 @@ const CountdownPage: React.FC = () => {
                 </div>
               </div>
             </div>
-
-            {/* Dynamic HTML from API (option A: directly under countdown) */}
-            {dynamicHtml && (
-              <div
-                className="countdown-page__dynamic-html"
-                dangerouslySetInnerHTML={{ __html: dynamicHtml }}
-              />
-            )}
-
-            {/* Info Section (you can keep / edit this part as you like) */}
-            <div className="countdown-page__info-section">
-              <div className="countdown-page__main-message">
-                <p className="countdown-page__tagline">
-                  A new era of trading wisdom begins.
-                </p>
-              </div>
-
-              <div className="countdown-page__launch-info">
-                <p className="countdown-page__launch-text">
-                  <span className="countdown-page__brand-highlight">
-                    TradeLive24
-                  </span>{" "}
-                  goes live soon. Stay tuned for the official launch date.
-                </p>
-              </div>
-
-              <div className="countdown-page__call-to-action">
-                <p className="countdown-page__cta-text">
-                  Get ready to{" "}
-                  <span className="countdown-page__action-word">Learn.</span>{" "}
-                  <span className="countdown-page__action-word">Adapt.</span>{" "}
-                  <span className="countdown-page__action-word">React.</span>
-                </p>
-              </div>
-
-              {/* <div className="countdown-page__additional-info">
-                <div className="countdown-page__info-card">
-                  <h3>What to Expect</h3>
-                  <ul>
-                    <li>Advanced trading strategies and techniques</li>
-                    <li>Real-time market analysis and insights</li>
-                    <li>Interactive learning modules</li>
-                    <li>Community-driven discussions</li>
-                    <li>Expert mentorship programs</li>
-                  </ul>
-                </div>
-
-                <div className="countdown-page__info-card">
-                  <h3>Join the Revolution</h3>
-                  <p>
-                    Be part of a community that's reshaping the future of
-                    trading education. Our platform combines cutting-edge
-                    technology with proven trading methodologies to deliver an
-                    unparalleled learning experience.
-                  </p>
-                </div>
-              </div> */}
-            </div>
+</div>
 
             {/* Footer */}
             <div className="countdown-page__footer">

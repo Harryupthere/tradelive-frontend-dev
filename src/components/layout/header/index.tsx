@@ -69,9 +69,10 @@ const Header = () => {
   const renderUserArea = () => {
     if (!getToken() || !user) {
       return (
-        <button type="button" className="gradient-btn" onClick={() => navigate(`${base}login`)}>
-          Login
-        </button>
+        <></>
+        // <button type="button" className="gradient-btn" onClick={() => navigate(`${base}login`)}>
+        //   Login
+        // </button>
       );
     }
 

@@ -6,7 +6,9 @@ import image from "../../assets/images/bar-graph.png";
 import glob from "../../assets/images/glob.png";
 import Slider from "react-slick";
 import { useEffect, useRef, useState } from "react";
-import ProductCardDemo, { Course } from "../../components/common/ProductCardDemo";
+import ProductCardDemo, {
+  Course,
+} from "../../components/common/ProductCardDemo";
 import { ArrowRight, Play } from "lucide-react";
 import CTA from "../../components/home/CTA";
 import CommunitySection from "../../components/home/Community";
@@ -15,8 +17,7 @@ import { api } from "../../api/Service";
 import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
 import VideoPopup from "../../components/common/VideoPopup";
 import SliderSection from "../../components/home/SliderSection";
-
-
+import HighlightSection from "../../components/home/Highlightsection";
 
 const base = import.meta.env.VITE_BASE;
 
@@ -59,83 +60,78 @@ const responsiveSlider = {
 };
 
 const Home = () => {
-
   const [showPopup, setShowPopup] = useState(false);
-const [activeVideo, setActiveVideo] = useState<string | null>(null);
-const openVideo = (url: string) => {
-  setActiveVideo(url);
-  setShowPopup(true);
-};
-const closeVideo = () => {
-  setShowPopup(false);
-  setActiveVideo(null);
-};
+  const [activeVideo, setActiveVideo] = useState<string | null>(null);
+  const openVideo = (url: string) => {
+    setActiveVideo(url);
+    setShowPopup(true);
+  };
+  const closeVideo = () => {
+    setShowPopup(false);
+    setActiveVideo(null);
+  };
 
   const sliderRef = useRef<Slider | null>(null);
 
-  const [courses,setCourse]=useState([])
-  useEffect(()=>{
-callDemoApi()
-  },[])
-  const callDemoApi=async()=>{
-    try{
-      const res=await api.get(API_ENDPOINTS.demoProducts);
-      if(res.data.status){
-     setCourse(res.data.data.data)
-
+  const [courses, setCourse] = useState([]);
+  useEffect(() => {
+    callDemoApi();
+  }, []);
+  const callDemoApi = async () => {
+    try {
+      const res = await api.get(API_ENDPOINTS.demoProducts);
+      if (res.data.status) {
+        setCourse(res.data.data.data);
       }
-
-    }catch(err){
-      console.log(err)
+    } catch (err) {
+      console.log(err);
     }
-  }
+  };
 
   return (
     <div className="home-wrapped">
       <div className="container">
-      <Banner />
-      <section className="highlight-card" data-aos="fade-up">
-  <div className="highlight-inner">
-    
-    <h2 className="highlight-title">
-      Unlock Smarter Trading with AI + Real Education
-    </h2>
+        <Banner />
+        <section className="highlight-card" data-aos="fade-up">
+          <div className="highlight-inner">
+            <h2 className="highlight-title">
+              Unlock Smarter Trading with AI + Real Education only at $0.04 per day.
+            </h2>
 
-    <p className="highlight-subtitle">
-      Why struggle with random signals when you can learn how markets actually work?
-      TradeLive24 gives you AI-powered insights, real trading education, and a
-      community that helps you grow — not gamble.
-    </p>
+            <p className="highlight-subtitle">
+              Why struggle with random signals when you can learn how markets
+              actually work? TradeLive24 gives you AI-powered insights, real
+              trading education, and a community that helps you grow — not
+              gamble.
+            </p>
 
-    <div className="highlight-points">
-      <div className="point">📊 Learn Real Price Action</div>
-      <div className="point">🤖 AI Trading Assistant</div>
-      <div className="point">📚 Beginner → Pro Roadmap</div>
-      <div className="point">💬 Active Trader Community</div>
-    </div>
+            <div className="highlight-points">
+              <div className="point">📊 Learn Real Price Action</div>
+              <div className="point">🤖 AI Trading Assistant</div>
+              <div className="point">📚 Beginner → Pro Roadmap</div>
+              <div className="point">💬 Active Trader Community</div>
+            </div>
 
-    <button className="highlight-btn">
-      Start Learning Now →
-    </button>
-
-  </div>
-</section>
-        <section data-aos="fade-up">
-        <div className="center-content">
-          <div className="overlay-img">
-            <img src={image} alt="img" />
+            <button className="highlight-btn">Start Learning Now →</button>
           </div>
-          <h2 className="title">Our Belief</h2>
-          <h2 className="gradient-text">Trading Knowledge Should Be Free.</h2>
-          <p>
-            At TradeLive24, we believe education isn’t a luxury — it’s a
-            foundation. That’s why our goal is to make high-quality trading
-            education accessible to everyone, without fake promises or expensive
-            paywalls. Learn the craft, understand the markets, and grow with a
-            community that values knowledge over hype.
-          </p>
-        </div>  
-        </section >
+        </section>
+        <HighlightSection/>
+        <section data-aos="fade-up">
+          <div className="center-content">
+            <div className="overlay-img">
+              <img src={image} alt="img" />
+            </div>
+            <h2 className="title">Our Belief</h2>
+            <h2 className="gradient-text">Trading Knowledge Should Be Free.</h2>
+            <p>
+              At TradeLive24, we believe education isn’t a luxury — it’s a
+              foundation. That’s why our goal is to make high-quality trading
+              education accessible to everyone, without fake promises or
+              expensive paywalls. Learn the craft, understand the markets, and
+              grow with a community that values knowledge over hype.
+            </p>
+          </div>
+        </section>
         <section className="whatis-trade">
           <div className="blurs_wrapper">
             <div className="blurs_object is-fluo"></div>
@@ -145,7 +141,7 @@ callDemoApi()
               <img src={glob} alt="glob" className="glob" />
             </div>
             <h2 className="bottom-title">
-              What <img  src='../tradelive-logo.png' alt="logo" /> Is
+              What <img src="../tradelive-logo.png" alt="logo" /> Is
             </h2>
           </div>
           <div className="right-content" data-aos="fade-left">
@@ -159,7 +155,7 @@ callDemoApi()
             </p>
           </div>
         </section>
-        <section className="watch" >
+        <section className="watch">
           <div className="left-content" data-aos="fade-right">
             <h2 className="title">Watch & Learn</h2>
             <h2 className="gradient-text">
@@ -193,7 +189,7 @@ callDemoApi()
           </div>
 
           <div className="right-content" data-aos="fade-left">
-            <SliderSection/>
+            <SliderSection />
             {/* <div className="slider-container">
               <Slider ref={sliderRef} {...responsiveSlider}>
                 {courses.map((course) => (
@@ -207,10 +203,10 @@ callDemoApi()
         </section>
         {/* <WatchLearnSection/> */}
         <section data-aos="fade-up">
-        <CommunitySection />
+          <CommunitySection />
         </section>
         <section>
-        <CTA />
+          <CTA />
         </section>
         {/* 
         <section>
@@ -218,8 +214,8 @@ callDemoApi()
         </section> */}
       </div>
       {showPopup && activeVideo && (
-  <VideoPopup videoUrl={activeVideo} onClose={closeVideo} />
-)}
+        <VideoPopup videoUrl={activeVideo} onClose={closeVideo} />
+      )}
     </div>
   );
 };
