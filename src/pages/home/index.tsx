@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import ProductCardDemo, {
   Course,
 } from "../../components/common/ProductCardDemo";
-import { ArrowRight, Play } from "lucide-react";
+import { ArrowRight, Play, Shield } from "lucide-react";
 import CTA from "../../components/home/CTA";
 import CommunitySection from "../../components/home/Community";
 import WatchLearnSection from "../../components/home/WatchLearn";
@@ -88,11 +88,60 @@ const Home = () => {
     }
   };
 
+  const [timeLeft, setTimeLeft] = useState("");
+
+  useEffect(() => {
+    // 16 May 2026 4:00 PM
+    const targetDate = new Date("2026-05-16T16:00:00").getTime();
+
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+
+      const difference = targetDate - now;
+
+      if (difference <= 0) {
+        setTimeLeft("Services are now live");
+        clearInterval(interval);
+        return;
+      }
+
+      const hours = Math.floor(difference / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+      setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+
   return (
     <div className="home-wrapped">
       <div className="container">
+{/* 
+        <div className="banner-alert">
+          <div className="banner-alert__content">
+            <div className="banner-alert__icon">
+              <Shield size={22} />
+            </div>
+            <div className="banner-alert__text">
+              <h3>Platform Maintenance In Progress</h3>
+
+              <p>
+                We’re currently upgrading our infrastructure and trading modules
+                to improve performance and stability.
+              </p>
+
+              <div className="maintenance-timer">
+                Services Resume In: <span>{timeLeft}</span>
+              </div>
+            </div>
+          </div>
+        </div> */}
+        <HighlightSection />
         <Banner />
-        <section className="highlight-card" data-aos="fade-up">
+        {/* <section className="highlight-card" data-aos="fade-up">
           <div className="highlight-inner">
             <h2 className="highlight-title">
               Unlock Smarter Trading with AI + Real Education only at $0.04 per day.
@@ -114,8 +163,8 @@ const Home = () => {
 
             <button className="highlight-btn">Start Learning Now →</button>
           </div>
-        </section>
-        <HighlightSection/>
+        </section> */}
+
         <section data-aos="fade-up">
           <div className="center-content">
             <div className="overlay-img">

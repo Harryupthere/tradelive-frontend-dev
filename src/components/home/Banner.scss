@@ -8,7 +8,7 @@
   gap: 50px;
   // overflow: hidden;
   padding-bottom: 40px;
-  min-height: 90vh;
+  // min-height: 90vh;
   .blurs_wrapper{
       @include responsive(xs) {
           top: 0;
@@ -32,10 +32,12 @@
 }
 
 .landing-body {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 50px;
+  // display: flex;
+  // align-items: center;
+  // justify-content: space-between;
+  // gap: 50px;
+  z-index: 99;
+  width: 100%;
 }
 .content-section {
   flex: 1;
@@ -107,24 +109,7 @@
     }
   }
 
-  .get-started-btn {
-    background: var(--bg-green-gradient);
-    border: none;
-    border-radius: 50px;
-    padding: 16px 20px;
-    color: #0a0a0a;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: transform 0.2s;
-    width: max-content;
-    &:hover {
-      transform: translateX(4px);
-    }
-  }
+
 }
 
 .google-btn {
@@ -158,7 +143,7 @@
 
 .right-section {
   flex: 1;
-  max-width: 50%;
+  max-width: 100%;
   position: relative;
   @include responsive(md) {
     max-width: 100%;
@@ -215,7 +200,7 @@
   width: 100%;
   margin-bottom: 30px;
 
-  margin-top: 100px; // ✅ THIS controls spacing (not top)
+  margin-top: 30px; // ✅ THIS controls spacing (not top)
 
 
   background: linear-gradient(

@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import "./Highlightsection.scss";
+import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import image from "../../utils/helpers";
+const base = import.meta.env.VITE_BASE;
 
 interface Point {
   icon: string;
@@ -10,25 +14,25 @@ interface Point {
 
 const points: Point[] = [
   {
-    icon: "📊",
+    icon: image['bar-graph.png'],
     label: "Learn Real Price Action",
     desc: "Master market structure, candlesticks & key levels",
     delay: 0,
   },
   {
-    icon: "🤖",
+    icon: image['robot.png'],
     label: "AI Trading Assistant",
     desc: "Real-time AI signals & market analysis at your fingertips",
     delay: 100,
   },
   {
-    icon: "📚",
+    icon: image['roadmap.png'],
     label: "Beginner → Pro Roadmap",
     desc: "Step-by-step curriculum from zero to consistent trader",
     delay: 200,
   },
   {
-    icon: "💬",
+    icon: image['message.png'],
     label: "Active Trader Community",
     desc: "Trade alongside thousands of growth-focused members",
     delay: 300,
@@ -39,7 +43,7 @@ export default function HighlightSection(): JSX.Element {
   const sectionRef = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState<boolean>(false);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -83,8 +87,8 @@ export default function HighlightSection(): JSX.Element {
           </div>
 
           <h2 className="hl-title">
-            Unlock Smarter Trading
-            <span className="hl-title__accent"> with AI + Real Education</span>
+            Unlock Smarter Trading with
+            <span className="hl-title__accent">  AI + Real Education only at $0.04 per day</span>
           </h2>
 
           <p className="hl-subtitle">
@@ -106,7 +110,9 @@ export default function HighlightSection(): JSX.Element {
               >
                 <div className="hl-point__glow" />
                 <div className="hl-point__icon-wrap">
-                  <span className="hl-point__icon">{p.icon}</span>
+                  <span className="hl-point__icon">
+                    <img src={p.icon} alt="icon"/>
+                    </span>
                 </div>
                 <div className="hl-point__text">
                   <span className="hl-point__label">{p.label}</span>
@@ -118,14 +124,15 @@ export default function HighlightSection(): JSX.Element {
           </div>
 
           {/* CTA */}
-          <div className="hl-cta-wrap">
-            <button className="hl-btn" type="button">
-              <span className="hl-btn__text">Start Learning Now</span>
-              <span className="hl-btn__arrow">→</span>
-              <div className="hl-btn__shine" />
+           <button
+              className="get-started-btn"
+              onClick={() => {
+                navigate(`${base}login`);
+              }}
+            >
+              Start Learning
+              <ArrowRight size={20} />
             </button>
-            <p className="hl-cta-note">No credit card required · Free to start</p>
-          </div>
         </div>
       </div>
     </section>

@@ -227,3 +227,21 @@ section {
       font-size: 2rem;
     }
 }
+  .get-started-btn {
+    background: #b5ff2e;
+    border: none;
+    border-radius: 50px;
+    padding: 16px 20px;
+    color: #0a0a0a;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s;
+    width: max-content;
+    &:hover {
+      transform: translateX(4px);
+    }
+  }
