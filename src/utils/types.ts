@@ -14,5 +14,7 @@ export type User = {
   status?: number;
   telegram_id?: string | null;
   userType?: UserType | null;
+  courses_allowance?: number | null;
+  ai_plan?:number | null;
   [key: string]: any;
 };

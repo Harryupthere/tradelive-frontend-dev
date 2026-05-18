@@ -76,6 +76,13 @@ interface CourseData {
 }
 
 const CourseDetail: React.FC = () => {
+
+   const { courses_allowance } = getUser();
+      const navigate = useNavigate();
+      if(courses_allowance !== 2){
+        navigate(`${base}dashboard`);
+      }
+
   const userDetails = getUser();
   const { id } = useParams();
 
@@ -85,7 +92,6 @@ const CourseDetail: React.FC = () => {
   const [currentLecture, setCurrentLecture] = useState<Lecture | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progressCalled, setProgressCalled] = useState(false);
-  const navigate = useNavigate();
 
   const [currentLectureIndex, setCurrentLectureIndex] = useState<number>(0);
 
@@ -105,32 +111,32 @@ const CourseDetail: React.FC = () => {
     };
   }, []);
 
-    useEffect(() => {
-  if (!currentLecture?.videoUrl || !videoRef.current) return;
+  useEffect(() => {
+    if (!currentLecture?.videoUrl || !videoRef.current) return;
 
-  const video = videoRef.current;
+    const video = videoRef.current;
 
-  if (currentLecture.videoUrl.endsWith(".m3u8")) {
-    if (Hls.isSupported()) {
-     const hls = new Hls({
-  maxBufferLength: 60,
-  maxMaxBufferLength: 120,
-  enableWorker: true,
-  lowLatencyMode: false,
-});
-      hls.loadSource(currentLecture.videoUrl);
-      hls.attachMedia(video);
+    if (currentLecture.videoUrl.endsWith(".m3u8")) {
+      if (Hls.isSupported()) {
+        const hls = new Hls({
+          maxBufferLength: 60,
+          maxMaxBufferLength: 120,
+          enableWorker: true,
+          lowLatencyMode: false,
+        });
+        hls.loadSource(currentLecture.videoUrl);
+        hls.attachMedia(video);
 
-      return () => {
-        hls.destroy();
-      };
-    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        return () => {
+          hls.destroy();
+        };
+      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        video.src = currentLecture.videoUrl;
+      }
+    } else {
       video.src = currentLecture.videoUrl;
     }
-  } else {
-    video.src = currentLecture.videoUrl;
-  }
-}, [currentLecture]);
+  }, [currentLecture]);
 
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -209,7 +215,7 @@ const CourseDetail: React.FC = () => {
     if (!lecture.isCompleted) {
       setIsPlaying(true);
     }
-    setProgressCalled(false)
+    setProgressCalled(false);
     setCurrentLecture(lecture);
     setCurrentLectureIndex(index);
   };
@@ -220,8 +226,8 @@ const CourseDetail: React.FC = () => {
   // };
 
   const handlePlayPause = () => {
-  setIsPlaying(false);
-};
+    setIsPlaying(false);
+  };
 
   //   const handlePlayPause = () => {
   //   if (!videoRef.current) return;
@@ -253,36 +259,34 @@ const CourseDetail: React.FC = () => {
   //   }
   // };
   const callUpdateProgress = async () => {
-  try {
-    const res = await api.patch(`${API_ENDPOINTS.updateLectureProgress}`, {
-      product_id: Number(id),
-      content_index: currentLectureIndex,
-    });
-
-    if (res.status && courseData) {
-
-      const updatedLectures = courseData.lectures.map((lecture, idx) => {
-        if (idx === currentLectureIndex) {
-          return { ...lecture, isCompleted: true };
-        }
-        return lecture;
+    try {
+      const res = await api.patch(`${API_ENDPOINTS.updateLectureProgress}`, {
+        product_id: Number(id),
+        content_index: currentLectureIndex,
       });
 
-      const newWatchedCount = (courseData.watchedCount || 0) + 1;
+      if (res.status && courseData) {
+        const updatedLectures = courseData.lectures.map((lecture, idx) => {
+          if (idx === currentLectureIndex) {
+            return { ...lecture, isCompleted: true };
+          }
+          return lecture;
+        });
 
-      setCourseData({
-        ...courseData,
-        lectures: updatedLectures,
-        watchedCount: newWatchedCount,
-        progressPercentage:
-          (newWatchedCount / (courseData.totalLectures || 1)) * 100,
-      });
+        const newWatchedCount = (courseData.watchedCount || 0) + 1;
+
+        setCourseData({
+          ...courseData,
+          lectures: updatedLectures,
+          watchedCount: newWatchedCount,
+          progressPercentage:
+            (newWatchedCount / (courseData.totalLectures || 1)) * 100,
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
-
-  } catch (error) {
-    console.log(error);
-  }
-};
+  };
 
   // const completedLectures =
   //   courseData?.lectures.filter((l) => l.isCompleted).length || 0;
@@ -337,8 +341,6 @@ const CourseDetail: React.FC = () => {
     }
   };
 
-
-
   return (
     <div className="course-detail-page">
       <div className="container">
@@ -372,8 +374,7 @@ const CourseDetail: React.FC = () => {
                         // controlsList="nodownload noplaybackrate"
                         disablePictureInPicture
                         disableRemotePlayback
-                          crossOrigin="anonymous"
-
+                        crossOrigin="anonymous"
                         onContextMenu={(e) => e.preventDefault()} // disable right-click
                         // TODO: Remove this when video is ready to prevent accidental playing
                         onPlay={(e) => e.preventDefault()}
@@ -397,18 +398,17 @@ const CourseDetail: React.FC = () => {
                         poster={currentLecture.thumbnail}
                         // TODO: Uncomment onPlay when video is ready
                         onPlay={() => {
-  if (!progressCalled) {
-    callUpdateProgress();
-    setProgressCalled(true);
-  }
-}}
+                          if (!progressCalled) {
+                            callUpdateProgress();
+                            setProgressCalled(true);
+                          }
+                        }}
                         className="main-video"
                         // TODO: Uncomment controlsList when video is ready
                         controlsList="nodownload noplaybackrate"
                         disablePictureInPicture
                         disableRemotePlayback
-                          crossOrigin="anonymous"
-
+                        crossOrigin="anonymous"
                         onContextMenu={(e) => e.preventDefault()} // disable right-click
                         // TODO: Remove this when video is ready to prevent accidental playing
                         // onPlay={(e) => e.preventDefault()}
@@ -460,13 +460,32 @@ const CourseDetail: React.FC = () => {
                 )}
               </div>
 
+{Number(id) === 6 && (
+  <div className="important-note">
+    <h3>⚠️ Important Note</h3>
+
+    <p>
+      To provide the most effective learning experience, all step-by-step trade examples 
+      and live market walkthroughs will be discussed in <strong>Module 5 under Playback</strong>.
+      In that module, we will use historical data to simulate real market conditions, allowing 
+      you to see exactly how structure, supply/demand zones, and entry triggers align before a move occurs.
+    </p>
+
+    <h4>What You'll Learn in Module 5 (Playback)</h4>
+
+    <ul>
+      <li><strong>Synthesis:</strong> Apply structure, zones, and price action together in a live-action environment.</li>
+      <li><strong>Real-World Setups:</strong> See a complete breakdown of high-probability trade examples.</li>
+      <li><strong>Execution Logic:</strong> Understand the specific entry confirmations used to pull the trigger.</li>
+      <li><strong>Risk Management:</strong> Learn how to set stop-losses and plan exits effectively.</li>
+      <li><strong>Confidence Building:</strong> Bridge the gap between theory and execution.</li>
+    </ul>
+  </div>
+)}
               {/* Current Lecture Info */}
               {currentLecture && (
                 <div className="current-lecture-info">
                   <h2>{currentLecture.title}</h2>
-                  {/* <p
-                dangerouslySetInnerHTML={{ __html: currentLecture.description }}
-              /> */}
                   <p
                     dangerouslySetInnerHTML={{
                       __html: decodeHtml(currentLecture.description),

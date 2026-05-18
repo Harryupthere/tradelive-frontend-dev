@@ -29,6 +29,7 @@ interface Lecture {
 interface CourseData {
   id: string;
   title: string;
+  subtitle: string;
   instructor: string;
   description: string;
   thumbnail: string;
@@ -40,6 +41,11 @@ const ProductResourcesDetail: React.FC = () => {
   const userDetails = getUser();
   const { id } = useParams();
   const navigate = useNavigate();
+
+   const { courses_allowance } = getUser();
+          if(courses_allowance === 0){
+            navigate(`${base}dashboard`);
+          }
 
   const videoWrapperRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -104,6 +110,7 @@ const ProductResourcesDetail: React.FC = () => {
         title: apiData.title,
         instructor: apiData.meta.educator,
         description: apiData.description,
+        subtitle: apiData.subtitle,
         thumbnail: apiData.preview_image,
         extra_data: apiData.extra_data || [],
         lectures: (apiData.course.content || []).map(
@@ -132,6 +139,33 @@ const ProductResourcesDetail: React.FC = () => {
     setCurrentLecture(lecture);
     setCurrentLectureIndex(index);
   };
+
+
+    const Watermark: React.FC<{ text: string }> = ({ text }) => {
+      const [pos, setPos] = useState({ top: 10, left: 10 });
+  
+      useEffect(() => {
+        const interval = setInterval(() => {
+          const top = Math.floor(Math.random() * 70) + 5; // 5% to 75%
+          const left = Math.floor(Math.random() * 70) + 5; // 5% to 75%
+          setPos({ top, left });
+        }, 5000); // move every 5 sec
+  
+        return () => clearInterval(interval);
+      }, []);
+  
+      return (
+        <div
+          className="video-watermark"
+          style={{
+            top: `${pos.top}%`,
+            left: `${pos.left}%`,
+          }}
+        >
+          {text}
+        </div>
+      );
+    };
 
   const handleBack = () => {
     navigate(`${base}resources`);
@@ -178,6 +212,7 @@ const ProductResourcesDetail: React.FC = () => {
                     >
                       Your browser does not support the video tag.
                     </video>
+                    <Watermark text={`User: ${userDetails?.video_unique_id}`} />
 
                     <button
                       className="fullscreen-btn"
@@ -197,7 +232,7 @@ const ProductResourcesDetail: React.FC = () => {
               {currentLecture && (
                 <div className="current-lecture-info">
                   <h2>{currentLecture.title}</h2>
-                  <p>{currentLecture.description}</p>
+                  {/* <p>{currentLecture.description}</p> */}
                   {currentLecture.duration && (
                     <div className="lecture-meta">
                       <Clock size={16} />
@@ -215,7 +250,7 @@ const ProductResourcesDetail: React.FC = () => {
 
               <div className="course-header">
                 <h1>{courseData.title}</h1>
-                <p>{courseData.description}</p>
+                <p>{courseData.subtitle}</p>
               </div>
 
               {/* LECTURES */}
@@ -242,9 +277,9 @@ const ProductResourcesDetail: React.FC = () => {
                         )}
                       </div>
 
-                        {/* <button className="play-btn">
-                          <Play size={16} />
-                        </button> */}
+                      {/* <button className="play-btn">
+                        <Play size={16} />
+                      </button> */}
                     </div>
                   ))}
                 </div>

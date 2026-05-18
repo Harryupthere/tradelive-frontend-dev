@@ -26,7 +26,12 @@ const style = {
   borderRadius: "8px",
 };
 const CourseOverview = () => {
-  const navigate = useNavigate();
+
+    const { courses_allowance } = getUser();
+    const navigate = useNavigate();
+    if(courses_allowance !== 2){
+      navigate(`${base}dashboard`);
+    }
 
   const { id } = useParams();
   interface CourseDetail {
