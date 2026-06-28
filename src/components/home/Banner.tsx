@@ -42,12 +42,12 @@ const Banner = () => {
             Join The Community
           </button>
         </div> */}
-        <div className="right-section">
+        {/* <div className="right-section">
           <VideoFrame
             videoUrl="https://d2vg0c60oys8dk.cloudfront.net/f8b0589d-438e-4f64-bef3-9bf06d19c15b-TL24 Welcome.mov"
             poster="/video-poster.jpg"
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );

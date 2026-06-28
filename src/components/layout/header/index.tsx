@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react'
-import './header.scss'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Menu, X } from 'lucide-react'
-import { getToken, getTokenKey, getUser } from '../../../utils/tokenUtils';
-import Translator from './Translator';
+import { useState, useEffect } from "react";
+import "./header.scss";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X } from "lucide-react";
+import { getToken, getTokenKey, getUser } from "../../../utils/tokenUtils";
+import Translator from "./Translator";
 const base = import.meta.env.VITE_BASE;
-
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -39,19 +38,19 @@ const Header = () => {
   const handleScrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
       closeMobileMenu();
     }
   };
 
   useEffect(() => {
     if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [isMobileMenuOpen]);
   const [user, setUser] = useState<any | null>(null);
@@ -69,10 +68,22 @@ const Header = () => {
   const renderUserArea = () => {
     if (!getToken() || !user) {
       return (
-        <></>
-        // <button type="button" className="gradient-btn" onClick={() => navigate(`${base}login`)}>
-        //   Login
-        // </button>
+        <>
+          <button
+            type="button"
+            className="gradient-btn"
+            onClick={() => navigate(`${base}login`)}
+          >
+            Login
+          </button>
+          <button
+            type="button"
+            className="gradient-btn"
+            onClick={() => navigate(`${base}signup`)}
+          >
+            Sign Up
+          </button>
+        </>
       );
     }
 
@@ -95,7 +106,9 @@ const Header = () => {
               {(user.first_name || "U").charAt(0).toUpperCase()}
             </div>
           )}
-          <span className="user-name">{user.first_name || user.email || "User"}'s Dashboard</span>
+          <span className="user-name">
+            {user.first_name || user.email || "User"}'s Dashboard
+          </span>
         </button>
 
         {userTypeImage ? (
@@ -115,38 +128,67 @@ const Header = () => {
     );
   };
 
+  const handleTradingRoom = () => {
+    navigate(`${base}live-session-checkout`);
+  };
+
   return (
     <>
       <header className={`header-wrapper ${isSticky ? "sticky" : ""}`}>
-        <div className='container'>
-          <div className='flex-container'>
-            <Link to={`${base}`} className='brand' onClick={closeMobileMenu}>
+        <div className="container">
+          <div className="flex-container">
+            <Link to={`${base}`} className="brand" onClick={closeMobileMenu}>
               {/* <img  src='../tradelive-logo.png' alt="TradeLive Logo" /> */}
-              
-              <img  src='https://d2vg0c60oys8dk.cloudfront.net/c5fb5e4d-07a0-43fb-90ce-744cd854b544-tradelive-logo.png' alt="TradeLive Logo" />
-           
+
+              <img
+                src="https://d2vg0c60oys8dk.cloudfront.net/c5fb5e4d-07a0-43fb-90ce-744cd854b544-tradelive-logo.png"
+                alt="TradeLive Logo"
+              />
             </Link>
 
             {/* Desktop Navigation */}
-            <ul className='desktop-nav'>
-              <li><Link to={`${base}`} className={isActive(`${base}`)}>Home</Link></li>
+            <ul className="desktop-nav">
+              <li>
+                <Link to={`${base}`} className={isActive(`${base}`)}>
+                  Home
+                </Link>
+              </li>
               {/* <li><Link to={`${base}forum`} className={isActive(`${base}forum`)}>Forum</Link></li> */}
-               {/*<li><Link to={`${base}news`} className={isActive(`${base}news`)}>News</Link></li>
+              {/*<li><Link to={`${base}news`} className={isActive(`${base}news`)}>News</Link></li>
               <li><Link to={`${base}contactus`} className={isActive(`${base}contactus`)}>Contact</Link></li> */}
-              
-              <li><Link to={`${base}about-us`} className={isActive(`${base}about-us`)}>About Us</Link></li>
-              <li><button type="button" onClick={() => handleScrollToSection('cta-section')} className='scroll-link'>FAQ</button></li>
 
+              <li>
+                <Link
+                  to={`${base}about-us`}
+                  className={isActive(`${base}about-us`)}
+                >
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => handleScrollToSection("cta-section")}
+                  className="scroll-link"
+                >
+                  FAQ
+                </button>
+              </li>
             </ul>
-            <div className='desktop-nav right-drawer'>
+            
+            <div className="desktop-nav right-drawer">
+              <div className="trading-room-badge" >
+              <span className="live-dot"></span>
+              <span className="trading-room-text" onClick={()=>handleTradingRoom()}>Trading Room</span>
+            </div>
               <Translator />
               {renderUserArea()}
             </div>
-            <div className='right-drawer'>
+            <div className="right-drawer">
               {/* Mobile Menu Toggle */}
               <button
-                type='button'
-                className='mobile-menu-toggle'
+                type="button"
+                className="mobile-menu-toggle"
                 onClick={toggleMobileMenu}
                 aria-label="Toggle menu"
               >
@@ -158,22 +200,48 @@ const Header = () => {
       </header>
 
       {/* Mobile Navigation Overlay */}
-      <div className={`mobile-nav-overlay ${isMobileMenuOpen ? 'active' : ''}`} onClick={closeMobileMenu}>
-        <nav className={`mobile-nav ${isMobileMenuOpen ? 'active' : ''}`} onClick={(e) => e.stopPropagation()}>
+      <div
+        className={`mobile-nav-overlay ${isMobileMenuOpen ? "active" : ""}`}
+        onClick={closeMobileMenu}
+      >
+        <nav
+          className={`mobile-nav ${isMobileMenuOpen ? "active" : ""}`}
+          onClick={(e) => e.stopPropagation()}
+        >
           <ul>
-            <li><Link to={`${base}`} onClick={closeMobileMenu}>Home</Link></li>
+            <li>
+              <Link to={`${base}`} onClick={closeMobileMenu}>
+                Home
+              </Link>
+            </li>
             {/* <li><Link to={`${base}courses`} onClick={closeMobileMenu}>Courses</Link></li>
             <li><Link to={`${base}news`} onClick={closeMobileMenu}>News</Link></li> */}
-            <li><Link to={`${base}contactus`} onClick={closeMobileMenu}>Contact</Link></li>
-            <li><Link to={`${base}about-us`} onClick={closeMobileMenu}>About Us</Link></li>
-            <li><button type="button" onClick={() => handleScrollToSection('cta-section')} className='scroll-link'>FAQ</button></li>
+            <li>
+              <Link to={`${base}contactus`} onClick={closeMobileMenu}>
+                Contact
+              </Link>
+            </li>
+            <li>
+              <Link to={`${base}about-us`} onClick={closeMobileMenu}>
+                About Us
+              </Link>
+            </li>
+            <li>
+              <button
+                type="button"
+                onClick={() => handleScrollToSection("cta-section")}
+                className="scroll-link"
+              >
+                FAQ
+              </button>
+            </li>
           </ul>
-            {/* <Translator /> */}
+          {/* <Translator /> */}
           {renderUserArea()}
         </nav>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

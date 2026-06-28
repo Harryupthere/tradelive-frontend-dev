@@ -76,12 +76,11 @@ interface CourseData {
 }
 
 const CourseDetail: React.FC = () => {
-
-   const { courses_allowance } = getUser();
-      const navigate = useNavigate();
-      if(courses_allowance !== 2){
-        navigate(`${base}dashboard`);
-      }
+  const { courses_allowance } = getUser();
+  const navigate = useNavigate();
+  if (courses_allowance !== 2) {
+    navigate(`${base}dashboard`);
+  }
 
   const userDetails = getUser();
   const { id } = useParams();
@@ -259,6 +258,7 @@ const CourseDetail: React.FC = () => {
   //   }
   // };
   const callUpdateProgress = async () => {
+    console.log(currentLectureIndex, "currentLectureIndex");
     try {
       const res = await api.patch(`${API_ENDPOINTS.updateLectureProgress}`, {
         product_id: Number(id),
@@ -381,10 +381,10 @@ const CourseDetail: React.FC = () => {
                         onWaiting={handleBuffer}
                         onStalled={handleBuffer}
                       >
-                        {/* <source
+                        <source
                           src={currentLecture.videoUrl}
-                          type="video/mp4"
-                        /> */}
+                          type="application/x-mpegURL"
+                        />
                         Your browser does not support the video tag.
                       </video>
                     ) : (
@@ -415,10 +415,10 @@ const CourseDetail: React.FC = () => {
                         // onWaiting={handleBuffer}
                         // onStalled={handleBuffer}
                       >
-                        {/* <source
+                        <source
                           src={currentLecture.videoUrl}
-                          type="video/mp4"
-                        /> */}
+                          type="application/x-mpegURL"
+                        />
                         Your browser does not support the video tag.
                       </video>
                     )}
@@ -460,28 +460,46 @@ const CourseDetail: React.FC = () => {
                 )}
               </div>
 
-{Number(id) === 6 && (
-  <div className="important-note">
-    <h3>⚠️ Important Note</h3>
+              {Number(id) === 6 && (
+                <div className="important-note">
+                  <h3>⚠️ Important Note</h3>
 
-    <p>
-      To provide the most effective learning experience, all step-by-step trade examples 
-      and live market walkthroughs will be discussed in <strong>Module 5 under Playback</strong>.
-      In that module, we will use historical data to simulate real market conditions, allowing 
-      you to see exactly how structure, supply/demand zones, and entry triggers align before a move occurs.
-    </p>
+                  <p>
+                    To provide the most effective learning experience, all
+                    step-by-step trade examples and live market walkthroughs
+                    will be discussed in{" "}
+                    <strong>Module 5 under Playback</strong>. In that module, we
+                    will use historical data to simulate real market conditions,
+                    allowing you to see exactly how structure, supply/demand
+                    zones, and entry triggers align before a move occurs.
+                  </p>
 
-    <h4>What You'll Learn in Module 5 (Playback)</h4>
+                  <h4>What You'll Learn in Module 5 (Playback)</h4>
 
-    <ul>
-      <li><strong>Synthesis:</strong> Apply structure, zones, and price action together in a live-action environment.</li>
-      <li><strong>Real-World Setups:</strong> See a complete breakdown of high-probability trade examples.</li>
-      <li><strong>Execution Logic:</strong> Understand the specific entry confirmations used to pull the trigger.</li>
-      <li><strong>Risk Management:</strong> Learn how to set stop-losses and plan exits effectively.</li>
-      <li><strong>Confidence Building:</strong> Bridge the gap between theory and execution.</li>
-    </ul>
-  </div>
-)}
+                  <ul>
+                    <li>
+                      <strong>Synthesis:</strong> Apply structure, zones, and
+                      price action together in a live-action environment.
+                    </li>
+                    <li>
+                      <strong>Real-World Setups:</strong> See a complete
+                      breakdown of high-probability trade examples.
+                    </li>
+                    <li>
+                      <strong>Execution Logic:</strong> Understand the specific
+                      entry confirmations used to pull the trigger.
+                    </li>
+                    <li>
+                      <strong>Risk Management:</strong> Learn how to set
+                      stop-losses and plan exits effectively.
+                    </li>
+                    <li>
+                      <strong>Confidence Building:</strong> Bridge the gap
+                      between theory and execution.
+                    </li>
+                  </ul>
+                </div>
+              )}
               {/* Current Lecture Info */}
               {currentLecture && (
                 <div className="current-lecture-info">

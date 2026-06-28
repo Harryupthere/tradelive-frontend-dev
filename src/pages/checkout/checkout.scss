@@ -218,7 +218,7 @@
     cursor: pointer;
     accent-color: #d4ff00;
 
-    &:checked + .subscription-label {
+    &:checked+.subscription-label {
       border-color: #d4ff00;
       background: rgba(212, 255, 0, 0.05);
     }
@@ -260,48 +260,48 @@
 
 
   .crypto-selection-box {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 10px;
-}
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+  }
 
-.crypto-option {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: #1c1c1c;
-  padding: 10px 12px;
-  border-radius: 10px;
-  cursor: pointer;
-  border: 1px solid #333;
-}
+  .crypto-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #1c1c1c;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 1px solid #333;
+  }
 
-.crypto-option:hover {
-  border-color: #d5ff2e;
-}
+  .crypto-option:hover {
+    border-color: #d5ff2e;
+  }
 
-.crypto-logo {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-}
+  .crypto-logo {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+  }
 
-.crypto-info {
-  display: flex;
-  flex-direction: column;
-}
+  .crypto-info {
+    display: flex;
+    flex-direction: column;
+  }
 
-.crypto-name {
-  font-size: 14px;
-  font-weight: 600;
-  color: #fff;
-}
+  .crypto-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+  }
 
-.crypto-symbol {
-  font-size: 12px;
-  color: #bbb;
-}
+  .crypto-symbol {
+    font-size: 12px;
+    color: #bbb;
+  }
 
   .payment-label {
     display: flex;
@@ -329,7 +329,7 @@
     cursor: pointer;
     accent-color: #d4ff00;
 
-    &:checked + .payment-label {
+    &:checked+.payment-label {
       border-color: #d4ff00;
       background: rgba(212, 255, 0, 0.05);
     }
@@ -659,5 +659,173 @@
     .note-item {
       font-size: 0.85rem;
     }
+  }
+
+}
+.live-session-banner {
+  background: #0f0f0f;
+
+  border: 1px solid rgba(212, 255, 0, 0.25);
+
+  border-radius: 24px;
+
+  padding: 30px;
+
+  margin-bottom: 30px;
+
+  box-shadow:
+    0 0 30px rgba(212, 255, 0, 0.08);
+}
+
+.live-session-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.live-session-badge {
+  background: rgba(212, 255, 0, 0.12);
+
+  color: #d5ff2e;
+
+  padding: 10px 18px;
+
+  border-radius: 50px;
+
+  font-weight: 600;
+
+  border: 1px solid rgba(212, 255, 0, 0.2);
+}
+
+.live-session-price-box {
+  text-align: right;
+}
+
+.live-session-price-box span {
+  display: block;
+  color: #888;
+  font-size: 13px;
+}
+
+.live-session-price-box h2 {
+  margin: 0;
+
+  color: #d5ff2e;
+
+  font-size: 42px;
+
+  font-weight: 800;
+}
+
+.live-session-title {
+  font-size: 46px;
+
+  font-weight: 800;
+
+  color: white;
+
+  margin-bottom: 15px;
+}
+
+.live-session-subtitle {
+  color: #a5a5a5;
+
+  font-size: 18px;
+
+  line-height: 1.8;
+
+  max-width: 900px;
+
+  margin-bottom: 30px;
+}
+
+.live-session-info {
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 15px;
+
+  margin-bottom: 25px;
+}
+
+.info-item {
+  background: #171717;
+
+  border-radius: 16px;
+
+  padding: 18px;
+
+  border: 1px solid rgba(212, 255, 0, 0.1);
+}
+
+.info-item .label {
+  display: block;
+
+  color: #888;
+
+  font-size: 13px;
+
+  margin-bottom: 8px;
+}
+
+.info-item .value {
+  color: white;
+
+  font-weight: 700;
+}
+
+.session-features {
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 15px;
+}
+
+.feature-card {
+  background: linear-gradient(
+    90deg,
+    rgba(212, 255, 0, 0.08),
+    rgba(212, 255, 0, 0.02)
+  );
+
+  border: 1px solid rgba(212, 255, 0, 0.12);
+
+  border-radius: 14px;
+
+  padding: 18px;
+
+  color: #d5ff2e;
+
+  font-weight: 600;
+
+  transition: all .25s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-2px);
+
+  border-color: #d5ff2e;
+}
+
+@media (max-width: 768px) {
+  .live-session-top {
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .live-session-title {
+    font-size: 30px;
+  }
+
+  .live-session-info {
+    grid-template-columns: 1fr;
+  }
+
+  .session-features {
+    grid-template-columns: 1fr;
   }
 }

@@ -88,7 +88,7 @@ export default function HighlightSection(): JSX.Element {
 
           <h2 className="hl-title">
             Unlock Smarter Trading with
-            <span className="hl-title__accent">  AI + Real Education only at $0.04 per day</span>
+            <span className="hl-title__accent">  AI + Real Education only at $0.13 per day</span>
           </h2>
 
           <p className="hl-subtitle">

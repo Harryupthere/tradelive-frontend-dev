@@ -417,7 +417,7 @@ const InstructorProfile: React.FC = () => {
   const cardsPerView = getCardsPerView();
   const maxSlide = Math.max(
     0,
-    (instructor?.products.length || 0) - cardsPerView
+    (instructor?.products.length || 0) - cardsPerView,
   );
 
   const nextSlide = () => {
@@ -446,7 +446,9 @@ const InstructorProfile: React.FC = () => {
 
   const handleBookSlot = (availabilityId: string) => {
     // Handle booking logic here
-    navigate(`${base}checkout?instructorMeeting=true&instructor_id=${id}&available_id=${availabilityId}`)
+    navigate(
+      `${base}checkout?instructorMeeting=true&instructor_id=${id}&available_id=${availabilityId}`,
+    );
   };
 
   if (loading) {
@@ -513,21 +515,46 @@ const InstructorProfile: React.FC = () => {
               <p className="instructor-hero__designation">
                 {instructor.designation || "Trading Instructor"}
               </p>
-              {instructor.metadata.length>0 &&
+              {/* {instructor.metadata.length>0 &&
               <div className="instructor-hero__stats">
                 <div className="stat-item">
                   <Users size={20} />
                   <span>{instructor.metadata[0].students_count}</span>
                 </div>
+               {instructor?.metadata.length && instructor.metadata[1].courses && (
                 <div className="stat-item">
                   <Play size={20} />
                   <span>{instructor.metadata[1].courses}</span>
                 </div>
-                <div className="stat-item">
-                  <Clock size={20} />
-                  <span>{instructor.metadata[2].hours_content}</span>
-                </div>
-              </div>}
+               )}
+                 {instructor?.metadata.length && instructor.metadata[2].hours_content && (
+                  <div className="stat-item">
+                    <Clock size={20} />
+                    <span>{instructor.metadata[2].hours_content}</span>
+                  </div>
+                )}
+              </div>} */}
+
+              <div className="instructor-hero__stats">
+                {instructor?.metadata?.length > 0 &&
+                  Object.entries(instructor.metadata[0]).map(([key, value]) => (
+                    <div className="stat-item" key={key}>
+                      <div className="stat-item__label">
+                        {key.replace(/_/g, " ")}
+                      </div>
+
+                      {Array.isArray(value) ? (
+                        <ul className="stat-item__list">
+                          {value.map((item, index) => (
+                            <li key={index}>{item}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <div className="stat-item__value">{value}</div>
+                      )}
+                    </div>
+                  ))}
+              </div>
 
               <div className="instructor-hero__contact">
                 <div className="contact-item">
@@ -603,52 +630,54 @@ const InstructorProfile: React.FC = () => {
               }}
             >
               <Grid container spacing={2}>
-              {instructor.products.map((product) => (
-                <Grid size={{lg:3,md:4,sm:12}} key={product.id}>
-                <div
-                  key={product.id}
-                  className="course-card"
-                  onClick={() => handleCourse(product.id)}
-                >
-                  <div className="course-card__image">
-                    <img
-                      src={product.preview_image}
-                      alt={product.title}
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src =
-                          "https://images.pexels.com/photos/6801648/pexels-photo-6801648.jpeg?auto=compress&cs=tinysrgb&w=400";
-                      }}
-                    />
-                    <div className="course-card__overlay">
-                      <Play size={24} />
-                    </div>
-                  </div>
+                {instructor.products.map((product) => (
+                  <Grid size={{ lg: 3, md: 4, sm: 12 }} key={product.id}>
+                    <div
+                      key={product.id}
+                      className="course-card"
+                      onClick={() => handleCourse(product.id)}
+                    >
+                      <div className="course-card__image">
+                        <img
+                          src={product.preview_image}
+                          alt={product.title}
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src =
+                              "https://images.pexels.com/photos/6801648/pexels-photo-6801648.jpeg?auto=compress&cs=tinysrgb&w=400";
+                          }}
+                        />
+                        <div className="course-card__overlay">
+                          <Play size={24} />
+                        </div>
+                      </div>
 
-                  <div className="course-card__content">
-                    <h3 className="course-card__title">{product.title}</h3>
+                      <div className="course-card__content">
+                        <h3 className="course-card__title">{product.title}</h3>
 
-                    <div className="course-card__meta">
-                      {/* <div className="course-rating">
+                        <div className="course-card__meta">
+                          {/* <div className="course-rating">
                         <Star size={14} />
                         <span>4.8</span>
                       </div> */}
-                      {/* <div className="course-students">
+                          {/* <div className="course-students">
                         <Users size={14} />
                         <span>250+ students</span>
                       </div> */}
-                    </div>
+                        </div>
 
-                    {/* <div className="course-card__price">
+                        {/* <div className="course-card__price">
                       <span className="current-price">$99</span>
                       <span className="original-price">$149</span>
                     </div> */}
 
-                    <button className="course-card__button">View Course</button>
-                  </div>
-                </div>
-                </Grid>
-              ))}
+                        <button className="course-card__button">
+                          View Course
+                        </button>
+                      </div>
+                    </div>
+                  </Grid>
+                ))}
               </Grid>
             </div>
           </div>

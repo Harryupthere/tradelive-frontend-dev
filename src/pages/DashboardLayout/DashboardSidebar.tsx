@@ -40,12 +40,12 @@ function DashboardSidebar({ sidebarOpen, closeSidebar }) {
       label: "FX Calculators",
       exact: true,
     },
-    // {
-    //   path: `${base}instructors`,
-    //   icon: School,
-    //   label: "Mentor Hub",
-    //   exact: true,
-    // },
+    {
+      path: `${base}instructors`,
+      icon: School,
+      label: "Mentor Hub",
+      exact: true,
+    },
     {
       path: `${base}chat-discussions`,
       icon: Users2Icon,
@@ -64,12 +64,12 @@ function DashboardSidebar({ sidebarOpen, closeSidebar }) {
       label: "FAQ",
       exact: true,
     },
-    {
-      path: `${base}activation-coupons`,
-      icon: TicketPlus,
-      label: "Activation Coupons",
-      exact: true,
-    },
+    // {
+    //   path: `${base}activation-coupons`,
+    //   icon: TicketPlus,
+    //   label: "Activation Coupons",
+    //   exact: true,
+    // },
 
     { path: `${base}profile`, icon: Home, label: "Profile", exact: true },
     // {
@@ -79,12 +79,12 @@ function DashboardSidebar({ sidebarOpen, closeSidebar }) {
     //   exact: true,
     // },
 
-    {
-      path: `${base}plans`,
-      icon: Package2,
-      label: "Pricing Plans",
-      exact: true,
-    },
+    // {
+    //   path: `${base}registration-plans`,
+    //   icon: Package2,
+    //   label: "Pricing Plans",
+    //   exact: true,
+    // },
     {
       path: `${base}ai-chart-chat`,
       icon: LogIn,
@@ -115,6 +115,9 @@ const [menuItems, setMenuItems] = useState([...mainMenuItems]);
 
   const location = useLocation();
   const navigate = useNavigate();
+    if(getUser()?.userType?.id != 2 ){
+      navigate(`${base}registration-plans`);
+    }
   const { courses_allowance } = getUser();
 
   const [tradeliveDropdownOpen, setTradeliveDropdownOpen] = useState(false);
@@ -185,7 +188,7 @@ useEffect(() => {
             )}
 
             {/* Tradelive24 Section Dropdown */}
-            {/* <div
+            <div
               className={`menu-item tradelive24-dropdown${
                 tradeliveDropdownOpen ? " open" : ""
               }`}
@@ -221,7 +224,7 @@ useEffect(() => {
                 >
                   Platform Tutorial
                 </Link>
-                <Link
+                {/* <Link
                   to={`${base}brokerage-tutorial`}
                   className="tradelive24-dropdown__item"
                   onClick={handleDropdownLinkClick}
@@ -248,9 +251,9 @@ useEffect(() => {
                   onClick={handleDropdownLinkClick}
                 >
                   FAQ
-                </Link>
+                </Link> */}
               </div>
-            </div> */}
+            </div>
 
             <button
               type="button"

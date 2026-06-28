@@ -19,7 +19,8 @@ import {
   getUser,
   setRefreshToken
 } from "../../utils/tokenUtils";
-
+import TermsAcceptanceModal from "../../components/common/TncPopup";
+import { createPortal } from "react-dom";
 
 const base = import.meta.env.VITE_BASE;
 
@@ -31,6 +32,7 @@ const LoginPage: React.FC = () => {
   const [acceptMarketing, setAcceptMarketing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
 
   const [submitError, setSubmitError] = useState("");
   useEffect(() => {
@@ -76,8 +78,14 @@ const LoginPage: React.FC = () => {
         dispatch(setCredentials({ token, user }));
         setSubmitError("");
         //   successMsg(res.message);
+          if(user.userType.id==2 && user.tnc_accepted==0){
+      setShowTermsModal(true);
 
-        navigate(`${base}${redirection}`);
+        }else{
+          navigate(`${base}${redirection}`);
+        }
+
+        // navigate(`${base}${redirection}`);
       } else {
         setSubmitError(res?.message || "Login failed");
 
@@ -131,12 +139,17 @@ const LoginPage: React.FC = () => {
         if (user) {
           persistUser(user);
         }
-
         // dispatch to redux
         dispatch(setCredentials({ token, user }));
 
+        if(user.userType.id==2 && user.tnc_accepted==0){
+      setShowTermsModal(true);
+
+        }else{
+          navigate(`${base}${redirection}`);
+        }
         //  successMsg(ress.message);
-       navigate(`${base}${redirection}`);
+      // navigate(`${base}${redirection}`);
       } catch (err: any) {
         errorMsg(err?.response?.data?.message || "Google login failed");
       } finally {
@@ -145,6 +158,20 @@ const LoginPage: React.FC = () => {
     },
     onError: (error) => console.log("Login Failed:", error),
   });
+
+    if (showTermsModal) {
+    return createPortal(
+      <TermsAcceptanceModal
+        isOpen={showTermsModal}
+        onClose={() => setShowTermsModal(false)}
+        termsPath={`${base}terms-and-condition`}
+        // onAccept={handleAcceptTerms}
+        redirectPath={`${base}dashboard`}
+        sourcePath="login"
+      />,
+      document.body,
+    );
+  }
 
   return (
     <div className="login-page">

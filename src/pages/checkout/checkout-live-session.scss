@@ -1,0 +1,512 @@
+.live-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+/* ========================================
+   PART 1
+======================================== */
+
+.session-header {
+  margin-bottom: 50px;
+}
+
+.live-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: #ffffff;
+
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 13px;
+
+  margin-bottom: 40px;
+}
+
+.brand-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+
+  background: #d5ff2e;
+}
+
+.live-label {
+  color: #d5ff2e;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  letter-spacing: 2px;
+
+  margin-bottom: 20px;
+}
+
+.live-hero {
+  max-width: 700px;
+}
+
+.live-hero h1 {
+  font-size: 72px;
+  font-weight: 700;
+
+  line-height: 1.05;
+
+  color: #ffffff;
+
+  margin-bottom: 20px;
+}
+
+.live-hero h3 {
+  font-size: 24px;
+  font-weight: 200;
+
+  line-height: 1.05;
+
+  color: #b6a8a8;
+
+  margin-bottom: 20px;
+}
+
+.live-hero p {
+  color: #e5e6ff;
+
+  font-size: 18px;
+
+  line-height: 1.9;
+
+  max-width: 650px;
+}
+
+.live-meta {
+  margin-top: 45px;
+
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 60px;
+
+  padding-top: 25px;
+  padding-bottom: 25px;
+
+  border-top: 1px solid #222;
+  border-bottom: 1px solid #222;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.meta-item strong {
+  color: #d5ff2e;
+  margin-bottom: 6px;
+  font-weight: 800;
+}
+
+.meta-item span {
+  color: #ffffff;
+}
+
+/* ========================================
+   PART 2 + PART 3
+======================================== */
+
+.session-body {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 50px;
+  align-items: start;
+}
+
+.session-details {
+  max-width: 650px;
+}
+
+.session-details h3 {
+  color: #d2c1c1;
+
+  font-size: 24px;
+
+  letter-spacing: 2px;
+
+  text-transform: uppercase;
+
+  margin-bottom: 25px;
+}
+
+/* ========================================
+   SESSION HTML
+======================================== */
+
+.session-html {
+  color: #c5c5c5;
+  line-height: 1.9;
+}
+
+.session-html h1,
+.session-html h2,
+.session-html h3,
+.session-html h4,
+.session-html h5 {
+  color: #ffffff;
+
+  margin-top: 30px;
+  margin-bottom: 15px;
+}
+
+.session-html p {
+  margin-bottom: 18px;
+}
+
+.session-html strong {
+  color: #d5ff2e;
+}
+
+.session-html ul {
+  padding-left: 20px;
+}
+
+.session-html li {
+  margin-bottom: 10px;
+}
+
+/* ========================================
+   KEY POINTS
+======================================== */
+
+.session-points {
+  margin-top: 35px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 14px;
+}
+
+.point-item {
+  color: #fff;
+
+  font-size: 18px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+}
+
+/* ========================================
+   BOOKING CARD
+======================================== */
+
+.session-booking {
+  display: flex;
+  justify-content: center;
+}
+
+.booking-card {
+  position: sticky;
+  top: 30px;
+
+  width: 100%;
+  max-width: 400px;
+
+  background: #0b0b0b;
+
+  border: 1px solid #1e1e1e;
+
+  border-radius: 24px;
+
+  padding: 30px;
+
+  box-shadow:
+    0 0 40px rgba(0, 0, 0, 0.4);
+}
+
+/* ========================================
+   PRICE
+======================================== */
+
+.booking-price {
+  margin-bottom: 25px;
+}
+
+.booking-price h2 {
+  font-size: 64px;
+  font-weight: 700;
+
+  color: #d5ff2e;
+
+  margin: 0;
+}
+
+.booking-price span {
+  color: #8c8c8c;
+}
+
+/* ========================================
+   PROGRESS
+======================================== */
+
+.seat-progress {
+  margin-bottom: 30px;
+}
+
+.progress-bar {
+  height: 4px;
+
+  background: #202020;
+
+  border-radius: 999px;
+
+  overflow: hidden;
+
+  margin-bottom: 10px;
+}
+
+.progress-fill {
+  height: 100%;
+
+  background: #d5ff2e;
+}
+
+.seat-progress span {
+  color: #9b9b9b;
+}
+
+/* ========================================
+   FORM
+======================================== */
+
+.booking-group {
+  margin-bottom: 18px;
+}
+
+.booking-group label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #b0b0b0;
+
+  font-size: 14px;
+}
+
+.booking-group input,
+.booking-group select {
+  width: 100%;
+
+  height: 50px;
+
+  padding: 0 16px;
+
+  background: #131313;
+
+  color: white;
+
+  border: 1px solid #222;
+
+  border-radius: 12px;
+
+  outline: none;
+
+  transition: all 0.2s ease;
+}
+
+.booking-group input:focus,
+.booking-group select:focus {
+  border-color: #d5ff2e;
+}
+
+/* ========================================
+   PAYMENT METHODS
+======================================== */
+
+.payment-section {
+  margin-top: 25px;
+}
+
+.payment-section > label {
+  display: block;
+
+  margin-bottom: 12px;
+
+  color: #b0b0b0;
+}
+
+.payment-methods {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.payment-method {
+  background: #131313;
+
+  border: 1px solid #222;
+
+  border-radius: 14px;
+
+  padding: 14px;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.payment-method.active {
+  border-color: #d5ff2e;
+}
+
+.payment-method:hover {
+  border-color: #d5ff2e;
+}
+
+.gateway-top {
+  display: flex;
+  gap: 12px;
+}
+
+.gateway-top img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+
+.gateway-top h4 {
+  margin: 0;
+
+  color: #fff;
+
+  font-size: 16px;
+}
+
+.gateway-top p {
+  margin-top: 5px;
+
+  color: #8d8d8d;
+
+  font-size: 13px;
+
+  line-height: 1.4;
+}
+
+/* ========================================
+   CRYPTO LIST
+======================================== */
+
+.crypto-list {
+  margin-top: 15px;
+}
+
+.crypto-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  background: #131313;
+
+  border: 1px solid #222;
+
+  border-radius: 12px;
+
+  padding: 12px;
+
+  margin-bottom: 10px;
+
+  cursor: pointer;
+}
+
+.crypto-item:hover {
+  border-color: #d5ff2e;
+}
+
+.crypto-item img {
+  width: 32px;
+  height: 32px;
+}
+
+.crypto-item strong {
+  color: #fff;
+}
+
+.crypto-item small {
+  display: block;
+  color: #999;
+}
+
+/* ========================================
+   BUTTON
+======================================== */
+
+.reserve-btn {
+  width: 100%;
+
+  margin-top: 25px;
+
+  height: 56px;
+
+  border: none;
+
+  border-radius: 14px;
+
+  background: #d5ff2e;
+
+  color: #000;
+
+  font-weight: 700;
+  font-size: 16px;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.reserve-btn:hover {
+  background: #c5ef20;
+  transform: translateY(-1px);
+}
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 992px) {
+  .session-body {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-card {
+    position: static;
+    max-width: 100%;
+  }
+
+  .live-hero h1 {
+    font-size: 48px;
+  }
+
+  .live-meta {
+    gap: 25px;
+  }
+}
+
+@media (max-width: 576px) {
+  .live-hero h1 {
+    font-size: 38px;
+  }
+
+    .live-hero h3 {
+    font-size: 24px;
+  }
+
+  .payment-methods {
+    grid-template-columns: 1fr;
+  }
+
+  .live-meta {
+    flex-direction: column;
+  }
+}

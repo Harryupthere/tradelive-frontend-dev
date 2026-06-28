@@ -13,6 +13,8 @@ const instructorPrice = import.meta.env.VITE_INSTRUCTOR_PRICE;
 const whatsappPrice = import.meta.env.VITE_WHATSAPP_PRICE;
 const aiPlanPrice = import.meta.env.VITE_AI_PLAN_PRICE;
 const feesPrice = import.meta.env.VITE_FEES;
+const starterPrice = import.meta.env.VITE_STARTER_FEES;
+const premiumPrice = import.meta.env.VITE_PREMIUM_FEES;
 
 // small helper to convert iso2 to emoji flag
 const iso2ToFlag = (iso2: string) => {
@@ -49,7 +51,10 @@ interface CheckoutFormData {
     | "Activation Coupon"
     | "Instructor Meeting"
     | "Whatsapp Trade"
-    | "AI Plan";
+    | "AI Plan"
+    | "Starter Plan"
+    | "Premium Plan";
+
 
   paymentGateway: "stripe" | "boomfi" | string;
   couponQuantity: number;
@@ -80,6 +85,24 @@ const Checkout: React.FC = () => {
       (activationCouponRaw.toLowerCase() === "true" ||
         activationCouponRaw === "1")
     ) {
+      return true;
+    }
+  };
+
+  const fetchStarterPlan = () => {
+    const params = new URLSearchParams(window.location.search);
+
+    const starter = params.get("starter");
+    if (starter && (starter.toLowerCase() === "true" || starter === "1")) {
+      return true;
+    }
+  };
+
+  const fetchPremiumrPlan = () => {
+    const params = new URLSearchParams(window.location.search);
+
+    const premium = params.get("premium");
+    if (premium && (premium.toLowerCase() === "true" || premium === "1")) {
       return true;
     }
   };
@@ -153,6 +176,8 @@ const Checkout: React.FC = () => {
   const activationCouponFromUrl = fetchActivationCoupon();
   const whatsappTradeFromUrl = fetchWhatsappTrade();
   const aiPlanFromUrl = fetchAIPlan();
+  const starterFromUrl = fetchStarterPlan();
+  const premiumFromUrl = fetchPremiumrPlan();
 
   const [formData, setFormData] = useState<CheckoutFormData>({
     fullName: "",
@@ -165,11 +190,15 @@ const Checkout: React.FC = () => {
         : aiPlanFromUrl
           ? "AI Plan"
           : whatsappTradeFromUrl
-              ? "Whatsapp Trade"
-          : getUser()?.userType.id == 1 || activationCouponFromUrl
-            ? "Activation Coupon"
-            
-              : "Yearly Subscription",
+            ? "Whatsapp Trade"
+            : getUser()?.userType?.id == 1 || activationCouponFromUrl
+              ? "Activation Coupon"
+              // : starterFromUrl
+              //   ? "Starter Plan"
+                 : premiumFromUrl
+                  ? "Premium Plan"
+                  : "Premium Plan",
+    //: "Yearly Subscription",
     paymentGateway: "1",
     couponQuantity: 1,
     meetingReason: "",
@@ -242,53 +271,76 @@ const Checkout: React.FC = () => {
   const [pricing, setPricing] = useState<PricingDetails>({
     basePrice:
       instructorMeetingFromUrl && instructorMeetingFromUrl.enabled
-        ? parseFloat(instructorPrice)
+        ? instructorDetails?.fees? parseFloat(instructorDetails?.fees) : parseFloat(instructorPrice)
         : whatsappTradeFromUrl
           ? parseFloat(whatsappPrice)
           : aiPlanFromUrl
             ? parseFloat(aiPlanPrice)
-            : planPrice
-              ? parseFloat(planPrice)
-              : 12.0,
+            // : starterFromUrl
+            //   ? parseFloat(starterPrice)
+            //   : premiumFromUrl
+            //     ? parseFloat(premiumPrice)
+            //     : parseFloat(premiumPrice),
+   : planPrice
+      ? parseFloat(planPrice)
+      : 12.0,
     quantity: 1,
     fees: feesPrice, //0, // Initialize with 0
     total:
       instructorMeetingFromUrl && instructorMeetingFromUrl.enabled
-        ? parseFloat(instructorPrice)
+        ? instructorDetails?.fees? parseFloat(instructorDetails?.fees) :parseFloat(instructorPrice)
         : whatsappTradeFromUrl
           ? parseFloat(whatsappPrice)
           : aiPlanFromUrl
             ? parseFloat(aiPlanPrice)
-            : planPrice
-              ? parseFloat(planPrice)
-              : 12.0, // Initial total without fees
+            // : starterFromUrl
+            //   ? parseFloat(starterPrice)
+            //   : premiumFromUrl
+            //     ? parseFloat(premiumPrice)
+            //     : parseFloat(premiumPrice),
+   : planPrice
+      ? parseFloat(planPrice)
+      : 12.0, // Initial total without fees
   });
 
   // Add useEffect to update pricing when payment gateways load
   useEffect(() => {
     if (paymentGateways.length > 0) {
+     // fetchMeetingDetails();
       // Update pricing with fees from first gateway
       const shouldFetch =
         instructorMeetingData && instructorMeetingData.enabled;
       const firstGateway =
-        getUser().userType.id == 1 ? paymentGateways[0] : paymentGateways[1];
+        getUser()?.userType?.id == 1 ? paymentGateways[0] : paymentGateways[1];
       const basePrice =
         shouldFetch == 1 || shouldFetch
-          ? parseFloat(instructorPrice)
+          ? instructorDetails?.fees? parseFloat(instructorDetails?.fees) :parseFloat(instructorPrice)
           : whatsappTradeFromUrl
             ? parseFloat(whatsappPrice)
             : aiPlanFromUrl
               ? parseFloat(aiPlanPrice)
-              : planPrice
-                ? parseFloat(planPrice)
-                : 12.0;
+              // : starterFromUrl
+              //   ? parseFloat(starterPrice)
+              //   : premiumFromUrl
+              //     ? parseFloat(premiumPrice)
+              //     : parseFloat(premiumPrice);
+      : planPrice
+        ? parseFloat(planPrice)
+        : 12.0;
       const feesPercent = Number(firstGateway.fee_percentage || 0);
-      const fees = aiPlanFromUrl?1:parseInt(firstGateway?.fees_amount); // (basePrice * feesPercent) / 100;
+      const fees = aiPlanFromUrl ? 1 : parseInt(firstGateway?.fees_amount); // (basePrice * feesPercent) / 100;
+     console.log(basePrice,"basePrice")
+      // setPricing((prev) => ({
+      //   ...prev,
+      //   fees,
+      //   total: basePrice + fees,
+      // }));
       setPricing((prev) => ({
-        ...prev,
-        fees,
-        total: basePrice + fees,
-      }));
+  ...prev,
+  basePrice,
+  fees,
+  total: basePrice + fees,
+}));
     }
   }, [paymentGateways, instructorMeetingData, instructorDetails]);
 
@@ -312,6 +364,7 @@ const Checkout: React.FC = () => {
   useEffect(() => {
     if (!instructorMeetingData) {
       const parsed = parseInstructorMeetingFromUrl();
+      console.log(parsed, "parsed instructorMeetingFromUrl");
       if (parsed) {
         setInstructorMeetingData(parsed);
         // ensure formData subscription type is set
@@ -349,6 +402,8 @@ const Checkout: React.FC = () => {
   ) => {
     if (value == "2") {
       setOpenCryptoSelection(true);
+    }else{
+      setOpenCryptoSelection(false);
     }
     const updatedFormData = { ...formData, [field]: value } as CheckoutFormData;
     setFormData(updatedFormData);
@@ -438,11 +493,22 @@ const Checkout: React.FC = () => {
         feesPrice,
     );
 
-    if (data.subscriptionType === "Yearly Subscription") {
-      basePrice = planPrice ? parseFloat(planPrice) : 12.0;
+    // if (data.subscriptionType === "Yearly Subscription") {
+    //   basePrice = planPrice ? parseFloat(planPrice) : 12.0;
+    //   quantity = 1;
+    //   fees = feesAmount; // basePrice * (feesPercentage / 100);
+    // }
+    // if (data.subscriptionType === "Starter Plan") {
+    //   basePrice = starterPrice ? parseFloat(starterPrice) : 12.0;
+    //   quantity = 1;
+    //   fees = feesAmount; // basePrice * (feesPercentage / 100);
+    // } else
+     if (data.subscriptionType === "Premium Plan") {
+      basePrice = premiumPrice ? parseFloat(premiumPrice) : 50.0;
       quantity = 1;
       fees = feesAmount; // basePrice * (feesPercentage / 100);
-    } else if (data.subscriptionType === "AI Plan") {
+    }
+     else if (data.subscriptionType === "AI Plan") {
       basePrice = aiPlanPrice ? parseFloat(aiPlanPrice) : 10.0;
       quantity = 1;
       fees = 1;
@@ -451,7 +517,7 @@ const Checkout: React.FC = () => {
       quantity = data.couponQuantity || 1;
       fees = feesAmount; // basePrice * quantity * (feesPercentage / 100);
     } else if (data.subscriptionType === "Instructor Meeting") {
-      basePrice = instructorDetails?.meeting_price
+      basePrice = instructorDetails?.fees? parseFloat(instructorDetails?.fees) :instructorDetails?.meeting_price
         ? parseFloat(instructorDetails.meeting_price)
         : 99.0; // default meeting price
       quantity = 1;
@@ -490,7 +556,6 @@ const Checkout: React.FC = () => {
   // Keep crypto quantity in sync when pricing changes
   useEffect(() => {
     if (selectedCryptoCurrency) {
-      console.log(selectedCryptoCurrency, "selectedCryptoCurrency");
       const qty = calculateCryptoAmount(selectedCryptoCurrency.rate.rate);
       const decimals = Number(selectedCryptoCurrency.decimal_places ?? 6);
       setCryptoQuantity(Number(qty.toFixed(decimals)));
@@ -547,6 +612,7 @@ const Checkout: React.FC = () => {
 
   const executeCheckout = async () => {
     try {
+
       const metadata = {
         ...formData,
         ...pricing,
@@ -564,6 +630,7 @@ const Checkout: React.FC = () => {
         amount: pricing.total,
         metadata,
       };
+
       if (formData.paymentGateway == 1) {
         const res = await api.post(API_ENDPOINTS.stripeCreateSession, payload);
 
@@ -572,7 +639,6 @@ const Checkout: React.FC = () => {
           window.location.href = res?.data?.data?.checkoutUrl;
         }
       } else {
-        console.log(selectedCryptoCurrency, "selectedCryptoCurrency");
         payload.selectedCrypto = selectedCryptoCurrency?.id;
         const res = await api.post(API_ENDPOINTS.coinpaymentInvoice, payload);
         if (res.data.status) {
@@ -582,7 +648,9 @@ const Checkout: React.FC = () => {
       }
     } catch (err: any) {
       console.error("executeCheckout error:", err);
-      errorMsg(err?.response?.data?.message || err?.message || "Checkout failed");
+      errorMsg(
+        err?.response?.data?.message || err?.message || "Checkout failed",
+      );
     }
   };
   return (
@@ -873,7 +941,7 @@ const Checkout: React.FC = () => {
 
               <div className="subscription-options">
                 {/* If instructorMeeting data present in URL, show only Instructor Meeting option */}
-                {instructorMeetingData ? (
+                {instructorMeetingData && (
                   <div className="subscription-option">
                     <input
                       type="radio"
@@ -1011,7 +1079,8 @@ const Checkout: React.FC = () => {
                       </div>
                     </label>
                   </div>
-                ) : whatsappTradeFromUrl ? (
+                )}
+                {whatsappTradeFromUrl && (
                   <>
                     <div className="subscription-option">
                       <input
@@ -1041,41 +1110,40 @@ const Checkout: React.FC = () => {
                       </label>
                     </div>
                   </>
-                ) : (
-                  <>
-                    {getUser().userType.id == 1 && (
-                      <div className="subscription-option">
-                        <input
-                          type="radio"
-                          id="Yearly Subscription"
-                          name="subscriptionType"
-                          checked={
-                            formData.subscriptionType === "Yearly Subscription"
-                          }
-                          onChange={() =>
-                            handleInputChange(
-                              "subscriptionType",
-                              "Yearly Subscription",
-                            )
-                          }
-                        />
-                        <label
-                          htmlFor="Yearly Subscription"
-                          className="subscription-label"
-                        >
-                          <div className="subscription-header">
-                            <CreditCard size={20} />
-                            <span>Yearly Subscription</span>
-                          </div>
-                          <div className="subscription-description">
-                            Full access to all calculators and premium features
-                            for 12 months
-                          </div>
-                        </label>
-                      </div>
-                    )}
-
-                    {/* <div className="subscription-option">
+                )}
+                <>
+                  {/* {getUser().userType.id == 1 && (
+                    <div className="subscription-option">
+                      <input
+                        type="radio"
+                        id="Yearly Subscription"
+                        name="subscriptionType"
+                        checked={
+                          formData.subscriptionType === "Yearly Subscription"
+                        }
+                        onChange={() =>
+                          handleInputChange(
+                            "subscriptionType",
+                            "Yearly Subscription",
+                          )
+                        }
+                      />
+                      <label
+                        htmlFor="Yearly Subscription"
+                        className="subscription-label"
+                      >
+                        <div className="subscription-header">
+                          <CreditCard size={20} />
+                          <span>Yearly Subscription</span>
+                        </div>
+                        <div className="subscription-description">
+                          Full access to all calculators and premium features
+                          for 12 months
+                        </div>
+                      </label>
+                    </div>
+                  )} */}
+                  {/* <div className="subscription-option">
                       <input
                         type="radio"
                         id="AI Plan"
@@ -1096,37 +1164,88 @@ const Checkout: React.FC = () => {
                         </div>
                       </label>
                     </div> */}
-
-                    <div className="subscription-option">
-                      <input
-                        type="radio"
-                        id="Activation Coupon"
-                        name="subscriptionType"
-                        checked={
-                          formData.subscriptionType === "Activation Coupon"
-                        }
-                        onChange={() =>
-                          handleInputChange(
-                            "subscriptionType",
-                            "Activation Coupon",
-                          )
-                        }
-                      />
-                      <label
-                        htmlFor="Activation Coupon"
-                        className="subscription-label"
-                      >
-                        <div className="subscription-header">
-                          <Gift size={20} />
-                          <span>Activation Coupon Code</span>
-                        </div>
-                        <div className="subscription-description">
-                          Purchase activation coupons for flexible access
-                        </div>
-                      </label>
-                    </div>
-                  </>
+                </>
+                {activationCouponFromUrl && (
+                  <div className="subscription-option">
+                    <input
+                      type="radio"
+                      id="Activation Coupon"
+                      name="subscriptionType"
+                      checked={
+                        formData.subscriptionType === "Activation Coupon"
+                      }
+                      onChange={() =>
+                        handleInputChange(
+                          "subscriptionType",
+                          "Activation Coupon",
+                        )
+                      }
+                    />
+                    <label
+                      htmlFor="Activation Coupon"
+                      className="subscription-label"
+                    >
+                      <div className="subscription-header">
+                        <Gift size={20} />
+                        <span>Activation Coupon Code</span>
+                      </div>
+                      <div className="subscription-description">
+                        Purchase activation coupons for flexible access
+                      </div>
+                    </label>
+                  </div>
                 )}
+                {/* {starterFromUrl && (
+                  <div className="subscription-option">
+                    <input
+                      type="radio"
+                      id="Starter Plan"
+                      name="subscriptionType"
+                      checked={formData.subscriptionType === "Starter Plan"}
+                      onChange={() =>
+                        handleInputChange("subscriptionType", "Starter Plan")
+                      }
+                    />
+                    <label
+                      htmlFor="Starter Plan"
+                      className="subscription-label"
+                    >
+                      <div className="subscription-header">
+                        <Gift size={20} />
+                        <span>Starter Plan</span>
+                      </div>
+                      <div className="subscription-description">
+                        Purchase starter plan for flexible access
+                      </div>
+                    </label>
+                  </div>
+                )}
+
+                // {premiumFromUrl && (
+                //   <div className="subscription-option">
+                //     <input
+                //       type="radio"
+                //       id="Premium Plan"
+                //       name="subscriptionType"
+                //       checked={formData.subscriptionType === "Premium Plan"}
+                //       onChange={() =>
+                //         handleInputChange("subscriptionType", "Premium Plan")
+                //       }
+                //     />
+                //     <label
+                //       htmlFor="Premium Plan"
+                //       className="subscription-label"
+                //     >
+                //       <div className="subscription-header">
+                //         <Gift size={20} />
+                //         <span>Premium Plan</span>
+                //       </div>
+                //       <div className="subscription-description">
+                //         Purchase premium plan for flexible access
+                //       </div>
+                //     </label>
+                //   </div>
+                // )} */}
               </div>
               {formData.subscriptionType === "Activation Coupon" && (
                 <div className="coupon-section">
@@ -1301,13 +1420,21 @@ const Checkout: React.FC = () => {
               <div className="summary-details">
                 <div className="summary-item">
                   <span className="summary-label">
-                    {formData.subscriptionType === "Yearly Subscription"
-                      ? "Yearly Subscription"
-                      : formData.subscriptionType === "Instructor Meeting"
-                        ? "Instructor Meeting"
-                        : formData.subscriptionType === "AI Plan"
-                          ? "AI Plan"
-                          : "Activation Coupons"}
+                    {
+                      // formData.subscriptionType ===
+                      // "Yearly Subscription"
+                      //   ? "Yearly Subscription"
+                      // formData.subscriptionType === "Starter Plan"
+                      //   ? "Starter Plan"
+                      //   : 
+                      formData.subscriptionType === "Premium Plan"
+                          ? "Premium Plan"
+                          : formData.subscriptionType === "Instructor Meeting"
+                            ? "Instructor Meeting"
+                            : formData.subscriptionType === "AI Plan"
+                              ? "AI Plan"
+                              : "Activation Coupons"
+                    }
                   </span>
 
                   <span className="summary-value">
@@ -1330,7 +1457,16 @@ const Checkout: React.FC = () => {
                 <div className="summary-item">
                   <span className="summary-label">
                     Processing Fees
-                    {formData.subscriptionType === "Yearly Subscription" && (
+                    {/* {formData.subscriptionType === "Yearly Subscription" && (
+                      <span className="fee-note">
+                        (
+                        {formData.paymentGateway === "stripe"
+                          ? "Stripe"
+                          : "BoomFi"}
+                        )
+                      </span>
+                    )} */}
+                    {formData.subscriptionType === "Premium Plan" && (
                       <span className="fee-note">
                         (
                         {formData.paymentGateway === "stripe"

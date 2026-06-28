@@ -15,7 +15,7 @@ import {
 import "./pricingPlans.scss";
 import { useNavigate } from "react-router-dom";
 import { getUser } from "../../utils/tokenUtils";
-
+import { createPortal } from "react-dom";
 const base = import.meta.env.VITE_BASE;
 const planPrice = import.meta.env.VITE_PLAN_PRICE;
 const whatsappPrice = import.meta.env.VITE_WHATSAPP_PRICE;

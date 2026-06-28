@@ -19,6 +19,8 @@ export const API_ENDPOINTS = {
   enrollment:'/enrollments',
 
   usersProfile:'/users/profile',
+  userstermsAndConditionUpdate:'/users/tncAccepted',
+
   updateProfile:'/users/profile',
   updatePassword:'/users/password',
   uploadRequest:'/upload/request',
@@ -86,7 +88,9 @@ aiSubmitQuery:'/ai/chart-question',
   aiChatHistory:'/ai/history',
   supportTickets:'/user/support/my-tickets',
   createSupportTicket:'/user/support/create',
-  communityFeedbacks:'/product-feedback/landing'
+  communityFeedbacks:'/product-feedback/landing',
+  productPlatform:'/products/platform',
+  liveSessionDetails:'/live-session/active',
 };
 
 

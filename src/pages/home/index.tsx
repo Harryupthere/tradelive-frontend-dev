@@ -91,8 +91,8 @@ const Home = () => {
   const [timeLeft, setTimeLeft] = useState("");
 
   useEffect(() => {
-    // 16 May 2026 4:00 PM
-    const targetDate = new Date("2026-05-16T16:00:00").getTime();
+    // 20 May 2026, 12:00 PM GMT+8
+    const targetDate = new Date("2026-05-20T12:00:00+08:00").getTime();
 
     const interval = setInterval(() => {
       const now = new Date().getTime();
@@ -100,41 +100,53 @@ const Home = () => {
       const difference = targetDate - now;
 
       if (difference <= 0) {
-        setTimeLeft("Services are now live");
+        setTimeLeft("Global propagation completed");
         clearInterval(interval);
         return;
       }
 
-      const hours = Math.floor(difference / (1000 * 60 * 60));
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor(
+        (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+      );
       const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
-      setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+      setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
     }, 1000);
 
     return () => clearInterval(interval);
   }, []);
 
-
   return (
     <div className="home-wrapped">
       <div className="container">
-{/* 
-        <div className="banner-alert">
+        {/* <div className="banner-alert">
           <div className="banner-alert__content">
             <div className="banner-alert__icon">
               <Shield size={22} />
             </div>
+
             <div className="banner-alert__text">
-              <h3>Platform Maintenance In Progress</h3>
+              <h3>Operations Successfully Resumed</h3>
 
               <p>
-                We’re currently upgrading our infrastructure and trading modules
-                to improve performance and stability.
+                Operations have now resumed successfully. However, due to DNS
+                propagation timing across different regions and internet service
+                providers, some users may still experience temporary access
+                delays.
+              </p>
+
+              <p>
+                We kindly request an additional 12 hours for full global
+                propagation and stabilization to complete.
               </p>
 
               <div className="maintenance-timer">
-                Services Resume In: <span>{timeLeft}</span>
+                Thank you for your patience and understanding.
+              </div>
+              <div className="maintenance-timer">
+                Estimated stabilization time remaining: <span>{timeLeft}</span>
               </div>
             </div>
           </div>

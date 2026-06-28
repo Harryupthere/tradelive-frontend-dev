@@ -598,35 +598,67 @@
   }
 }
 
+// @media (max-width: 640px) {
+//   .course-detail-page {
+//     padding: 1rem 0.5rem;
+//   }
+
+//   .video-section {
+//     padding: 1rem;
+//   }
+
+//   .course-header {
+//     padding: 1rem;
+
+//     h1 {
+//       font-size: 1.125rem;
+//     }
+//   }
+
+//   .lecture-item {
+//     padding: 0.75rem;
+//     gap: 0.75rem;
+
+//     .lecture-number {
+//       width: 2rem;
+//       height: 2rem;
+//       font-size: 0.75rem;
+//     }
+
+//     .lecture-content h4 {
+//       font-size: 0.8125rem;
+//     }
+//   }
+// }
+
 @media (max-width: 640px) {
-  .course-detail-page {
-    padding: 1rem 0.5rem;
+
+  .course-sidebar {
+    max-height: unset;
+    height: auto;
   }
 
-  .video-section {
-    padding: 1rem;
+  .lectures-section {
+    overflow: visible;
   }
 
-  .course-header {
-    padding: 1rem;
-
-    h1 {
-      font-size: 1.125rem;
-    }
+  .lectures-list {
+    max-height: 70vh; // or 80vh
+    overflow-y: auto;
+    padding-bottom: 2rem;
   }
 
   .lecture-item {
-    padding: 0.75rem;
-    gap: 0.75rem;
+    min-height: 72px;
+    align-items: flex-start;
+  }
 
-    .lecture-number {
-      width: 2rem;
-      height: 2rem;
-      font-size: 0.75rem;
-    }
-
-    .lecture-content h4 {
-      font-size: 0.8125rem;
+  .lecture-content {
+    h4 {
+      white-space: normal; // allow multi-line title
+      overflow: visible;
+      text-overflow: unset;
+      line-height: 1.5;
     }
   }
 }

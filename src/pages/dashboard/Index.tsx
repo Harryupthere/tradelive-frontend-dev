@@ -21,7 +21,7 @@ import { API_ENDPOINTS } from "../../constants/ApiEndPoints";
 import { getUser } from "../../utils/tokenUtils";
 import ResourceCard, { Resource } from "../../components/common/ResourceCard";
 import NoData from "../../components/common/NoData";
-
+import { Link } from "react-router-dom";
 const base = import.meta.env.VITE_BASE;
 interface UserData {
   name: string;
@@ -45,6 +45,11 @@ const actionIconMap = {
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
+
+  if(getUser()?.userType?.id != 2 ){
+    navigate(`${base}registration-plans`);
+  }
+
   const [resources, setResources] = useState<Resource[]>([]);
   const [multipleLogins, setMultipleLogins] = useState(false);
   const [recentActions, setRecentActions] = useState([
@@ -89,11 +94,12 @@ const Dashboard: React.FC = () => {
     // },
   ]);
 
+
   const [userData, setUserData] = useState<UserData>({
     name: getUser()?.first_name || "",
     profile_image: getUser()?.profile_image || "",
     joiningDate: "",
-    membership_type: getUser()?.userType.id == 2 ? "Premium" : "Lite",
+    membership_type: getUser()?.userType?.id == 2 ? "Premium" : "Lite",
     enrolledCourses: 0,
     newsViewed: 0,
     couponCount: 0,
@@ -315,6 +321,23 @@ const Dashboard: React.FC = () => {
             </h1>
           </div>
         </div>
+
+        <Link
+          to={`${base}live-session-checkout`}
+          className="trading-room-banner"
+        >
+          <div className="trading-room-banner__pulse"></div>
+
+          <div className="trading-room-banner__content">
+            <span className="trading-room-banner__tag">LIVE EVENT</span>
+
+            <h3>Trading Room Workshop</h3>
+
+            <p>Limited Seats Available</p>
+          </div>
+
+          <div className="trading-room-banner__arrow">→</div>
+        </Link>
       </div>
 
       {/* Welcome Message */}
@@ -352,7 +375,7 @@ const Dashboard: React.FC = () => {
         </div>
       )}
 
-     {/* <div className="dashboard__alert-maintenance">
+      {/* <div className="dashboard__alert-maintenance">
         <div className="dashboard__alert-content">
           <div className="dashboard__alert-icon dashboard__alert-icon--maintenance">
             <Shield size={24} />
@@ -370,7 +393,7 @@ const Dashboard: React.FC = () => {
             </p>
           </div>
         </div>
-      </div>*/}
+      </div> */}
 
       {/* Statistics Grid */}
       <div className="dashboard__statistics">

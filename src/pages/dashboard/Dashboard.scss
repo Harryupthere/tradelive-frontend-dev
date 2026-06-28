@@ -43,7 +43,136 @@
   &__header {
     margin-bottom: 2rem;
     animation: slideInDown 0.8s ease-out;
+
   }
+
+  .trading-room-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  min-width: 280px;
+
+  padding: 14px 18px;
+
+  text-decoration: none;
+
+  border-radius: 18px;
+
+  position: relative;
+
+  overflow: hidden;
+
+  background: rgba(213, 255, 46, 0.08);
+
+  border: 1px solid rgba(213, 255, 46, 0.35);
+
+  box-shadow:
+    0 0 10px rgba(213, 255, 46, 0.15),
+    0 0 25px rgba(213, 255, 46, 0.08);
+
+  animation: tradingRoomGlow 2s infinite alternate;
+
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+      0 0 18px rgba(213, 255, 46, 0.4),
+      0 0 35px rgba(213, 255, 46, 0.2);
+  }
+}
+
+.trading-room-banner__pulse {
+  width: 14px;
+  height: 14px;
+
+  border-radius: 50%;
+
+  background: #d5ff2e;
+
+  flex-shrink: 0;
+
+  animation: pulseDot 1.3s infinite;
+}
+
+.trading-room-banner__content {
+  flex: 1;
+
+  h3 {
+    margin: 0;
+
+    color: #d5ff2e;
+
+    font-size: 20px;
+
+    font-weight: 800;
+
+    line-height: 1.2;
+  }
+
+  p {
+    margin: 2px 0 0;
+
+    color: #ffffff;
+
+    font-size: 13px;
+  }
+}
+
+.trading-room-banner__tag {
+  display: inline-block;
+
+  margin-bottom: 4px;
+
+  color: #ffffff;
+
+  font-size: 11px;
+
+  letter-spacing: 2px;
+
+  font-weight: 700;
+}
+
+.trading-room-banner__arrow {
+  color: #d5ff2e;
+
+  font-size: 26px;
+
+  font-weight: 700;
+}
+
+@keyframes pulseDot {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.5);
+    opacity: 0.4;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes tradingRoomGlow {
+  from {
+    box-shadow:
+      0 0 10px rgba(213, 255, 46, 0.15),
+      0 0 20px rgba(213, 255, 46, 0.1);
+  }
+
+  to {
+    box-shadow:
+      0 0 20px rgba(213, 255, 46, 0.4),
+      0 0 40px rgba(213, 255, 46, 0.2);
+  }
+}
 
   &__profile-section {
     display: flex;
@@ -741,4 +870,21 @@
       font-size: 1.1rem;
     }
   }
+
+  @media (max-width: 768px) {
+  .dashboard__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .trading-room-banner {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .trading-room-banner__content h3 {
+    font-size: 18px;
+  }
+}
 }

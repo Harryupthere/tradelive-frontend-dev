@@ -65,7 +65,8 @@
             li {
                 list-style-type: none;
 
-                a, .scroll-link {
+                a,
+                .scroll-link {
                     color: var(--fc-primary);
                     font-size: 16px;
                     font-style: normal;
@@ -152,6 +153,90 @@
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                }
+            }
+
+            .trading-room-badge {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+
+                padding: 8px 14px;
+
+                border-radius: 999px;
+
+                background: rgba(213, 255, 46, 0.08);
+
+                border: 1px solid rgba(213, 255, 46, 0.35);
+
+                cursor: pointer;
+
+                position: relative;
+
+                overflow: hidden;
+
+                animation: tradingGlow 2s infinite alternate;
+
+                @include responsive(sm) {
+                    padding: 6px 10px;
+                }
+            }
+
+            .live-dot {
+                width: 10px;
+                height: 10px;
+
+                border-radius: 50%;
+
+                background: #d5ff2e;
+
+                animation: pulseDot 1.2s infinite;
+            }
+
+            .trading-room-text {
+                color: #d5ff2e;
+
+                font-weight: 700;
+
+                font-size: 14px;
+
+                letter-spacing: 0.5px;
+
+                white-space: nowrap;
+
+                @include responsive(sm) {
+                    font-size: 12px;
+                }
+            }
+
+            @keyframes pulseDot {
+                0% {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+
+                50% {
+                    opacity: 0.4;
+                    transform: scale(1.4);
+                }
+
+                100% {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+
+            @keyframes tradingGlow {
+                0% {
+                    box-shadow:
+                        0 0 5px rgba(213, 255, 46, 0.2),
+                        0 0 10px rgba(213, 255, 46, 0.15);
+                }
+
+                100% {
+                    box-shadow:
+                        0 0 12px rgba(213, 255, 46, 0.5),
+                        0 0 25px rgba(213, 255, 46, 0.3);
                 }
             }
         }

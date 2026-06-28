@@ -8,7 +8,7 @@ const AboutUs = () => {
         <div className="about-us__container">
           <h2 className='about-us__hero-title-main'>About US</h2>
           <h1 className="about-us__hero-title">
-            Trading Knowledge Should Be Free, Honest, and Accessible to Everyone.
+            Trading Knowledge Should Be Affordable, Honest, and Accessible to Everyone.
           </h1>
           <p className="about-us__hero-subtitle">
             We're not a brokerage. We're not a prop firm. We're a movement — created by traders, for traders.
